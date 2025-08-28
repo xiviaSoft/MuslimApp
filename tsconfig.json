@@ -21,8 +21,9 @@
       "@muc/validations": ["src/validations/validations.ts"],
       "@muc/providers": ["src/providers/providers.ts"],
       "@muc/context": ["src/context/context.ts"],
-      "@muc/appwrite": ["src/appwrite/appwrite.ts"],
-      "@muc/utils": ["src/utils/utils.ts"]
+      "@muc/libs": ["src/libs/libs.ts"],
+      "@muc/utils": ["src/utils/utils.ts"],
+      "@muc/collections": ["src/collections/collections.ts"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

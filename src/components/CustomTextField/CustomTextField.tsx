@@ -1,6 +1,6 @@
 
 
-import React, {  useCallback } from "react";
+import React, { useCallback } from "react";
 import { Controller, RegisterOptions, useFormContext } from "react-hook-form";
 
 import {
@@ -57,7 +57,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     endAdornment,
     ...props
 }) => {
-    const { control,  } = useFormContext();
+    const { control, } = useFormContext();
 
 
 
@@ -114,7 +114,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                     textTransform: "none",
                 }}
             >
-                
+
                 {errorMessage}
             </Typography>
         );
@@ -122,7 +122,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
 
 
     // Password Adornment
-   
+
 
     // TextField
     return (
@@ -141,22 +141,23 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         placeholder={placeholder || ""}
                         {...props}
                         defaultValue={defaultValue || ""}
-                      fullWidth
-                      label={label}
+                        fullWidth
+                        label={label}
                         multiline={multiline}
                         minRows={minRows}
                         maxRows={maxRows}
                         error={!!fieldState.error}
 
                         sx={{
+                            bgcolor:COLORS.white.darkwhite,
                             "& .MuiInputBase-root": {
                                 height: height || "inherit",
-                                padding:0
+                                padding: 0
                             },
                         }}
                         helperText={renderHelperText(fieldState.error?.message?.toString())}
-                     
-                        
+
+
                         inputProps={{
                             maxLength,
                             onInput: handleInputChange,

@@ -25,7 +25,8 @@ export default defineConfig({
       "@muc/hoc": path.resolve(__dirname, "src/hoc/hoc.ts"),
       "@muc/providers": path.resolve(__dirname, "./src/providers/providers.ts"),
       "@muc/context": path.resolve(__dirname, "./src/context/context.ts"),
-      "@muc/appwrite": path.resolve(__dirname, "./src/appwrite/appwrite.ts"),
+      "@muc/libs": path.resolve(__dirname, "./src/libs/libs.ts"),
+      "@muc/collections": path.resolve(__dirname, "./src/collections/collections.ts"),
       "@muc/validations": path.resolve(
         __dirname,
         "src/validations/validations.ts"

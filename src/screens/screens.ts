@@ -12,3 +12,4 @@ export { default as TermAndConditionsPage } from "./TermAndConditions/TermAndCon
 export { default as Privacy } from "./Privacy/Privacy";
 export { default as Success } from "./Success/Success";
 export { default as Messages } from "./Messages/Messages";
+export { default as Signup } from "./Signup/Signup";

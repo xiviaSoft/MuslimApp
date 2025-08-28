@@ -1,4 +1,5 @@
 
+import { ROUTES } from "@muc/constants";
 import { SecureRoutes } from "@muc/hoc";
 // import { SearchContainer, SearchResultContainer } from "@muc/modules";
 import {
@@ -11,6 +12,7 @@ import {
   // MemberShipPakages,
   Messages,
   Privacy,
+  Signup,
   Success,
   TermAndConditionsPage,
   UserInfo,
@@ -18,11 +20,12 @@ import {
 } from "@muc/screens";
 import { Route, Routes as ReactRoutes } from "react-router-dom";
 
+
 const Routes = () => {
   return (
     <ReactRoutes>
-      <Route path="/" element={<Home />} />
-      <Route path={"/following"} element={
+      <Route path="/home" element={<Home />} />
+      <Route path={ROUTES.FOLLOWING} element={
         // <SecureRoutes>
         <Gallery />
         // </SecureRoutes>
@@ -36,14 +39,15 @@ const Routes = () => {
         <Route path={"/likes"} element={<Likes />
         } />
       </Route>
-      <Route path="/landing_screen" element={<LandingScreen />} />
-      <Route path="/loging" element={<Loging />} />
+      {/* <Route path={ROUTES.HOME} element={<LandingScreen />} /> */}
+      <Route path={ROUTES.Login} element={<Loging />} />
+      <Route path={ROUTES.SIGNUP} element={<Signup />} />
       <Route path="/user_info/:id" element={<UserInfo />} />
       <Route path="/user_setting/:tab" element={<UserSetting />} />
-      <Route path="/term_and_conditions" element={<TermAndConditionsPage />} />
-      <Route path="/Privacy_and_Security" element={<Privacy />} />
-      <Route path="/stories" element={<Success />} />
-      <Route path="/contact_us" element={<ContactUs />} />
+      <Route path={ROUTES.TERM_AND_CONDITION} element={<TermAndConditionsPage />} />
+      <Route path={ROUTES.PRIVACY} element={<Privacy />} />
+      <Route path={ROUTES.STORIES} element={<Success />} />
+      <Route path={ROUTES.CONTACT} element={<ContactUs />} />
     </ReactRoutes>
   );
 };

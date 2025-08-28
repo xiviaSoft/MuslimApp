@@ -1,6 +1,6 @@
 import { CustomButton } from "@muc/components";
 import { COLORS } from "@muc/constants";
-import {  FormControl, Stack, Typography } from "@mui/material";
+import { FormControl, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
