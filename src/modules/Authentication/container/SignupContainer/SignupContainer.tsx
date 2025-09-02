@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material"
 import AuthLayout from "../../AuthLayout/AuthLayout"
 import SignupForm from "../../components/SignupForm/SignupForm"
 
@@ -5,7 +6,10 @@ import SignupForm from "../../components/SignupForm/SignupForm"
 const SignupContainer = () => {
     return (
         <AuthLayout>
-            <SignupForm/>
+            <Stack alignItems={'center'} justifyContent={'center'} width={'100%'} height={'90vh'} sx={{overflowY:'auto'}}>
+
+                <SignupForm />
+            </Stack>
         </AuthLayout>
     )
 }

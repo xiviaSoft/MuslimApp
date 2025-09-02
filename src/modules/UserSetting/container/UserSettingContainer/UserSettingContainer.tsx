@@ -2,9 +2,9 @@ import { AppLayout, SettingLayout } from "@muc/layout";
 import { Stack, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import EditPhotoContainer from "../EditPhotoContainer/EditPhotoContainer";
-import EducationAndWork from "../../components/EducationAndWork/EducationAndWork";
-import UserReligion from "../../components/UserReligion/UserReligion";
-import UserPersonal from "../../components/UserPersonal/UserPersonal";
+// import EducationAndWork from "../../components/EducationAndWork/EducationAndWork";
+// import UserReligion from "../../components/UserReligion/UserReligion";
+// import UserPersonal from "../../components/UserPersonal/UserPersonal";
 import Notifications_PreferencesContainer from "../Notifications_PreferencesContainer/Notifications_PreferencesContainer";
 import EditPersonalInfoContainer from "../EditPersonalInfoContainer/EditPersonalInfoContainer";
 import CommunicationPreferencesContainer from "../CommunicationPreferencesContainer/CommunicationPreferencesContainer";
@@ -17,6 +17,7 @@ import BlockUser from "../../components/BlockUser/BlockUser";
 import MembershipHistory from "../../components/MembershipHistory/MembershipHistory";
 import DeleteProfile from "../../components/DeleteProfile/DeleteProfile";
 import ChangePhoneNumber from "../../components/ChangePhoneNumber/ChangePhoneNumber";
+import EditProfile from "../../components/EditProfile/EditProfile";
 
 const ProfileSetting = () => {
   const { tab } = useParams();
@@ -26,9 +27,10 @@ const ProfileSetting = () => {
       case "edit-profile":
         return (
           <Stack gap={"20px"} py={2}>
-            <EducationAndWork />
+            <EditProfile/>
+            {/* <EducationAndWork />
             <UserPersonal />
-            <UserReligion />
+            <UserReligion /> */}
           </Stack>
         );
       case "edit-personal-info":

@@ -11,8 +11,10 @@ import Logout from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router";
 import { Typography } from "@mui/material";
 import { COLORS } from "@muc/constants";
+import { useAuth } from "@muc/context";
 
 const AccountMenu = () => {
+  const { user, logout } = useAuth()
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -23,7 +25,7 @@ const AccountMenu = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+
   return (
     <React.Fragment>
       <Box
@@ -33,7 +35,7 @@ const AccountMenu = () => {
           textAlign: "center",
           flexDirection: "column",
           cursor: "pointer",
-          ml:1
+          ml: 1
         }}
         onClick={handleClick}
         aria-controls={open ? "account-menu" : undefined}
@@ -41,10 +43,17 @@ const AccountMenu = () => {
         aria-expanded={open ? "true" : undefined}
       >
         <Tooltip title="Account settings">
-          <Avatar sx={{ width: "40px", height: "40px", mt: "3px" }}>N</Avatar>
+          <Avatar sx={{ width: "40px", height: "40px", mt: "3px" }}>{user?.firstName.charAt(0)}</Avatar>
         </Tooltip>
         <Typography sx={{ fontSize: "10px", color: COLORS.secondary.main }}>
-          user name
+          {user
+            ? `${user.firstName ?? ""} ${user.lastName
+              ? user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)
+              : ""
+            }`
+            : "NA"}
+
+
         </Typography>
       </Box>
 
@@ -86,7 +95,7 @@ const AccountMenu = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={() => navigate("/user_setting/edit-profile")}>
-          <Avatar /> Profile
+          <Avatar src={user?.firstName} /> Profile
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => navigate("/user_setting/notifications")}>
@@ -95,7 +104,7 @@ const AccountMenu = () => {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={logout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

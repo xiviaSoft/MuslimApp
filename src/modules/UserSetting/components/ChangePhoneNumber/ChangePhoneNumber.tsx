@@ -64,8 +64,9 @@ const ChangePhoneNumber = () => {
               type="number"
               name="Verification code"
               label="Verification code"
+              placeholder="verification code"
             />
-            <CustomTextField type="password" name="password" label="password" />
+            <CustomTextField type="password" name="password" label="password"  placeholder="password"/>
             <Stack spacing={3} mt={2} width="100%" alignItems={"end"}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <CustomButton

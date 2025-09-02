@@ -8,7 +8,7 @@ const UserName = () => {
   return (
     <>
       <FormProvider {...methods}>
-        <CustomTextField label="User name" type="text" name="username" />
+        <CustomTextField label="User name" type="text" name="username" placeholder="user name" />
         <Box sx={{ alignSelf: "end" }}>
           <CustomButton
             title="Search Now"

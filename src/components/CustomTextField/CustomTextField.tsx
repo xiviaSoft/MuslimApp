@@ -1,14 +1,15 @@
-
-
 import React, { useCallback } from "react";
-import { Controller, RegisterOptions, useFormContext } from "react-hook-form";
-
+import { Controller, useFormContext, RegisterOptions } from "react-hook-form";
 import {
     Box,
     TextField,
-    Typography,
+    InputAdornment,
+    Typography
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { COLORS } from "@muc/constants";
+
+
 interface CustomTextFieldProps {
     name: string;
     label?: string;
@@ -31,14 +32,15 @@ interface CustomTextFieldProps {
     onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void;
     onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void;
     endAdornment?: React.ReactNode;
+    showSearchIcon?: boolean; // <-- added new prop
 }
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
     name,
     type,
     rules,
-    label,
     width,
+    label,
     height,
     onBlur,
     minRows,
@@ -48,86 +50,43 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     multiline,
     maxLength,
     allowOnly,
-    description,
     placeholder,
     defaultValue,
     autoComplete,
     readOnly = false,
     showHelperText = true,
     endAdornment,
+    showSearchIcon = false, // <-- default false
     ...props
 }) => {
-    const { control, } = useFormContext();
+    const { control } = useFormContext();
 
+    const handleInputChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const value = e.target.value;
+            const patterns = {
+                numeric: /[^0-9]/g,
+                decimal: /[^0-9.]/g,
+                alphabetic: /[^a-zA-Z]/g,
+                alphanumeric: /[^a-zA-Z0-9]/g,
+            };
 
+            if (allowOnly && patterns[allowOnly]) {
+                e.target.value = value.replace(patterns[allowOnly], "");
+            }
 
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const patterns = {
-            numeric: /[^0-9]/g,
-            decimal: /[^0-9.]/g,
-            alphabetic: /[^a-zA-Z]/g,
-            alphanumeric: /[^a-zA-Z0-9]/g,
-        };
+            if (maxLength && e.target.value.length > maxLength) {
+                e.target.value = e.target.value.slice(0, maxLength);
+            }
+        },
+        [allowOnly, maxLength]
+    );
 
-        if (allowOnly && patterns[allowOnly]) {
-            e.target.value = value.replace(patterns[allowOnly], "");
-        }
-
-        if (maxLength && e.target.value.length > maxLength) {
-            e.target.value = e.target.value.slice(0, maxLength);
-        }
-    }, [allowOnly, maxLength]);
-
-    // Label
-    // const renderLabel = () => (
-    //     <Stack direction="column" gap={"4px"}>
-    //         {/* <Typography
-    //             // variant="h2_bold"
-    //             component={InputLabel}
-    //             sx={{ color: COLORS.gray.dark }}
-    //         >
-    //             {label}
-    //         </Typography> */}
-    //         <Typography
-    //             // variant="h6_light"
-    //             mb={1}
-    //         >
-    //             {description}
-    //         </Typography>
-    //     </Stack>
-    // );
-
-    // Helper Text
-    const renderHelperText = (errorMessage?: string) => {
-        if (!showHelperText || !errorMessage) return "";
-
-        return (
-            <Typography
-                component="span"
-                variant="caption"
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    color: COLORS.red.main,
-                    marginLeft: -2,
-                    textTransform: "none",
-                }}
-            >
-
-                {errorMessage}
-            </Typography>
-        );
-    };
-
-
-    // Password Adornment
-
-
-    // TextField
     return (
         <Box width={{ md: width, sm: width, xs: "100%" }}>
-            {/* {renderLabel()} */}
+            {label && (<Typography sx={{ fontSize: '12px', fontWeight: 700, color: COLORS.dark.lightblack, m: '8px' }}>
+                {label}
+            </Typography>)}
             <Controller
                 name={name}
                 defaultValue={defaultValue}
@@ -140,32 +99,34 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                         {...field}
                         placeholder={placeholder || ""}
                         {...props}
-                        defaultValue={defaultValue || ""}
-                        fullWidth
-                        label={label}
                         multiline={multiline}
+                        fullWidth
                         minRows={minRows}
                         maxRows={maxRows}
                         error={!!fieldState.error}
-
-                        sx={{
-                            bgcolor:COLORS.white.darkwhite,
-                            "& .MuiInputBase-root": {
-                                height: height || "inherit",
-                                padding: 0
+                        type={type}
+                        autoComplete={autoComplete}
+                        InputProps={{
+                            startAdornment: showSearchIcon && ( // <-- conditionally render
+                                <InputAdornment position="start">
+                                    <SearchIcon sx={{ color: "gray" }} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: endAdornment,
+                            sx: {
+                                // width: width || "285px",
+                                borderRadius: "50px",
+                                backgroundColor: COLORS.gray.lightDarkGray,
+                                border: "none",
+                                height: multiline ? "auto" : height || "56px",
+                                paddingRight: "8px",
+                                "& fieldset": { border: "none" },
                             },
                         }}
-                        helperText={renderHelperText(fieldState.error?.message?.toString())}
-
-
                         inputProps={{
                             maxLength,
                             onInput: handleInputChange,
-                        }}
-                        InputProps={{
-                            endAdornment: endAdornment ? endAdornment : <div />,
                             readOnly,
-                            autoComplete,
                         }}
                         onBlur={(event) => {
                             field.onBlur();

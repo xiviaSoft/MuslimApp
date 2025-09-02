@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Select, MenuItem, Box, Typography, Stack } from "@mui/material";
-import { useFormContext, useController } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import {
+  Box,
+  Typography,
+  MenuItem,
+  Select,
+  InputAdornment
+} from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
 import { COLORS } from "@muc/constants";
 
 interface Option {
@@ -9,44 +17,34 @@ interface Option {
 }
 
 interface CustomSelectProps {
-  label?: string;
   name: string;
+  label?: string;
   options: Option[];
   dependsOn?: string;
-  borderColor?: string;
-  iconColor?: string;
   width?: string;
+  height?: string;
+  iconColor?: string;
   labelOutside?: boolean;
-  isSteric?: boolean;
-  searchBarPlaceHolderName?: string;
-  onChange?: (value: any | string) => void;
+  showSearchIcon?: boolean;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
-  label,
   name,
+  label,
   options,
   dependsOn,
   width,
+  height,
   iconColor = COLORS.blue.main,
-  labelOutside = false,
-  // searchBarPlaceHolderName,
+  showSearchIcon = false,
   onChange,
-  // isSteric,
+  disabled: disabledProp = false,
 }) => {
   const { control, watch } = useFormContext();
-  const {
-    field: { value, onChange: formOnChange },
-  } = useController({ name, control });
-  // const { pathname } = useLocation();
-
-  const [disabled, setDisabled] = useState(!!dependsOn);
-  const [filteredOptions, setFilteredOptions] = useState<Option[]>([]);
-  // const [searchQuery, setSearchQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  // console.log(searchQuery);
-
   const dependencyValue = dependsOn ? watch(dependsOn) : null;
+  const [disabled, setDisabled] = useState(disabledProp || !!dependsOn);
 
   useEffect(() => {
     if (dependsOn && dependencyValue) {
@@ -54,177 +52,140 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   }, [dependsOn, dependencyValue]);
 
-  useEffect(() => {
-    setFilteredOptions(options);
-  }, [options]);
-
-  const handleSelectChange = (selectedValue: string) => {
-    formOnChange(selectedValue);
-    const selectedOption = options.find(
-      (option) => option.value === selectedValue
-    );
-    if (onChange && selectedOption) {
-      onChange(selectedValue);
-    }
-  };
-
-  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const query = event.target.value.toLowerCase();
-  //   setSearchQuery(query);
-  //   setFilteredOptions(
-  //     options.filter((option) => option.label.toLowerCase().includes(query))
-  //   );
-  // };
-
   return (
-    <Stack
-      direction={"row"}
-      width={width}
-      sx={{
-        opacity: disabled ? 0.5 : 1,
-        gap: "10px",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {labelOutside && (
+    <Box width={{ md: width, sm: width, xs: "100%" }}>
+      {label && (
         <Typography
-          variant="h6"
           sx={{
-            pb: 1,
-            display: "flex",
-            gap: "10px",
-            width: {md:'185px',xs:'50%'},
-            maxWidth: "266px",
-            justifyContent: "end",
-            alignItems: "center",
-            whiteSpace: "nowrap",
-            fontSize: { md: "16px", sm: "14px", xs: "12px" },
+            fontSize: "12px",
+            fontWeight: 700,
+            color: COLORS.dark.lightblack,
+            my: 1
           }}
         >
           {label}
         </Typography>
       )}
 
-      {/* <Typography
-        variant="h6"
-        component={InputLabel}
-        sx={{
-          pb: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-        }}
-      >
-        {label}
-      </Typography> */}
-
-      <Select
-        sx={{ height: "30px",width:{sm:'100%',xs:'140px'}}}
-        value={value || ""}
-        onChange={(event) => handleSelectChange(event.target.value)}
-        displayEmpty
-        disabled={disabled}
-        open={isOpen}
-        onOpen={() => setIsOpen(true)}
-        onClose={() => setIsOpen(false)}
-        renderValue={(selected) => {
-          if (!selected || (Array.isArray(selected) && selected.length === 0)) {
-            return (
-              <Typography
-                component={"em"}
-                sx={{
-                  color: COLORS.dark.main,
-                  fontSize: { md: "16px", sm: "14px", xs: "10px" },
-                  overflow: "visible",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Select any
-              </Typography>
-            );
-          }
-          if (Array.isArray(selected)) {
-            return selected.join(", ");
-          }
-          return selected;
-        }}
-        inputProps={{ "aria-label": "Without label" }}
-        MenuProps={{
-          disableAutoFocusItem: true,
-          PaperProps: {
-            sx: {
-              maxHeight: 300,
-              borderRadius: "20px",
-              overflowY: "auto",
-              overflowX: "hidden",
-              "&::-webkit-scrollbar": {
-                width: "0px",
-                height: "0px",
-              },
-            },
-          },
-        }}
-        IconComponent={(props) => (
-          <Box
-            component="svg"
-            {...props}
-            viewBox="0 0 24 24"
-            width="24px"
-            mt={-0.5}
-          >
-            <path
-              d="M7 10l5 5 5-5"
-              fill="none"
-              stroke={iconColor}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </Box>
-        )}
-      >
-        {filteredOptions.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            selected={value === option.value}
-            sx={{
-              py: "10px",
-              width: { md: "90%", xs: "auto" },
-              mx: "auto",
-              borderBottom: `1px solid ${COLORS?.gray.lightGray}`,
-              "&:last-of-type": {
-                border: "none",
-              },
-              "&:hover": {
-                bgcolor: COLORS?.gray.main,
-              },
-              "&.Mui-selected": {
-                bgcolor: COLORS?.secondary.main,
-                color: COLORS.white.main,
-                "&:hover": {
-                  bgcolor: COLORS?.gray.main,
-                  color: COLORS.dark.main,
+      <Controller
+        name={name}
+        control={control}
+        defaultValue="" // ✅ ensures controlled
+        rules={{ required: `${label || "This field"} is required` }}
+        render={({ field, fieldState }) => (
+          <>
+            <Select
+              {...field}
+              value={field.value || ""} // ✅ never undefined
+              displayEmpty
+              onChange={(e) => {
+                field.onChange(e.target.value);
+                onChange?.(e.target.value);
+              }}
+              disabled={disabled}
+              error={!!fieldState.error} // ✅ red border on error
+              IconComponent={(props) => (
+                <Box
+                  component="svg"
+                  {...props}
+                  viewBox="0 0 24 24"
+                  width="24px"
+                  mt={-0.5}
+                >
+                  <path
+                    d="M7 10l5 5 5-5"
+                    fill="none"
+                    stroke={iconColor}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Box>
+              )}
+              renderValue={(selected) =>
+                !selected ? (
+                  <em style={{ fontSize: "14px", color: "gray" }}>
+                    Select any
+                  </em>
+                ) : (
+                  options.find((opt) => opt.value === selected)?.label
+                )
+              }
+              sx={{
+                width: width || "100%",
+                borderRadius: "50px",
+                backgroundColor: COLORS.gray.lightDarkGray,
+                height: height || "56px",
+                "& fieldset": { border: "none" },
+                px: 1,
+              }}
+              startAdornment={
+                showSearchIcon && (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "gray" }} />
+                  </InputAdornment>
+                )
+              }
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    maxHeight: 300,
+                    borderRadius: "20px",
+                    overflowY: "auto",
+                    "&::-webkit-scrollbar": { width: 0 },
+                  },
                 },
-              },
-              fontSize: "13px",
-            }}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
+              }}
+            >
+              {/* ✅ Placeholder option */}
+              <MenuItem value="">
+                <em style={{ fontSize: "14px", color: "gray" }}>Select any</em>
+              </MenuItem>
 
-        {filteredOptions.length === 0 && (
-          <MenuItem disabled>
-            <Typography variant="body2" color="text.secondary">
-              No options found
-            </Typography>
-          </MenuItem>
+              {options.map((option) => (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  sx={{
+                    mt: 1,
+                    py: "10px",
+                    borderBottom: `1px solid ${COLORS.gray.whiteGray}`,
+                    "&:last-of-type": { border: "none" },
+                    "&:hover": { bgcolor: COLORS.gray.whiteGray },
+                    "&.Mui-selected": {
+                      bgcolor: COLORS.primary.main,
+                      color: COLORS.white.main,
+                      "&:hover": {
+                        bgcolor: COLORS.gray.whiteGray,
+                        color: COLORS.dark.main,
+                      },
+                    },
+                    fontSize: "13px",
+                  }}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+
+              {options.length === 0 && (
+                <MenuItem disabled>
+                  <Typography variant="body2" color="text.secondary">
+                    No options found
+                  </Typography>
+                </MenuItem>
+              )}
+            </Select>
+
+            {/* ✅ Show error message */}
+            {fieldState.error && (
+              <Typography sx={{ fontSize: "12px", color: "red", mt: 0.5 }}>
+                {fieldState.error.message}
+              </Typography>
+            )}
+          </>
         )}
-      </Select>
-    </Stack>
+      />
+    </Box>
   );
 };
 

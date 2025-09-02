@@ -1,5 +1,6 @@
 import { CustomButton, CustomTextField } from "@muc/components";
 import { COLORS, ROUTES } from "@muc/constants";
+import { useAuth } from "@muc/context";
 import {
   Checkbox,
   FormControlLabel,
@@ -7,14 +8,26 @@ import {
   Typography,
 } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 const LoginWithEmail = () => {
-  const methods = useForm();
+  const { login } = useAuth();
+  const methods = useForm<LoginFormValues>();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-    // Handle login logic here (API call, validation, etc.)
+  const onSubmit = async (data: { email: string; password: string }) => {
+    try {
+      await login(data);
+      navigate(ROUTES.HOME);
+      console.log("Form Data:", data);
+    } catch (error: any) {
+      console.error("Login error:", error.message);
+    }
   };
 
   return (
@@ -22,12 +35,11 @@ const LoginWithEmail = () => {
       component="section"
       sx={{
         bgcolor: "#1a7ea638",
-        width: 585,
+        width: { xs: "100%", sm: "450px", md: "500px", lg: "585px" },
         gap: 6,
         alignItems: "center",
         py: 4.5,
-        boxShadow:
-          "0 5px 8px rgba(0,0,0,0.2), 0 9px 26px rgba(0,0,0,0.19)",
+        boxShadow: "0 5px 8px rgba(0,0,0,0.2), 0 9px 26px rgba(0,0,0,0.19)",
         minHeight: 604,
         borderRadius: 3,
       }}
@@ -64,7 +76,6 @@ const LoginWithEmail = () => {
             placeholder="Password"
             name="password"
             height="48px"
-            
           />
 
           <FormControlLabel
@@ -76,13 +87,6 @@ const LoginWithEmail = () => {
             }}
           />
 
-          {/* <Box
-            component="img"
-            src="/assets/images/captcha.png"
-            alt="Captcha verification"
-            sx={{ width: 250, alignSelf: "center" }}
-          /> */}
-
           <CustomButton
             type="submit"
             variant="contained"
@@ -93,9 +97,10 @@ const LoginWithEmail = () => {
             height="56px"
           />
 
+          {/* Forgot Password */}
           <Typography
             component={Link}
-            to={ROUTES.Login}
+            to={ROUTES.Login} // you can change this to ROUTES.FORGOT_PASSWORD if you have one
             sx={{
               color: COLORS.white.main,
               textAlign: "center",
@@ -106,6 +111,23 @@ const LoginWithEmail = () => {
             }}
           >
             Forgotten Password?
+          </Typography>
+
+          {/* 🔥 Create New Account */}
+          <Typography
+            component={Link}
+            to={ROUTES.SIGNUP} // <-- make sure you have this in your routes
+            sx={{
+              color: COLORS.secondary.main,
+              textAlign: "center",
+              fontSize: 15,
+              fontWeight: "bold",
+              textDecoration: "none",
+              mt: 2,
+              "&:hover": { textDecoration: "underline" },
+            }}
+          >
+            Create New Account
           </Typography>
         </Stack>
       </FormProvider>

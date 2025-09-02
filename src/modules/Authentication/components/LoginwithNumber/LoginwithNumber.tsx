@@ -11,31 +11,41 @@ const LoginwithNumber = () => {
     <Stack
       sx={{
         bgcolor: "#a1077f6b",
-        width: "585px",
-        gap: "50px",
+        width: { xs: "100%", sm: "450px", md: "500px", lg: "585px" }, // responsive widths
+        gap: "40px",
         alignItems: "center",
-        paddingY: "36px",
+        padding: { xs: "24px", sm: "32px", md: "36px" },
         boxShadow:
           "0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19)",
-        minHeight: "604px",
+        minHeight: { xs: "auto", md: "604px" },
+        borderRadius: 2,
       }}
     >
-      <Typography variant="h3" color={COLORS.white.main}>
+      <Typography
+        variant="h4"
+        fontSize={{ xs: "20px", sm: "24px", md: "28px" }}
+        textAlign="center"
+        color={COLORS.white.main}
+      >
         Phone Number for login
       </Typography>
 
-      <Typography variant="body2" color={COLORS.white.main} mb={"-20px"}>
+      <Typography
+        variant="body2"
+        color={COLORS.white.main}
+        textAlign="center"
+        mb={"-10px"}
+      >
         The string supplied did not seem to be a phone number.
       </Typography>
 
       <Stack
-        direction={"column"}
+        direction="column"
         sx={{
           gap: "20px",
           justifyContent: "center",
           alignItems: "center",
-          height: "70px",
-          minHeight: "70px",
+          width: "100%",
         }}
       >
         <FormControl fullWidth>
@@ -48,10 +58,11 @@ const LoginwithNumber = () => {
               name: "phone",
               style: {
                 width: "100%",
-                height: "100%",
-                fontSize: "18px",
+                height: "50px",
+                fontSize: "16px",
                 border: "none",
                 outline: "none",
+                paddingLeft: "8px",
               },
             }}
             countrySelectorStyleProps={{
@@ -69,8 +80,8 @@ const LoginwithNumber = () => {
           title="SEND LOGIN CODE"
           background={COLORS.primary.main}
           color="white"
-          width="350px"
-          height="56px"
+          width="100%"
+          height="50px"
         />
       </Stack>
     </Stack>

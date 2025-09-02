@@ -29,18 +29,21 @@ const ChangeEmail = () => {
               label="New Email"
               type={"email"}
               width="550px"
+              placeholder="New email"
             />
             <CustomTextField
               name="Confirm New Email"
               label=" Confirm New Email"
               type={"email"}
               width="550px"
+              placeholder="confrim email"
             />
             <CustomTextField
               name="password"
               label="Current passwrod"
               type={"password"}
               width="550px"
+              placeholder="Current password"
             />
           </Stack>
           <Stack spacing={2} mt={2} width="100%" alignItems={"end"}>

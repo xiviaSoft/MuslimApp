@@ -1,10 +1,7 @@
-import { CustomButton, CustomSelect } from "@muc/components";
+import { CustomButton } from "@muc/components";
 import {
   COLORS,
-  CurrentIncome,
-  EducationLevel,
-  Languages,
-  Professions,
+
 } from "@muc/constants";
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
@@ -24,7 +21,7 @@ const EducationAndWork = () => {
         Education and Work
       </Typography>
       <FormProvider {...methods}>
-        <CustomSelect
+        {/* <CustomSelect
           name="First Language(s)"
           label="First Language(s)"
           labelOutside={true}
@@ -32,8 +29,8 @@ const EducationAndWork = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Second Language(s)"
           label="Second Language(s)"
           labelOutside={true}
@@ -41,9 +38,9 @@ const EducationAndWork = () => {
             label: item,
             value: item,
           }))}
-        />
+        /> */}
 
-        <CustomSelect
+        {/* <CustomSelect
           name="Education Level"
           label="Education Level"
           labelOutside={true}
@@ -51,8 +48,8 @@ const EducationAndWork = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Current Income"
           label="Current Income"
           labelOutside={true}
@@ -60,9 +57,9 @@ const EducationAndWork = () => {
             label: item,
             value: item,
           }))}
-        />
+        /> */}
 
-        <CustomSelect
+        {/* <CustomSelect
           name="Profession"
           label="Profession"
           labelOutside={true}
@@ -70,11 +67,12 @@ const EducationAndWork = () => {
             label: item,
             value: item,
           }))}
-        />
+        /> */}
         <Box sx={{ alignSelf: "end" }}>
           <CustomButton
             title="Update"
             variant="contained"
+            type="submit"
             background={COLORS.secondary.main}
             color={COLORS.white.main}
           />

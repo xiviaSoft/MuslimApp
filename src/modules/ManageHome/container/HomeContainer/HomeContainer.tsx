@@ -20,8 +20,8 @@ const HomeContainer = () => {
           sx={{ mx: "auto", paddingY: "18px" }}
         >
           <Grid container spacing={3} component={Paper} elevation={2}>
-            {userData.slice(0, 12).map((item) => (
-              <Grid md={3} sm={4} xs={12} p={2}>
+            {userData.slice(0, 12).map((item,i) => (
+              <Grid item md={3} sm={4} xs={12} p={2} key={i}>
                 <CustomProfileCard
                   age={item.age}
                   img={item.img}

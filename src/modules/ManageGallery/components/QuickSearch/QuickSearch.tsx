@@ -78,7 +78,7 @@ const QuickSearch = () => {
           name="Miximum Age"
           label="Minimum Age"
           labelOutside={true}
-          searchBarPlaceHolderName="nothing"
+  
           options={AgeNumber.map((age) => ({
             label: age.toString(),
             value: age.toString(),

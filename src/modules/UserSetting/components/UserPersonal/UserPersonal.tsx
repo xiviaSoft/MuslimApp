@@ -1,29 +1,29 @@
-import { CustomButton, CustomSelect } from "@muc/components";
+import { CustomButton,} from "@muc/components";
 import {
-  BuildOptions,
+  // BuildOptions,
   COLORS,
-  Countries,
-  Disabilities,
-  EyeColors,
-  HairColors,
-  HasChilldren,
-  HeightOptions,
-  LivingArrangements,
-  LookingToMarry,
-  MaritalStatus,
-  Relocate,
-  Smoke,
-  WantsChildren,
+  // Countries,
+  // Disabilities,
+  // EyeColors,
+  // HairColors,
+  // HasChilldren,
+  // HeightOptions,
+  // LivingArrangements,
+  // LookingToMarry,
+  // MaritalStatus,
+  // Relocate,
+  // Smoke,
+  // WantsChildren,
 } from "@muc/constants";
-import { Box, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box, Paper, Stack, Typography } from "@mui/material";
+
 import { FormProvider, useForm } from "react-hook-form";
 
 const UserPersonal = () => {
-  const [active, setActive] = useState<number | null>(0);
-  const handleActive = (i: number): void => {
-    setActive(i);
-  };
+  // const [active, setActive] = useState<number | null>(0);
+  // const handleActive = (i: number): void => {
+  //   setActive(i);
+  // };
   const { ...methods } = useForm();
   return (
     <Stack
@@ -38,7 +38,7 @@ const UserPersonal = () => {
         Personal
       </Typography>
       <FormProvider {...methods}>
-        <CustomSelect
+        {/* <CustomSelect
           name="Country of Origin"
           label="Country of Origin"
           labelOutside={true}
@@ -46,8 +46,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />{" "}
-        <CustomSelect
+        />{" "} */}
+        {/* <CustomSelect
           name="Current Citizenship"
           label="Current Citizenship"
           labelOutside={true}
@@ -55,8 +55,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Will Relocate"
           label="Will Relocate"
           labelOutside={true}
@@ -64,8 +64,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <Stack direction={"row"} gap={"16px"}>
+        /> */}
+        {/* <Stack direction={"row"} gap={"16px"}>
           <Typography
             variant="h6"
             sx={{
@@ -93,8 +93,8 @@ const UserPersonal = () => {
               />
             ))}
           </ButtonGroup>
-        </Stack>
-        <CustomSelect
+        </Stack> */}
+        {/* <CustomSelect
           name="Looking to Marry"
           label="Looking to Marry"
           labelOutside={true}
@@ -102,8 +102,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Marital Status"
           label="Marital Status"
           labelOutside={true}
@@ -111,8 +111,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Has Children"
           label="Has Children"
           labelOutside={true}
@@ -120,8 +120,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Wants Children"
           label="Wants Children"
           labelOutside={true}
@@ -129,8 +129,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Build"
           label="Build"
           labelOutside={true}
@@ -138,8 +138,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Hair Colour"
           label="Hair Colour"
           labelOutside={true}
@@ -147,8 +147,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Living Arrangements"
           label="Living Arrangements"
           labelOutside={true}
@@ -156,8 +156,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Eye Colour"
           label="Eye Colour"
           labelOutside={true}
@@ -165,8 +165,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Minimum Height"
           label="Minimum Height"
           labelOutside={true}
@@ -174,8 +174,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Maximum Height"
           label="Maximum Height"
           labelOutside={true}
@@ -183,8 +183,8 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
-        <CustomSelect
+        /> */}
+        {/* <CustomSelect
           name="Disabilities"
           label="Disabilities"
           labelOutside={true}
@@ -192,7 +192,7 @@ const UserPersonal = () => {
             label: item,
             value: item,
           }))}
-        />
+        /> */}
         <Box sx={{ alignSelf: "end" }}>
           <CustomButton
             title="Update"

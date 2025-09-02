@@ -29,18 +29,21 @@ const ChangePassword = () => {
               label="Current password"
               type={"password"}
               width="550px"
+              placeholder="current password"
             />
             <CustomTextField
               name="New password"
               label="New password"
               type={"password"}
               width="550px"
+              placeholder="new password"
             />
             <CustomTextField
               name="Confirm password"
               label="Confirm passwrod"
               type={"password"}
               width="550px"
+              placeholder="confirm password"
             />
           </Stack>
           <Stack spacing={2} mt={2} width="100%" alignItems={"end"}>

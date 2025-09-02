@@ -106,12 +106,15 @@ const DeleteProfile = () => {
             type="text"
             multiline={2}
             width="100%"
+            placeholder="comments
+            "
           />
           <CustomTextField
             type="password"
             name="passowrd"
             label="password"
             width={"100%"}
+            placeholder="password"
           />
           <Box display={"flex"} alignSelf={"end"} pr={"15px"}>
             <CustomButton

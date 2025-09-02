@@ -19,8 +19,9 @@ function Fade({ isButton }: FadeProps) {
   return (
     <Box position={"relative"} className="slider-container">
       <Slider {...sliderSetting}>
-        {sliderData.map((item) => (
+        {sliderData.map((item, i) => (
           <Box
+            key={i}
             component={"img"}
             src={item.img}
             alt="Slide"

@@ -16,23 +16,26 @@ const ChangeUserName = () => {
         Change Username
       </Typography>
       <Divider />
-      <Stack gap={2} width={{md:'700px',xs:'100%'}} alignItems={"end"} mt={"44px"}>
+      <Stack gap={2} width={{ md: '700px', xs: '100%' }} alignItems={"end"} mt={"44px"}>
         <FormProvider {...methods}>
           <Stack gap={2} width={"100%"} alignItems={"end"}>
             <CustomTextField
               name="New Username"
               label="New Username"
               type={"text"}
+              placeholder="new username"
             />
             <CustomTextField
               name="Confirm Username"
               label=" Confirm Username"
               type={"text"}
+              placeholder="confirm password"
             />
             <CustomTextField
               name="password"
               label="Current passwrod"
               type={"password"}
+              placeholder="current password"
             />
           </Stack>
           <Stack spacing={2} mt={2} width="100%" alignItems={"end"}>

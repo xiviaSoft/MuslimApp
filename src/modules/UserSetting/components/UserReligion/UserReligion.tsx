@@ -1,25 +1,27 @@
-import { CustomButton, CustomSelect } from "@muc/components";
+import { CustomButton,
+  //  CustomSelect
+   } from "@muc/components";
 import {
   COLORS,
-  KeepsHalal,
-  PerformsSalaah,
-  PreferHijab,
-  Religiousness,
-  SecData,
+  // KeepsHalal,
+  // PerformsSalaah,
+  // PreferHijab,
+  // Religiousness,
+  // SecData,
 } from "@muc/constants";
-import { Box, ButtonGroup, Paper, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box,  Paper, Stack, Typography } from "@mui/material";
+// import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 const UserReligion = () => {
-  const [active, setActive] = useState<number | null>(0);
-  const [activeTwo, setActiveTwo] = useState<number | null>(0);
-  const handleActiveTwo = (i: number) => {
-    setActiveTwo(i);
-  };
-  const handleActive = (i: number) => {
-    setActive(i);
-  };
+  // const [active, setActive] = useState<number | null>(0);
+  // const [activeTwo, setActiveTwo] = useState<number | null>(0);
+  // const handleActiveTwo = (i: number) => {
+  //   setActiveTwo(i);
+  // };
+  // const handleActive = (i: number) => {
+  //   setActive(i);
+  // };
 
   const methods = useForm();
 
@@ -41,7 +43,7 @@ const UserReligion = () => {
           Religion
         </Typography>
         <FormProvider {...methods}>
-          <CustomSelect
+          {/* <CustomSelect
             name="Sec"
             label="Sec"
             labelOutside={true}
@@ -49,8 +51,8 @@ const UserReligion = () => {
               label: item,
               value: item,
             }))}
-          />
-          <CustomSelect
+          /> */}
+          {/* <CustomSelect
             name="Religiousness"
             label="Religiousness"
             labelOutside={true}
@@ -58,8 +60,8 @@ const UserReligion = () => {
               label: item,
               value: item,
             }))}
-          />
-          <CustomSelect
+          /> */}
+          {/* <CustomSelect
             name="Prefer Hijab/Niqab"
             label="Prefer Hijab/Niqab"
             labelOutside={true}
@@ -67,8 +69,8 @@ const UserReligion = () => {
               label: item,
               value: item,
             }))}
-          />
-          <Stack direction={"row"} gap={"16px"}>
+          /> */}
+          {/* <Stack direction={"row"} gap={"16px"}>
             <Typography
               sx={{
                 fontSize: "16px",
@@ -99,8 +101,8 @@ const UserReligion = () => {
                 />
               ))}
             </ButtonGroup>
-          </Stack>
-          <Stack direction={"row"} gap={"16px"}>
+          </Stack> */}
+          {/* <Stack direction={"row"} gap={"16px"}>
             <Typography
               sx={{
                 fontSize: "16px",
@@ -126,8 +128,8 @@ const UserReligion = () => {
                 />
               ))}
             </ButtonGroup>
-          </Stack>
-          <CustomSelect
+          </Stack> */}
+          {/* <CustomSelect
             name="Keeps Halal"
             label="Keeps Halal"
             labelOutside={true}
@@ -135,8 +137,8 @@ const UserReligion = () => {
               label: item,
               value: item,
             }))}
-          />
-          <CustomSelect
+          /> */}
+          {/* <CustomSelect
             name="Performs Salaah"
             label="Performs Salaah"
             labelOutside={true}
@@ -144,7 +146,7 @@ const UserReligion = () => {
               label: item,
               value: item,
             }))}
-          />
+          /> */}
           <Box sx={{ alignSelf: "end" }}>
             <CustomButton
               title="Update"
@@ -160,4 +162,4 @@ const UserReligion = () => {
 };
 
 export default UserReligion;
-const ButtonData = ["Any", "Yes", "No", "Prefer not to say"];
+// const ButtonData = ["Any", "Yes", "No", "Prefer not to say"];

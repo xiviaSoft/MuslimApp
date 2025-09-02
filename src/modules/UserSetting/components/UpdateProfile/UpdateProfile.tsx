@@ -1,11 +1,7 @@
-import { CustomButton, CustomSelect, CustomTextField } from "@muc/components";
+import { CustomButton,  CustomTextField } from "@muc/components";
 import {
   COLORS,
-  Countries,
-  dateOfBirth,
-  monthsOfBirth,
-  pakistanStates,
-  yearsOfBirth,
+
 } from "@muc/constants";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
@@ -29,11 +25,12 @@ const UpdateProfile = () => {
                 label="First Name"
                 type="text"
                 name="firstname"
+                placeholder="first name"
               />
-              <CustomTextField label="last Name" type="text" name="lastname" />
-              <CustomTextField label="Address" type="text" name="address" />
-              <CustomTextField label="City" type="text" name="city" />
-              <CustomSelect
+              <CustomTextField label="last Name" type="text" name="lastname" placeholder="last name" />
+              <CustomTextField label="Address" type="text" name="address" placeholder="address" />
+              <CustomTextField label="City" type="text" name="city" placeholder="city" />
+              {/* <CustomSelect
                 name="Country"
                 label="Country"
                 labelOutside={true}
@@ -41,8 +38,8 @@ const UpdateProfile = () => {
                   label: item,
                   value: item,
                 }))}
-              />
-              <CustomSelect
+              /> */}
+              {/* <CustomSelect
                 name="Area/State"
                 label="Area/State"
                 labelOutside={true}
@@ -50,13 +47,13 @@ const UpdateProfile = () => {
                   label: item,
                   value: item,
                 }))}
-              />
-              <CustomTextField
+              /> */}
+              {/* <CustomTextField
                 label="*Post/Zip Code"
                 type="text"
                 name="*Post/Zip Code"
-              />
-              <Stack direction={{ sm: "row", xs: "column" }} gap={"16px"}>
+              /> */}
+              {/* <Stack direction={{ sm: "row", xs: "column" }} gap={"16px"}>
                 <Typography
                   sx={{ width: {sm:'150px',xs:'100%'} }}
                   variant="h6"
@@ -96,7 +93,7 @@ const UpdateProfile = () => {
                     }))}
                   />
                 </Stack>
-              </Stack>
+              </Stack> */}
               <Box sx={{ alignSelf: "end" }}>
                 <CustomButton
                   title="Update"

@@ -9,5 +9,5 @@ export const ROUTES = {
   FOLLOWING: "/following",
 
   Login: "/login",
-  SIGNUP: "/signup",
+  SIGNUP: "/sign-up",
 };

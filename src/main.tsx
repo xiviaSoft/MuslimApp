@@ -5,14 +5,14 @@ import { BrowserRouter } from "react-router";
 import { AuthProvider } from "@muc/context";
 createRoot(document.getElementById("root")!).render(
 
-    <AuthProvider>
 
 
-        <BrowserRouter>
+    <BrowserRouter>
+        <AuthProvider>
 
             <App />
-        </BrowserRouter>
-    </AuthProvider>
+        </AuthProvider>
+    </BrowserRouter>
 
 
 );

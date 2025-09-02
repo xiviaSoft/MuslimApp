@@ -2792,13 +2792,7 @@ export const LookingToMarry = [
   "Next year",
   "UNsure",
 ];
-export const MaritalStatus = [
-  "Never married",
-  "Legally separated",
-  "Divorced",
-  "Widowed",
-  "Anullled",
-];
+export const MaritalStatus = ["single", "married", "divorced", "widowed"];
 export const HasChilldren = [
   "Yes",
   "No",
@@ -3172,3 +3166,5 @@ export const countriesWithFlags = [
   { name: "United Kingdom", flag: "https://flagcdn.com/w320/gb.png" },
   { name: "United States", flag: "https://flagcdn.com/w320/us.png" },
 ];
+
+export const GenderTypes = ["male", "female"];

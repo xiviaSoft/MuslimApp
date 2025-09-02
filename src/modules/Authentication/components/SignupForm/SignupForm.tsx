@@ -1,156 +1,183 @@
-import { CustomButton, CustomTextField } from "@muc/components";
-import { COLORS, ROUTES } from "@muc/constants";
-import { useAuth } from "@muc/context";
-import { auth } from "@muc/libs";
+import { useState } from "react";
 import {
-
-    Stack,
+    Stepper,
+    Step,
+    StepLabel,
+    Button,
+    Box,
     Typography,
+    Stack,
 } from "@mui/material";
+import { auth, db } from "@muc/libs";
+import { COLORS, ROUTES } from "@muc/constants";
+import { useForm, FormProvider } from "react-hook-form";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import GetStepContent from "../GetStepContent/GetStepContent";
+import { FormData } from "@muc/types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { FormProvider, useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
+
+const steps = ["Personal Info", "Education & Languages", "Work Experience", "Social Links"];
 
 const SignupForm = () => {
-    const methods = useForm();
+    const methods = useForm<FormData>({ defaultValues: {} as FormData });
+    const { handleSubmit, trigger } = methods;
+    const navigate = useNavigate();
 
-    const { user, setUser } = useAuth()
-    const onSubmit = async (data: any) => {
-        await createUserWithEmailAndPassword(auth, data.email, data.password)
+    const [activeStep, setActiveStep] = useState(0);
 
-        console.log("Sign Up Data:", data);
-        console.log("user login:", data);
-        setUser(data)
-        // Call API or handle SignupForm logic here
+    // 🔹 Submit Handler
+    const onSubmit = async (data: FormData) => {
+        try {
+            // 1️⃣ Create user in Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                data.email,
+                data.password
+            );
+
+            const uid = userCredential.user.uid;
+            const { password, ...userData } = data;
+
+            await setDoc(doc(db, "users", uid), {
+                ...userData,
+                uid,
+                isActive: true,
+                isSuspended: false,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+                lastLogin: serverTimestamp(),
+                phoneNumber: data.phoneNumber || "",
+                workExperience: {
+                    companyName: data.companyName || "",
+                    role: data.role || "",
+                    startDate: data.startDate ? new Date(data.startDate) : null,
+                    address: data.companyaddress || "",
+                    endDate: data.isCurrent ? null : data.endDate ? new Date(data.endDate) : null,
+                    isCurrent: data.isCurrent || false,
+                    description: data.companydescription || "",
+                },
+                languages: data.languages || {},
+                socialLinks: {
+                    facebook: data.facebook || "",
+                    twitter: data.twitter || "",
+                    linkedin: data.linkedin || "",
+                    instagram: data.instagram || "",
+                },
+            });
+
+            alert("User signed up successfully!");
+            navigate(ROUTES.HOME);
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
-    console.log(user, 'this is user in the sign up page')
+
+    const stepFields: (keyof FormData)[][] = [
+        ["firstName", "lastName", "email", "dateOfBirth", "gender", "maritalStatus", "religion"], // Step 0
+        ["highestDegree"],
+        ["companyName", "role", "startDate"],
+        ["facebook", "twitter", "linkedin", "instagram"],
+    ];
+
+    const handleNext = async () => {
+        const fieldsToValidate = stepFields[activeStep];
+        if (!fieldsToValidate) {
+            setActiveStep((prev) => prev + 1);
+            return;
+        }
+
+        const isValid = await trigger(fieldsToValidate);
+        if (isValid) {
+            setActiveStep((prev) => prev + 1);
+        }
+    };
+
+    const handleBack = () => setActiveStep((prev) => prev - 1);
 
     return (
-        <Stack
-            component="section"
-            sx={{
-                bgcolor: "#1a7ea638",
-                width: 620,
-                gap: 6,
-                alignItems: "center",
-                py: 5,
-                px: 4,
-                boxShadow:
-                    "0 5px 8px rgba(0,0,0,0.2), 0 9px 26px rgba(0,0,0,0.19)",
-                borderRadius: 3,
-                minHeight: 700,
-                mx: "auto",
-                maxHeight: "100vh",       // restrict height
-                overflowY: "auto",        // enable scroll if needed
-                scrollbarWidth: "thin",   // Firefox scrollbar
-                "&::-webkit-scrollbar": { width: "6px" }, // Chrome/Edge
-                "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: COLORS.secondary.main,
-                    borderRadius: "10px",
-                },
-            }}
-        >
-            {/* Title */}
-            <Typography
-                variant="h4"
-                color={COLORS.white.main}
-                fontWeight="bold"
-                textAlign="center"
+        <FormProvider {...methods}>
+            <Box
+                component="form"
+                onSubmit={handleSubmit(onSubmit)}
+                sx={{
+                    backgroundColor: COLORS.white.darkwhite,
+                    p: { xs: 2, sm: 3, md: 4 },
+                    height: { xs: "auto", md: "90vh" },
+                    borderRadius: 2,
+                    boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+                    maxWidth: "800px",
+                    mx: "auto",
+                    overflowY: { xs: "visible", md: "auto" },
+                    "&::-webkit-scrollbar": { width: "8px" },
+                    "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: COLORS.secondary.main,
+                        borderRadius: "10px",
+                    },
+                    scrollbarWidth: "thin",
+                }}
             >
-                Create Your Dating Profile
-            </Typography>
-
-            <FormProvider {...methods}>
-                <Stack
-                    component="form"
-                    direction="column"
-                    gap={3}
-                    onSubmit={methods.handleSubmit(onSubmit)}
-                    noValidate
-                    sx={{ width: "100%", maxWidth: 450 }}
+                {/* Stepper */}
+                <Stepper
+                    activeStep={activeStep}
+                    sx={{
+                        mb: { xs: 2, md: 3 },
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                    }}
                 >
-                    {/* Basic Info */}
-                    <CustomTextField
-                        name="firstName"
-                        placeholder="First Name"
-                        type="text"
-                        height="48px"
-                    />
-                    <CustomTextField
-                        name="lastName"
-                        placeholder="Last Name"
-                        type="text"
-                        height="48px"
-                    />
-                    <CustomTextField
-                        name="email"
-                        placeholder="Email Address"
-                        type="email"
-                        height="48px"
-                    />
-                    <CustomTextField
-                        name="password"
-                        placeholder="Password"
-                        type="password"
-                        height="48px"
-                    />
+                    {steps.map((label) => (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
 
+                {/* Step Content */}
+                <Box sx={{ p: { xs: 1, md: 2 } }}>
+                    <GetStepContent step={activeStep} />
+                </Box>
 
-                    {/* Dating-specific Info */}
-                    {/* <CustomTextField
-                        name="age"
-                        placeholder="Age"
-                        type="number"
-                        height="48px"
-                    /> */}
-                    {/* <CustomTextField
-                        name="gender"
-                        placeholder="Gender"
-                        type="text"
-                        height="48px"
-                    /> */}
-
-
-                    {/* 
-                    <FormControlLabel
-                        control={<Checkbox sx={{ color: COLORS.white.main }} />}
-                        sx={{ color: COLORS.white.main, fontSize: 14 }}
-                        label="I agree to the Terms & Privacy Policy"
-                    /> */}
-
-                    {/* Button */}
-                    <CustomButton
-                        type="submit"
-                        variant="contained"
-                        title="Sign Up"
-                        background={COLORS.secondary.main}
-                        color="white"
-                        width="100%"
-                        height="56px"
-                    />
-
-                    {/* Redirect */}
-                    <Typography
-                        color={COLORS.white.main}
-                        fontSize={14}
-                        textAlign="center"
-                        mt={1}
+                {/* Navigation Buttons */}
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    sx={{ mt: 3, flexWrap: "wrap", gap: 2 }}
+                >
+                    <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        variant="outlined"
                     >
+                        Back
+                    </Button>
+                    {activeStep === steps.length - 1 ? (
+                        <Button type="submit" variant="contained">
+                            Submit
+                        </Button>
+                    ) : (
+                        <Button variant="contained" onClick={handleNext}>
+                            Next
+                        </Button>
+                    )}
+                </Stack>
+
+                {/* Already have account */}
+                <Stack alignItems="center" mt={3}>
+                    <Typography variant="body2">
                         Already have an account?{" "}
-                        <Link
-                            to={ROUTES.Login}
-                            style={{
-                                color: COLORS.secondary.main,
-                                fontWeight: "bold",
-                                textDecoration: "none",
-                            }}
+                        <Typography
+                            component="span"
+                            color="primary"
+                            sx={{ cursor: "pointer", fontWeight: 600 }}
+                            onClick={() => navigate(ROUTES.Login)}
                         >
-                            Login here
-                        </Link>
+                            Login
+                        </Typography>
                     </Typography>
                 </Stack>
-            </FormProvider>
-        </Stack>
+            </Box>
+        </FormProvider>
     );
 };
 

@@ -1,31 +1,22 @@
-import { Box, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import LogingWithEmail from "../../components/LogingWithEmail/LogingWithEmail";
 import LoginwithNumber from "../../components/LoginwithNumber/LoginwithNumber";
-import { CustomSlider } from "@muc/components";
 import AuthLayout from "../../AuthLayout/AuthLayout";
 
 const LogingContainer = () => {
   return (
-    // <Box>
-    //   <Box sx={{ position: "relative" }}>
-    //     <CustomSlider />
-    //     <Stack
-    //       direction={"row"}
-    //       sx={{
-    //         position: "absolute",
-    //         top: "50%",
-    //         left: "50%",
-    //         transform: "translate(-50%, -50%)",
-    //       }}
-    //     >
     <AuthLayout>
-
-          <LogingWithEmail />
-          <LoginwithNumber />
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={{ xs: 3, md: 5 }}
+        alignItems="center"
+        justifyContent="center"
+        width="100%"
+      >
+        <LogingWithEmail />
+        <LoginwithNumber />
+      </Stack>
     </AuthLayout>
-    //     </Stack>
-    //   </Box>
-    // </Box>
   );
 };
 
