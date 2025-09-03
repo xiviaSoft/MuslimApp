@@ -9,7 +9,7 @@ export type FormData = {
   maritalStatus: string;
   religion: string;
   highestDegree: string;
-  languages: [];
+ languages: string | string[];
   companyName: string;
   companyaddress: string;
   companydescription: string;
@@ -21,4 +21,5 @@ export type FormData = {
   twitter?: string;
   linkedin?: string;
   instagram?: string;
+  
 };

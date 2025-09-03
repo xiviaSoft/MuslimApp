@@ -35,7 +35,8 @@ const Routes = () => {
         <Route path={ROUTES.FOLLOWING} element={<Gallery />} />
         <Route path="/messages" element={<Messages />} />
         <Route path={"/likes"} element={<Likes />} />
-        <Route path="/user_info/:id" element={<UserInfo />} />
+        {/* <Route path="/user_info/:id" element={<UserInfo />} /> */}
+        <Route path={`${ROUTES.USER_INFO}/:id`} element={<UserInfo />} />
         <Route path="/user_setting/:tab" element={<UserSetting />} />
         <Route path={ROUTES.TERM_AND_CONDITION} element={<TermAndConditionsPage />} />
         <Route path={ROUTES.PRIVACY} element={<Privacy />} />

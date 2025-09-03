@@ -11,25 +11,29 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useAuth } from "@muc/context";
 import { LoginDialogBox } from "@muc/components";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@muc/constants";
 
 type UserProfielCardProps = {
-  img: string;
+  // img: string;
   name: string;
   location?: string;
   age: number;
   countryFlag?: string;
+  id: string
 };
 
 const UserProfileCard = ({
-  img,
+  // img,
   name,
   location,
   age,
+  id
 }: UserProfielCardProps) => {
-  const { user, } = useAuth(); 
+  const { user, } = useAuth();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [intendedAction, setIntendedAction] = useState<"like" | "message" | null>(null);
-
+  const navigate = useNavigate()
   const handleProtectedClick = (action: "like" | "message") => {
     if (!user) {
       setIntendedAction(action);
@@ -46,8 +50,7 @@ const UserProfileCard = ({
   };
 
   const handleLoginSuccess = () => {
-  // if login exists
-    // replay intended action if any
+
     if (intendedAction === "like") {
       console.log("liked after login");
     } else if (intendedAction === "message") {
@@ -55,22 +58,35 @@ const UserProfileCard = ({
     }
     setIntendedAction(null);
   };
+  const calculateAge = (dobString: number) => {
+    const dob = new Date(dobString);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
 
   return (
-    <>
+    <Box onClick={() => navigate(`${ROUTES.USER_INFO}/${id}`)}>
       <Paper
+
         elevation={3}
         sx={{
           height: 420,
           borderRadius: 4,
           overflow: "hidden",
           position: "relative",
-          backgroundImage: `url(${img})`,
+          backgroundImage: `url('assets/images/girl-img.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
         <Box
+
           sx={{
             position: "absolute",
             bottom: 0,
@@ -81,7 +97,7 @@ const UserProfileCard = ({
           }}
         >
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography fontWeight={600} fontSize={18}>
+            <Typography fontWeight={600} fontSize={18} textTransform={'capitalize'}>
               {name}
             </Typography>
             <CheckCircleIcon fontSize="small" sx={{ color: "#3EA6FF" }} />
@@ -117,7 +133,7 @@ const UserProfileCard = ({
             </Box>
 
             <Typography fontWeight={700} fontSize={20}>
-              {age}
+              {calculateAge(age)} <span style={{ fontSize: '10px' }}>years old</span>
             </Typography>
           </Box>
         </Box>
@@ -134,7 +150,7 @@ const UserProfileCard = ({
           setDialogOpen(false);
         }}
       />
-    </>
+    </Box>
   );
 };
 

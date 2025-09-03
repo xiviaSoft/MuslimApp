@@ -7,6 +7,7 @@ export const ROUTES = {
   LIKES: "/likes",
   MESSAGES: "messages",
   FOLLOWING: "/following",
+  USER_INFO: "user_info",
 
   Login: "/login",
   SIGNUP: "/sign-up",

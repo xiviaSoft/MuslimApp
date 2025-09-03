@@ -43,12 +43,12 @@ const AccountMenu = () => {
         aria-expanded={open ? "true" : undefined}
       >
         <Tooltip title="Account settings">
-          <Avatar sx={{ width: "40px", height: "40px", mt: "3px" }}>{user?.firstName.charAt(0)}</Avatar>
+          <Avatar sx={{ width: "40px", height: "40px", mt: "3px" ,textTransform:'capitalize'}}>{user?.firstName.charAt(0)}</Avatar>
         </Tooltip>
-        <Typography sx={{ fontSize: "10px", color: COLORS.secondary.main }}>
+        <Typography sx={{ fontSize: "10px", color: COLORS.secondary.main,textTransform:'capitalize' }}>
           {user
             ? `${user.firstName ?? ""} ${user.lastName
-              ? user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)
+              ? user.lastName
               : ""
             }`
             : "NA"}

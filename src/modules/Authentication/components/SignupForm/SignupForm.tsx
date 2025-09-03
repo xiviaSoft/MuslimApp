@@ -37,32 +37,36 @@ const SignupForm = () => {
             );
 
             const uid = userCredential.user.uid;
-            const { password, ...userData } = data;
+            const { password, companyName, companyaddress, companydescription, role, startDate, endDate, isCurrent, languages, facebook, twitter, linkedin, instagram, ...rest } = data;
 
             await setDoc(doc(db, "users", uid), {
-                ...userData,
+                ...rest,
                 uid,
                 isActive: true,
                 isSuspended: false,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
                 lastLogin: serverTimestamp(),
-                phoneNumber: data.phoneNumber || "",
+
                 workExperience: {
-                    companyName: data.companyName || "",
-                    role: data.role || "",
-                    startDate: data.startDate ? new Date(data.startDate) : null,
-                    address: data.companyaddress || "",
-                    endDate: data.isCurrent ? null : data.endDate ? new Date(data.endDate) : null,
-                    isCurrent: data.isCurrent || false,
-                    description: data.companydescription || "",
+                    companyName: companyName || "",
+                    role: role || "",
+                    startDate: startDate ? new Date(startDate) : null,
+                    address: companyaddress || "",
+                    endDate: isCurrent ? null : endDate ? new Date(endDate) : null,
+                    isCurrent: isCurrent || false,
+                    description: companydescription || "",
                 },
-                languages: data.languages || {},
+
+                languages: Array.isArray(languages)
+                    ? languages
+                    : languages.split(" ").map((lang) => lang.trim()),
+
                 socialLinks: {
-                    facebook: data.facebook || "",
-                    twitter: data.twitter || "",
-                    linkedin: data.linkedin || "",
-                    instagram: data.instagram || "",
+                    facebook: facebook || "",
+                    twitter: twitter || "",
+                    linkedin: linkedin || "",
+                    instagram: instagram || "",
                 },
             });
 
@@ -74,7 +78,7 @@ const SignupForm = () => {
     };
 
     const stepFields: (keyof FormData)[][] = [
-        ["firstName", "lastName", "email", "dateOfBirth", "gender", "maritalStatus", "religion"], // Step 0
+        ["firstName", "lastName", "email", "dateOfBirth", "gender", "maritalStatus", "religion"], // 
         ["highestDegree"],
         ["companyName", "role", "startDate"],
         ["facebook", "twitter", "linkedin", "instagram"],
@@ -162,7 +166,7 @@ const SignupForm = () => {
                     )}
                 </Stack>
 
-                {/* Already have account */}
+
                 <Stack alignItems="center" mt={3}>
                     <Typography variant="body2">
                         Already have an account?{" "}

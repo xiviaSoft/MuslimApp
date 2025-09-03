@@ -1,28 +1,29 @@
-import { CustomMenu, CustomButton } from "@muc/components";
+import { CustomMenu, } from "@muc/components";
 import { COLORS } from "@muc/constants";
-import { Female,  Male, Transgender } from "@mui/icons-material";
 
-import { ButtonGroup, Slider, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+
+import { Slider, Stack, Typography } from "@mui/material";
+
 import DeepSearchDialog from "../DeepSearchDialog/DeepSearchDialog";
+import { useState } from "react";
 
 function valuetext(value: number) {
   return `${value}`;
 }
 
 const SearchFilter = () => {
-  const [active, setActive] = useState<number | null>(0);
-  const [value, setValue] = React.useState<number[]>([18, 29]);
+  // const [active, setActive] = useState<number | null>(0);
+  const [value, setValue] = useState<number[]>([18, 29]);
   const handleChange = (_event: Event, newValue: number | number[]) => {
     setValue(newValue as number[]);
   };
-  const handleActive = (i: number): void => {
-    setActive(i);
-  };
+  // const handleActive = (i: number): void => {
+  //   setActive(i);
+  // };
 
   return (
     <>
-    
+
       <Typography
         variant="h2"
         sx={{
@@ -44,11 +45,11 @@ const SearchFilter = () => {
           padding: "20px 10px 18px 19px",
           // justifyContent: "space-between",
           bgcolor: COLORS.white.main,
-          width:'100%',
+          width: '100%',
         }}
       >
-            <DeepSearchDialog />
-        <Stack direction={"row"} gap={"16px"} alignItems={"center"} justifyContent={'center'}>
+        <DeepSearchDialog />
+        {/* <Stack direction={"row"} gap={"16px"} alignItems={"center"} justifyContent={'center'}>
           <Typography
             sx={{
               fontSize: "16px",
@@ -79,7 +80,7 @@ const SearchFilter = () => {
               />
             ))}
           </ButtonGroup>
-        </Stack>
+        </Stack> */}
         <CustomMenu />
         <Stack direction={"row"} sx={{ alignItems: "center", gap: "20px" }}>
           <Typography width={'80px'} textAlign={'end'}>Age : </Typography>
@@ -90,7 +91,7 @@ const SearchFilter = () => {
             min={18}
             max={100}
             getAriaValueText={valuetext}
-            sx={{ width: {sm:'200px',xs:'190px'} }}
+            sx={{ width: { sm: '200px', xs: '190px' } }}
           />
         </Stack>
       </Stack>
@@ -100,17 +101,17 @@ const SearchFilter = () => {
 
 export default SearchFilter;
 
-const GenderButton = [
-  {
-    title: "any Gender",
-    icon: <Transgender />,
-  },
-  {
-    title: "Male",
-    icon: <Male />,
-  },
-  {
-    title: "Female",
-    icon: <Female />,
-  },
-];
+// const GenderButton = [
+//   {
+//     title: "any Gender",
+//     icon: <Transgender />,
+//   },
+//   {
+//     title: "Male",
+//     icon: <Male />,
+//   },
+//   {
+//     title: "Female",
+//     icon: <Female />,
+//   },
+// ];

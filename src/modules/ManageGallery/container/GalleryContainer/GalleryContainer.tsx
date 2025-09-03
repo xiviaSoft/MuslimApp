@@ -16,7 +16,7 @@ const GalleryContainer = () => {
           disableGutters
           sx={{ bgcolor: COLORS.gray.main }}
         >
-       
+
 
           <SearchFilter />
           <MemberShipForRecommended />
