@@ -41,6 +41,7 @@ const CustomButton: React.FC<ButtonProps> = (props) => {
         disabled={disabled}
         startIcon={icon}
         endIcon={endIcon}
+        
         sx={{
           boxShadow:
             "inset 0 2px 4px rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.05)",
@@ -48,7 +49,7 @@ const CustomButton: React.FC<ButtonProps> = (props) => {
           background: background
             ? background
             : " linear-gradient(to bottom, #fff, #e6e6e6)",
-          padding: "4px 10px",
+          padding: "30px",
           color: color ? color : "black",
           width: {
             md: width ? width : "auto",
@@ -65,6 +66,7 @@ const CustomButton: React.FC<ButtonProps> = (props) => {
           //   bgcolor: variant === "outlined" ? "transparent" : COLORS.white.main,
           //   boxShadow: "none",
           // },
+     
         }}
       >
         {isLoading ? (

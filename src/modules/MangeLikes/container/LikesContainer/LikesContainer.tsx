@@ -5,6 +5,7 @@ import { COLORS } from "@muc/constants";
 import { JoinLeft, Visibility, VolunteerActivism } from "@mui/icons-material";
 import LikeMeTab from "../../components/LIkeMeTab/LikeMeTab";
 import LIkeTab from "../../components/LIkeTab/LIkeTab";
+import VistorTab from "../../components/VistorTab/VistorTab";
 
 const LikesContainer = () => {
   const [value, setValue] = React.useState(0);
@@ -56,10 +57,9 @@ const LikesContainer = () => {
             ))}
           </Tabs>
           {value === 0 && <Box>{<LIkeTab />}</Box>}
-
           {value === 1 && <Box>{<LikeMeTab />}</Box>}
           {value === 2 && <Box>{<LikeMeTab />}</Box>}
-          {value === 3 && <Box>{<LikeMeTab />}</Box>}
+          {value === 3 && <Box>{<VistorTab />}</Box>}
         </Container>
       </Box>
     </AppLayout>

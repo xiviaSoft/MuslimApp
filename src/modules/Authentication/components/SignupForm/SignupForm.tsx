@@ -17,6 +17,7 @@ import { FormData } from "@muc/types";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router";
 
+
 const steps = ["Personal Info", "Education & Languages", "Work Experience", "Social Links"];
 
 const SignupForm = () => {
@@ -29,7 +30,7 @@ const SignupForm = () => {
     // 🔹 Submit Handler
     const onSubmit = async (data: FormData) => {
         try {
-            // 1️⃣ Create user in Firebase Auth
+
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 data.email,
@@ -37,16 +38,46 @@ const SignupForm = () => {
             );
 
             const uid = userCredential.user.uid;
-            const { password, companyName, companyaddress, companydescription, role, startDate, endDate, isCurrent, languages, facebook, twitter, linkedin, instagram, ...rest } = data;
 
+
+            const {
+                password,
+                companyName,
+                companyaddress,
+                companydescription,
+                role,
+                startDate,
+                endDate,
+                isCurrent,
+                technicalSkills,
+                softSkills,
+                languages,
+                facebook,
+                twitter,
+                linkedin,
+                instagram,
+                bio,
+                highestDegree, institutionName, graduationYear, fieldOfStudy,
+                ...rest
+            } = data;
+
+            // 2️⃣ Save to Firestore
             await setDoc(doc(db, "users", uid), {
                 ...rest,
                 uid,
+
                 isActive: true,
                 isSuspended: false,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
                 lastLogin: serverTimestamp(),
+                              bio: bio || "",
+                educationInformation: {
+                    highestDegree: highestDegree || "",
+                    institutionName: institutionName || "",
+                    graduationYear: graduationYear || null,
+                    fieldOfStudy: fieldOfStudy || "",
+                },
 
                 workExperience: {
                     companyName: companyName || "",
@@ -58,15 +89,32 @@ const SignupForm = () => {
                     description: companydescription || "",
                 },
 
-                languages: Array.isArray(languages)
-                    ? languages
-                    : languages.split(" ").map((lang) => lang.trim()),
-
                 socialLinks: {
                     facebook: facebook || "",
                     twitter: twitter || "",
                     linkedin: linkedin || "",
                     instagram: instagram || "",
+                },
+
+
+                skills: {
+                    technicalSkills: technicalSkills
+                        ? (Array.isArray(technicalSkills)
+                            ? technicalSkills
+                            : technicalSkills.split(",").map((item: string) => item.trim()))
+                        : [],
+
+                    softSkills: softSkills
+                        ? (Array.isArray(softSkills)
+                            ? softSkills
+                            : softSkills.split(",").map((item: string) => item.trim()))
+                        : [],
+
+                    languages: languages
+                        ? (Array.isArray(languages)
+                            ? languages
+                            : languages.split(",").map((item: string) => item.trim()))
+                        : [],
                 },
             });
 
@@ -76,6 +124,7 @@ const SignupForm = () => {
             console.error("Error:", error);
         }
     };
+
 
     const stepFields: (keyof FormData)[][] = [
         ["firstName", "lastName", "email", "dateOfBirth", "gender", "maritalStatus", "religion"], // 

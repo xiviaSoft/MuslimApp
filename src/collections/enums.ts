@@ -70,8 +70,13 @@ export type WorkerExperience = {
   description?: string; // Optional description of the role
 };
 
-export type Skill = {
+export type SkillsType = {
   technicalSkills?: string[]; // e.g., ['JavaScript', 'React', 'Node.js']
   softSkills?: string[]; // e.g., ['Communication', 'Teamwork']
   languages?: string[]; // e.g., ['English', 'Spanish']
 };
+
+// export enum ActionType {
+//   Like = "like",
+//   Visit = "visit",
+// }

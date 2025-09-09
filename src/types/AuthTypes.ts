@@ -9,10 +9,16 @@ export type FormData = {
   maritalStatus: string;
   religion: string;
   highestDegree: string;
- languages: string | string[];
+  languages: string | string[];
+  technicalSkills: string | string[];
+  softSkills?: string | string[];
   companyName: string;
   companyaddress: string;
   companydescription: string;
+  institutionName: string;
+  graduationYear: number;
+  fieldOfStudy: string;
+  bio: string;
   role: string;
   startDate: Date;
   endDate?: Date;
@@ -21,5 +27,4 @@ export type FormData = {
   twitter?: string;
   linkedin?: string;
   instagram?: string;
-  
 };

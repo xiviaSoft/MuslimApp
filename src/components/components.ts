@@ -18,3 +18,4 @@ export { default as CustomProfileCard } from "./CustomProfileCard/CustomProfileC
 export { default as DeepSearchTitleHighLight } from "./DeepSearchTitleHighLight/DeepSearchTitleHighLight";
 export { default as ScrollToTopButton } from "./ScrollToTopButton/ScrollToTopButton";
 export { default as LoginDialogBox } from "./LoginDialogBox/LoginDialogBox";
+export { default as CustomUserList } from "./CustomUserLIst/CustomUserLIst";

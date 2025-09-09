@@ -8,8 +8,9 @@ import {
   NotificationCreatedByInfo,
   NotificationType,
   ReasonType,
-  Skills,
+
   WorkerExperience,
+  SkillsType,
 } from "./enums";
 
 export interface User {
@@ -58,10 +59,10 @@ export interface User {
     };
   };
   educationInformation: Education;
-  workExperience?: WorkerExperience[];
-  skills?: Skills;
+  workExperience?: WorkerExperience;
+  skills?: SkillsType;
+  language?: string;
   preferences?: {
-    language?: string;
     notifications?: {
       email: boolean;
       sms: boolean;
@@ -69,6 +70,9 @@ export interface User {
     };
   };
   religion: string;
+
+  likes?: string[]; // Array of user IDs that this user has liked
+  visits?: string[]; // Array of user IDs that this user has visited
 }
 export interface Admin {
   adminId: string;
@@ -148,4 +152,11 @@ export interface Review {
 }
 
 //Future work
-// export interface
+// export interface UserAction {
+//   id: string;             // Unique action ID (Firestore doc id)
+//   userId: string;        // User performing the action
+//   targetId: string;       // User who receives the action (liked/visited/messaged)
+//   actionType: ActionType; // Type of action
+//   description?: string;   // Optional details (e.g., "Liked profile picture")
+//   createdAt: Date;        // Timestamp (Firestore serverTimestamp)
+// }

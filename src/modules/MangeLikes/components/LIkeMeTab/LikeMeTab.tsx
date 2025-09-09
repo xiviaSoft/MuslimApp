@@ -1,18 +1,50 @@
+import { CustomUserList } from "@muc/components";
 import { COLORS } from "@muc/constants";
-import { MembershipStyel } from "@muc/utils";
-import { Favorite, JoinLeft, Message, Visibility } from "@mui/icons-material";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import { useNavigate } from "react-router";
+import { auth, db } from "@muc/libs";
+import { Box, Grid, Stack, Typography } from "@mui/material";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 const LikeMeTab = () => {
-  const Navigate=useNavigate()
+  const [likeUsers, setLikeUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (!auth.currentUser?.uid) return;
+
+      // get my user document
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) return;
+
+      const likeIds: string[] = userSnap.data().likes || [];
+      console.log(likeIds, 'this is like ids');
+
+      if (likeIds.length === 0) {
+        setLikeUsers([]);
+        return;
+      }
+
+      // directly query users with __name__ in likeIds (works up to 10)
+      const q = query(collection(db, "users"), where("__name__", "in", likeIds));
+      const snap = await getDocs(q);
+
+      const users = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setLikeUsers(users);
+    };
+
+    fetchLikes();
+  }, []);
+  console.log(likeUsers, length, 'this is like users');
+
   return (
     <Stack
       sx={{
         bgcolor: "white",
-        height: { md: "700px", xs: "100%" },
         padding: "20px",
         mb: "20px",
+        width: "100%",
       }}
     >
       <Typography
@@ -22,106 +54,30 @@ const LikeMeTab = () => {
       >
         Members that have liked my profile
       </Typography>
-      <Box
-        component={Paper}
-        elevation={3}
-        width={"85%"}
-        mx={"auto"}
-        my={"93px"}
-      >
-        <Stack p={2} >
-          <Typography
-            variant="h6"
-            sx={{
-              color: COLORS.primary.main,
-              fontSize: { md: "23px", sm: "20px", xs: "16px" },
-              pb: "32px",
-              textAlign: "center",
-            }}
-          >
-            Gold Membership Benefits
-          </Typography>
-          <Stack
-            direction={"row"}
-            sx={{
-              flexWrap: "wrap",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign:'center'
-            }}
-          >
-            {membershipData.map((item) => (
-              <Stack
-                sx={{
-                  width: "228px",
-                  height: "170px",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingX: "18px",
-                }}
-              >
-                <Box
-                  sx={{
-                    bgcolor: COLORS.secondary.lightblue,
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mb: "10px",
-                  }}
-                >
-                  {item.icon}
-                </Box>
-                <Typography>{item.title}</Typography>
-                <Typography variant="body2" sx={{ textAlign: "center" }}>
-                  {item.description}
-                </Typography>
-              </Stack>
-            ))}
-          </Stack>
-          <Button
-          onClick={()=>Navigate('/membership_pakages')}
-          sx={{
-            fontSize: "22px",
-            color: COLORS.primary.main,
-            width: "100%",
-            textAlign: "center",
-            padding: "10px 15px",
-          
-          }}
-        >
-          UPGRADE
-        </Button>
-        </Stack>
-       
+
+      <Box>
+        <Grid container spacing={2} sx={{ p: 2 }}>
+          {likeUsers.length > 0 ? (
+            likeUsers.map((user) => (
+              <Grid key={user.id} item md={4} sm={6} xs={12}>
+                <CustomUserList
+                  bio={user.bio || "No bio available"}
+                  name={`${user.firstName || ""} ${user.lastName || ""}`}
+                />
+              </Grid>
+            ))
+          ) : (
+            <Typography
+              variant="body1"
+              sx={{ color: COLORS.gray.main, textAlign: "center", width: "100%" }}
+            >
+              No one has liked your profile yet.
+            </Typography>
+          )}
+        </Grid>
       </Box>
     </Stack>
   );
 };
 
 export default LikeMeTab;
-
-const membershipData = [
-  {
-    title: "INSTANT MESSAGING",
-    description: "Instantly Send,read and replay to messages",
-    icon: <Message sx={MembershipStyel} />,
-  },
-  {
-    title: "LIKES",
-    description: "View who liked you",
-    icon: <Favorite sx={MembershipStyel} />,
-  },
-  {
-    title: "MATCH",
-    description: "View your match",
-    icon: <JoinLeft sx={MembershipStyel} />,
-  },
-  {
-    title: "VISITORS",
-    description: "See Who's view your profile",
-    icon: <Visibility sx={MembershipStyel} />,
-  },
-];

@@ -13,6 +13,7 @@ import { useAuth } from "@muc/context";
 import { LoginDialogBox } from "@muc/components";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@muc/constants";
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 type UserProfielCardProps = {
   // img: string;
@@ -21,6 +22,11 @@ type UserProfielCardProps = {
   age: number;
   countryFlag?: string;
   id: string
+  likes?: string[]; // Array of user IDs that this user has liked
+  onLike?: () => void;
+  onRemoveLike?: () => void;
+  isLiked: boolean;
+  onVisit?: () => void;
 };
 
 const UserProfileCard = ({
@@ -28,7 +34,12 @@ const UserProfileCard = ({
   name,
   location,
   age,
-  id
+  id,
+  // likes = [],
+  isLiked,
+  onLike,
+  onRemoveLike,
+  onVisit,
 }: UserProfielCardProps) => {
   const { user, } = useAuth();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -69,9 +80,11 @@ const UserProfileCard = ({
     return age;
   };
 
+  // const isLiked = user ? likes?.includes(user?.uid) : false;
+
 
   return (
-    <Box onClick={() => navigate(`${ROUTES.USER_INFO}/${id}`)}>
+    <Box onClick={onVisit}>
       <Paper
 
         elevation={3}
@@ -80,11 +93,20 @@ const UserProfileCard = ({
           borderRadius: 4,
           overflow: "hidden",
           position: "relative",
-          backgroundImage: `url('assets/images/girl-img.jpg')`,
+          // backgroundImage: `url('assets/images/girl-img.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          coursor: 'pointer',
+          "&:hover": {
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          }
         }}
+
       >
+        <Box component={'img'} src="assets/images/girl-img.jpg" alt={name} sx={{ height: '100%', objectFit: 'cover', width: '100%', }}
+          onClick={() => navigate(`${ROUTES.USER_INFO}/${id}`)}
+
+        />
         <Box
 
           sx={{
@@ -120,7 +142,7 @@ const UserProfileCard = ({
                 onClick={() => handleProtectedClick("message")}
                 aria-label="message"
               >
-                <ChatBubbleOutlineIcon />
+                <ChatBubbleOutlineIcon onClick={() => navigate(ROUTES.MESSAGES)} />
               </IconButton>
 
               <IconButton
@@ -128,7 +150,7 @@ const UserProfileCard = ({
                 onClick={() => handleProtectedClick("like")}
                 aria-label="like"
               >
-                <FavoriteBorderIcon />
+                {isLiked ? <FavoriteIcon onClick={onRemoveLike} sx={{ color: 'red' }} /> : <FavoriteBorderIcon onClick={onLike} />}
               </IconButton>
             </Box>
 
