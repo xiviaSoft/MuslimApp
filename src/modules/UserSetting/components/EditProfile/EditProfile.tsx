@@ -1,18 +1,10 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@muc/libs";
-import {
-  Box,
-  Button,
-  Typography,
-  Divider,
-  Grid,
-  Paper,
-} from "@mui/material";
+import { Box, Button, Typography, Divider, Grid, Paper } from "@mui/material";
 import { User } from "@muc/collections";
 import { useAuth } from "@muc/context";
 import { CustomSelect, CustomTextField } from "@muc/components";
-import { GenderTypes } from "@muc/constants";
+import { GenderTypes, MaritalStatus } from "@muc/constants";
+import { useUpdateUser } from "@muc/hooks";
 
 const Section = ({ title }: { title: string }) => (
   <Box sx={{ mb: 2 }}>
@@ -24,36 +16,21 @@ const Section = ({ title }: { title: string }) => (
 );
 
 const EditProfile = () => {
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
+  console.log(user, "this is user in the edit profile");
+  const updateUser = useUpdateUser(user?.uid || "");
   const methods = useForm<User>({
     defaultValues: user ?? {},
   });
 
   const { handleSubmit } = methods;
 
-  const onSubmit = async (data: User) => {
+  const onSubmit = (data: User) => {
     if (!user?.uid) return;
-
-    try {
-
-      const cleanedData = Object.fromEntries(
-        Object.entries(data).filter(([_, v]) => v !== undefined)
-      );
-
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          ...cleanedData,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
-
-      setUser({ ...user, ...cleanedData });
-      console.log("Profile updated successfully!");
-    } catch (err) {
-      console.error("Error updating profile:", err);
-    }
+    const cleanedData = Object.fromEntries(
+      Object.entries(data).filter(([_, v]) => v !== undefined)
+    );
+    updateUser.mutate(cleanedData);
   };
 
   if (!user) return <p>Loading...</p>;
@@ -106,7 +83,6 @@ const EditProfile = () => {
                 label="Email"
                 type="email"
                 disabled
-                placeholder=""
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -142,15 +118,17 @@ const EditProfile = () => {
                 name="dateOfBirth"
                 label="Date of Birth"
                 type="date"
-                placeholder=""
               />
             </Grid>
+
             <Grid item xs={12} md={6}>
-              <CustomTextField
+              <CustomSelect
                 name="maritalStatus"
                 label="Marital Status"
-                type="text"
-                placeholder="Enter marital status"
+                options={MaritalStatus.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
             <Grid item xs={12}>
@@ -163,6 +141,16 @@ const EditProfile = () => {
                 minRows={2}
               />
             </Grid>
+            <Grid item xs={12}>
+              <CustomTextField
+                name="bio"
+                label="Bio"
+                type="text"
+                placeholder="Enter bio"
+                multiline
+                minRows={2}
+              />
+            </Grid>
           </Grid>
 
           {/* Education */}
@@ -170,7 +158,15 @@ const EditProfile = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="highestDegree"
+                name="educationInformation.institutionName"
+                label="Institution Name"
+                type="text"
+                placeholder="Enter your institution"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <CustomTextField
+                name="educationInformation.highestDegree"
                 label="Highest Degree"
                 type="text"
                 placeholder="Enter your degree"
@@ -178,18 +174,59 @@ const EditProfile = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="languages"
-                label="Languages"
+                name="educationInformation.fieldOfStudy"
+                label="Field of Study"
                 type="text"
-                placeholder="Enter languages"
+                placeholder="Enter field of study"
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="skills"
-                label="Skills"
+                name="educationInformation.graduationYear"
+                label="Graduation Year"
                 type="text"
-                placeholder="Enter skills"
+                placeholder="Enter graduation year"
+              />
+            </Grid>
+          </Grid>
+
+          {/* Skills */}
+          <Section title="Skills" />
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <CustomTextField name="skills.languages.0" type="text" label="Language 1" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField name="skills.languages.1" type="text" label="Language 2" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField name="skills.languages.2" type="text" label="Language 3" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField name="skills.softSkills.0" type="text" label="Soft Skill 1" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField name="skills.softSkills.1" type="text" label="Soft Skill 2" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField name="skills.softSkills.2" type="text" label="Soft Skill 3" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField
+                name="skills.technicalSkills.0"
+                type="text" label="Technical Skill 1"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField
+                name="skills.technicalSkills.1"
+                type="text" label="Technical Skill 2"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomTextField
+                name="skills.technicalSkills.2"
+                type="text" label="Technical Skill 3"
               />
             </Grid>
           </Grid>
@@ -199,7 +236,7 @@ const EditProfile = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="companyName"
+                name="workExperience.companyName"
                 label="Company Name"
                 type="text"
                 placeholder="Enter company name"
@@ -207,7 +244,7 @@ const EditProfile = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="role"
+                name="workExperience.role"
                 label="Role"
                 type="text"
                 placeholder="Enter role"
@@ -215,33 +252,42 @@ const EditProfile = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="startDate"
-                label="Start Date"
-                type="date"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="endDate"
-                label="End Date"
-                type="date"
-                placeholder=""
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="companyaddress"
+                name="workExperience.address"
                 label="Company Address"
                 type="text"
-                placeholder="Enter company address"
+                placeholder="Enter address"
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="companydescription"
-                label="Company Description"
+                name="workExperience.isCurrent"
+                label="Currently Working"
                 type="text"
-                placeholder="Enter company description"
+                placeholder="Enter address"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <CustomTextField
+                name="workExperience.startDate"
+                label="Start Date"
+                type="date"
+                placeholder="Enter start date"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <CustomTextField
+                name="workExperience.endDate"
+                label="End Date"
+                type="date"
+                placeholder="Enter end date"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CustomTextField
+                name="workExperience.description"
+                label="Description"
+                type="text"
+                placeholder="Enter description"
                 multiline
                 minRows={2}
               />
@@ -253,7 +299,7 @@ const EditProfile = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="facebook"
+                name="socialLinks.facebook"
                 label="Facebook"
                 type="text"
                 placeholder="Facebook URL"
@@ -261,7 +307,7 @@ const EditProfile = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="instagram"
+                name="socialLinks.instagram"
                 label="Instagram"
                 type="text"
                 placeholder="Instagram URL"
@@ -269,7 +315,7 @@ const EditProfile = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="linkedin"
+                name="socialLinks.linkedin"
                 label="LinkedIn"
                 type="text"
                 placeholder="LinkedIn URL"
@@ -277,7 +323,7 @@ const EditProfile = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
-                name="twitter"
+                name="socialLinks.twitter"
                 label="Twitter"
                 type="text"
                 placeholder="Twitter URL"

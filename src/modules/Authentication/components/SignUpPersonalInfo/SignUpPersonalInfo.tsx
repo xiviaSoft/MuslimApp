@@ -65,6 +65,13 @@ const SignUpPersonalInfo = () => {
                 type="text"
                 rules={{ required: "Required" }}
             />
+            <CustomTextField
+                placeholder='Address'
+                name="address"
+                label="Address"
+                type="text"
+                rules={{ required: "Required" }}
+            />
             <CustomSelect
                 name="gender"
                 label="Gender"

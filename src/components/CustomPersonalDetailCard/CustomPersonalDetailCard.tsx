@@ -28,23 +28,6 @@ const CustomPersonalDetailCard = ({ title, children }: CustomPersonalDetailCardP
         <Box>
           {children}
         </Box>
-        {/* {data ? (
-          Object.entries(allData).map(([key, value]) => (
-            <Stack direction="row" gap="30px" pb="10px" key={key}>
-              <Typography
-                color={COLORS.primary.main}
-                sx={{ width: "50%", textTransform: "capitalize" }}
-              >
-                {key}
-              </Typography>
-              <Typography color={COLORS.dark.main}>
-                {formatValue(value)}
-              </Typography>
-            </Stack>
-          ))
-        ) : (
-          <Typography color={COLORS.dark.main}>No details available</Typography>
-        )} */}
 
       </Box>
     </Stack>

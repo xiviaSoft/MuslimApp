@@ -71,7 +71,7 @@ const SignupForm = () => {
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
                 lastLogin: serverTimestamp(),
-                              bio: bio || "",
+                bio: bio || "",
                 educationInformation: {
                     highestDegree: highestDegree || "",
                     institutionName: institutionName || "",

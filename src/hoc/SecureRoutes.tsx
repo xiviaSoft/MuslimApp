@@ -10,9 +10,9 @@ export const SecureRoutes = () => {
     const { user, loading } = useAuth();
     const location = useLocation();
     console.log(user?.firstName, "this is user in the secure rotues")
-if(loading){
-    return<LinearProgress/>
-}
+    if (loading) {
+        return <LinearProgress />
+    }
 
 
     return !user ? <Navigate to={ROUTES.Login} state={{ from: location }} replace /> : <Outlet />

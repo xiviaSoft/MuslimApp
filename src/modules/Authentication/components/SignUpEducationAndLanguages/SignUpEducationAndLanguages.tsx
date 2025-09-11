@@ -13,7 +13,7 @@ const SignUpEducationAndLanguages = () => {
             <CustomTextField name="languages" label="Languages" type="text" rules={{ required: "Required" }} placeholder='Languages' />
             <CustomTextField name="technicalSkills" label="Technical Skills" type="text" rules={{ required: "Required" }} placeholder='Technical Skills' />
             <CustomTextField name="softSkills" label="Soft Skills" type="text" rules={{ required: "Required" }} placeholder='Soft Skills' />
-          
+
 
 
         </Stack>

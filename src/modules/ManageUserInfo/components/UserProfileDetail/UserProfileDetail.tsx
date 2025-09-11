@@ -45,7 +45,7 @@ const UserProfileDetail = () => {
                 sx={{
                   color: COLORS.primary.main,
                   fontSize: "14px",
-                  padding:{md:'16px',xs:'10px'}
+                  padding: { md: '16px', xs: '10px' }
                 }}
               >
                 {item.label}
@@ -56,7 +56,7 @@ const UserProfileDetail = () => {
                   alignItems: "center",
                   display: "flex",
                   gap: "2px",
-                  padding:{md:'16px',xs:'10px'}
+                  padding: { md: '16px', xs: '10px' }
                 }}
               >
                 {item.value}

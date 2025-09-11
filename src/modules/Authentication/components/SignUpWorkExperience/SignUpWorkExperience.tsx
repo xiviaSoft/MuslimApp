@@ -37,7 +37,7 @@ const SignUpWorkExperience = () => {
                 name="companydescription"
                 label="Compnay Description"
                 type="text"
-                rules={{ required: "Required" }}
+                // rules={{ required: "Required" }}
                 placeholder='company description'
             />
             <CustomTextField
@@ -48,9 +48,9 @@ const SignUpWorkExperience = () => {
             />
             <CustomTextField
                 name="isCurrent"
-                label="Currently Working (true/false)"
+                label="Currently Working"
                 type="text"
-                placeholder='is current'
+                placeholder='Enter yes or no '
             />
 
         </Stack>

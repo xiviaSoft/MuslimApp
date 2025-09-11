@@ -1,5 +1,5 @@
 import { COLORS } from "@muc/constants";
-
+export { default as useUserActivityDetail } from "./useUserActivityDetail";
 // export const searchBar = {
 //   bgcolor: `${COLORS.gray.darkGray}`,
 //   borderRadius: "5px",

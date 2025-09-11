@@ -1,41 +1,66 @@
 import { CustomPersonalDetailCard, CustomReadMoreCard } from "@muc/components";
 import { COLORS } from "@muc/constants";
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
-
+import { Box, CircularProgress, Container, Grid, Stack, Typography } from "@mui/material";
 import UserInfoCard from "../../components/UserInfoCard/UserInfoCard";
 import { AppLayout } from "@muc/layout";
 import UserProfileDetail from "../../components/UserProfileDetail/UserProfileDetail";
-
 import ExtraImgDialog from "../../components/ExtraImgDialog/ExtraImgDialog";
 import { useParams } from "react-router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@muc/libs";
-import { useEffect, useState } from "react";
 import { User } from "@muc/collections";
+import { useQuery } from "@tanstack/react-query";
+import TitleRow from "../../components/TitleRow/TitleRow";
 
 const UserInfoContainer = () => {
   const { id } = useParams();
-  const [userData, setUserData] = useState<User | null>(null);
 
-  const getUserData = async () => {
-    if (id) {
-      const userDoc = await getDoc(doc(db, "users", id));
-      if (userDoc.exists()) {
-        setUserData(userDoc.data() as User);
-      } else {
-        setUserData(null);
-      }
-    }
+  const getUserData = async (id: string) => {
+    const userDoc = await getDoc(doc(db, "users", id));
+    return userDoc.exists() ? (userDoc.data() as User) : null;
   };
 
-  useEffect(() => {
-    getUserData();
-  }, [id]);
+  const { data: userData, isLoading, isError } = useQuery<User | null>({
+    queryKey: ["userData", id],
+    queryFn: () => getUserData(id as string),
+    enabled: !!id
+  });
 
-  const { uid, isSuspended, bio, createdAt, dateOfBirth, email, firstName, lastName, gender, isActive, maritalStatus, lastLogin, likes, socialLinks, visits,
-    workExperience, phoneNumber, skills, updatedAt, religion, educationInformation, ...allData } = userData || {};
-  console.log(allData, 'this is user data');
-  // console.log(languages.urdu, 'this is languages');
+
+  if (isLoading) return <Box
+    sx={{
+      width: '100%',
+      height: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      gap: '10px'
+    }}
+  >
+    <CircularProgress />
+    <Typography>
+      Loading user...
+    </Typography></Box>;
+  if (isError) return <Typography color="error">Error loading user</Typography>;
+
+
+  const {
+    bio,
+    dateOfBirth,
+    email,
+    firstName,
+    lastName,
+    gender,
+    maritalStatus,
+    workExperience,
+    phoneNumber,
+    skills,
+    educationInformation,
+    ..._allData
+  } = userData as User || {};
+  console.log(userData, 'user data in the info container');
+
   return (
     <AppLayout>
       <Box sx={{ bgcolor: COLORS.gray.lightDarkGray }}>
@@ -91,7 +116,7 @@ const UserInfoContainer = () => {
                     key={`${id}-work`}
                   >
                     <CustomPersonalDetailCard title="Work Experiences">
-                      <TitleRow label="Highest Degree" value={"BS"} />
+
                       <TitleRow
                         label="Company Name"
                         value={workExperience?.companyName || "N/A"}
@@ -161,7 +186,7 @@ const UserInfoContainer = () => {
                         value={educationInformation.graduationYear || "N/A"}
                       />
                       <TitleRow
-                        label="Languages"
+                        label="Institution Name"
                         value={educationInformation.institutionName || "N/A"}
                       />
                     </CustomPersonalDetailCard>
@@ -179,38 +204,4 @@ const UserInfoContainer = () => {
 
 export default UserInfoContainer;
 
-/* ✅ TitleRow handles Firestore Timestamp, JS Date, String, Number safely */
-const TitleRow = ({ value, label }: { value: any; label: string }) => {
-  const formatValue = (val: any) => {
-    if (!val) return "N/A";
 
-    // Firestore Timestamp { seconds, nanoseconds }
-    if (val?.seconds) {
-      return new Date(val.seconds * 1000).toLocaleDateString();
-    }
-
-    // JS Date
-    if (val instanceof Date) {
-      return val.toLocaleDateString();
-    }
-
-    // Objects fallback
-    if (typeof val === "object") {
-      return JSON.stringify(val);
-    }
-
-    return String(val);
-  };
-
-  return (
-    <Stack direction="row" gap="30px" pb="10px">
-      <Typography
-        color={COLORS.primary.main}
-        sx={{ width: "50%", textTransform: "capitalize" }}
-      >
-        {label}
-      </Typography>
-      <Typography color={COLORS.dark.main}>{formatValue(value)}</Typography>
-    </Stack>
-  );
-};
