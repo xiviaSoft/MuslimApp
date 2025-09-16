@@ -56,12 +56,17 @@ const HomeContainer = () => {
     },
   });
 
-  const likeUser = useMutation({
+  const likedUser = useMutation({
     mutationFn: async (likedUserId: string) => {
       if (!auth.currentUser?.uid || !likedUserId) return;
       const currentUserId = auth.currentUser.uid;
+
       await updateDoc(doc(db, "users", likedUserId), {
         likes: arrayUnion(currentUserId),
+      });
+
+      await updateDoc(doc(db, "users", currentUserId), {
+        liked: arrayUnion(likedUserId),
       });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
@@ -111,7 +116,7 @@ const HomeContainer = () => {
                       name={`${item.firstName} ${item.lastName}`}
                       countryFlag={item.countryflag}
                       location={item.Companyaddress}
-                      onLike={() => likeUser.mutate(item.id)}
+                      onLike={() => likedUser.mutate(item.id)}
                       onRemoveLike={() => removeLike.mutate(item.id)}
                       isLiked={item.likes?.includes(auth.currentUser?.uid)}
                       onVisit={() => addVisits.mutate(item.id)}

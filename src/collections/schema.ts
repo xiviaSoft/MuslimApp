@@ -8,7 +8,6 @@ import {
   NotificationCreatedByInfo,
   NotificationType,
   ReasonType,
-
   WorkerExperience,
   SkillsType,
 } from "./enums";
@@ -33,7 +32,7 @@ export interface User {
     instagram?: string;
     [key: string]: string | undefined; // For any additional social links
   };
-
+  hideProfile: boolean;
   createdAt: Date; //firebase server timestamp
   updatedAt: Date; //firebase server timestamp
   lastLogin: Date; //firebase server timestamp
@@ -151,6 +150,15 @@ export interface Review {
   updatedAt: Date; // Firebase server timestamp
 }
 
+
+export interface chatingSchema {
+
+  //chating
+
+
+
+
+}
 //Future work
 // export interface UserAction {
 //   id: string;             // Unique action ID (Firestore doc id)

@@ -18,13 +18,12 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router";
 
 
-const steps = ["Personal Info", "Education & Languages", "Work Experience", "Social Links"];
+const steps = ["Personal Info", "Social Links"];
 
 const SignupForm = () => {
     const methods = useForm<FormData>({ defaultValues: {} as FormData });
     const { handleSubmit, trigger } = methods;
     const navigate = useNavigate();
-
     const [activeStep, setActiveStep] = useState(0);
 
     // 🔹 Submit Handler
@@ -42,22 +41,9 @@ const SignupForm = () => {
 
             const {
                 password,
-                companyName,
-                companyaddress,
-                companydescription,
-                role,
-                startDate,
-                endDate,
-                isCurrent,
-                technicalSkills,
-                softSkills,
-                languages,
-                facebook,
-                twitter,
-                linkedin,
+                twitter, linkedin,
                 instagram,
-                bio,
-                highestDegree, institutionName, graduationYear, fieldOfStudy,
+                facebook,
                 ...rest
             } = data;
 
@@ -65,57 +51,61 @@ const SignupForm = () => {
             await setDoc(doc(db, "users", uid), {
                 ...rest,
                 uid,
-
                 isActive: true,
                 isSuspended: false,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
                 lastLogin: serverTimestamp(),
-                bio: bio || "",
-                educationInformation: {
-                    highestDegree: highestDegree || "",
-                    institutionName: institutionName || "",
-                    graduationYear: graduationYear || null,
-                    fieldOfStudy: fieldOfStudy || "",
-                },
-
-                workExperience: {
-                    companyName: companyName || "",
-                    role: role || "",
-                    startDate: startDate ? new Date(startDate) : null,
-                    address: companyaddress || "",
-                    endDate: isCurrent ? null : endDate ? new Date(endDate) : null,
-                    isCurrent: isCurrent || false,
-                    description: companydescription || "",
-                },
-
                 socialLinks: {
-                    facebook: facebook || "",
                     twitter: twitter || "",
                     linkedin: linkedin || "",
                     instagram: instagram || "",
-                },
+                    facebook: facebook || "",
+                }
+
+                // bio: bio || "",
+                // educationInformation: {
+                //     highestDegree: highestDegree || "",
+                //     institutionName: institutionName || "",
+                //     graduationYear: graduationYear || null,
+                //     fieldOfStudy: fieldOfStudy || "",
+                // },
+
+                // workExperience: {
+                //     companyName: companyName || "",
+                //     role: role || "",
+                //     startDate: startDate ? new Date(startDate) : null,
+                //     address: companyaddress || "",
+                //     endDate: isCurrent ? null : endDate ? new Date(endDate) : null,
+                //     isCurrent: isCurrent || false,
+                //     description: companydescription || "",
+                // },
+
+                // socialLinks: {
+                //     facebook: facebook || "",
+                // 
+                // },
 
 
-                skills: {
-                    technicalSkills: technicalSkills
-                        ? (Array.isArray(technicalSkills)
-                            ? technicalSkills
-                            : technicalSkills.split(",").map((item: string) => item.trim()))
-                        : [],
+                // skills: {
+                //     technicalSkills: technicalSkills
+                //         ? (Array.isArray(technicalSkills)
+                //             ? technicalSkills
+                //             : technicalSkills.split(",").map((item: string) => item.trim()))
+                //         : [],
 
-                    softSkills: softSkills
-                        ? (Array.isArray(softSkills)
-                            ? softSkills
-                            : softSkills.split(",").map((item: string) => item.trim()))
-                        : [],
+                //     softSkills: softSkills
+                //         ? (Array.isArray(softSkills)
+                //             ? softSkills
+                //             : softSkills.split(",").map((item: string) => item.trim()))
+                //         : [],
 
-                    languages: languages
-                        ? (Array.isArray(languages)
-                            ? languages
-                            : languages.split(",").map((item: string) => item.trim()))
-                        : [],
-                },
+                //     languages: languages
+                //         ? (Array.isArray(languages)
+                //             ? languages
+                //             : languages.split(",").map((item: string) => item.trim()))
+                //         : [],
+                // },
             });
 
             alert("User signed up successfully!");
@@ -127,9 +117,9 @@ const SignupForm = () => {
 
 
     const stepFields: (keyof FormData)[][] = [
-        ["firstName", "lastName", "email", "dateOfBirth", "gender", "maritalStatus", "religion"], // 
-        ["highestDegree"],
-        ["companyName", "role", "startDate"],
+        ["firstName", "lastName", "email", "dateOfBirth", "gender",], // 
+        // ["highestDegree"],
+        // ["companyName", "role", "startDate"],
         ["facebook", "twitter", "linkedin", "instagram"],
     ];
 
@@ -160,6 +150,8 @@ const SignupForm = () => {
                     borderRadius: 2,
                     boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
                     maxWidth: "800px",
+                    // flexGrow:1,
+                    width: '100%',
                     mx: "auto",
                     overflowY: { xs: "visible", md: "auto" },
                     "&::-webkit-scrollbar": { width: "8px" },

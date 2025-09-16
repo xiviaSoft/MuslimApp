@@ -1,5 +1,5 @@
 import { CustomSelect, CustomTextField } from '@muc/components'
-import { GenderTypes, MaritalStatus } from '@muc/constants'
+import { GenderTypes, } from '@muc/constants'
 import { Stack } from '@mui/material'
 
 
@@ -51,27 +51,27 @@ const SignUpPersonalInfo = () => {
 
 
 
-            <CustomTextField
+            {/* <CustomTextField
                 placeholder='Religion'
                 name="religion"
                 label="Religion"
                 type="text"
                 rules={{ required: "Required" }}
-            />
-            <CustomTextField
+            /> */}
+            {/* <CustomTextField
                 placeholder='Bio'
                 name="bio"
                 label="Bio"
                 type="text"
                 rules={{ required: "Required" }}
-            />
-            <CustomTextField
+            /> */}
+            {/* <CustomTextField
                 placeholder='Address'
                 name="address"
                 label="Address"
                 type="text"
                 rules={{ required: "Required" }}
-            />
+            /> */}
             <CustomSelect
                 name="gender"
                 label="Gender"
@@ -82,7 +82,7 @@ const SignUpPersonalInfo = () => {
                     value: item,
                 }))}
             />
-            <CustomSelect
+            {/* <CustomSelect
                 name="maritalStatus"
                 label="Marital Status"
                 // labelOutside={true}
@@ -91,7 +91,7 @@ const SignUpPersonalInfo = () => {
                     label: item,
                     value: item,
                 }))}
-            />
+            /> */}
         </Stack>
     )
 }

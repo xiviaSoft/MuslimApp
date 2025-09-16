@@ -13,7 +13,7 @@ import { Divider, Stack, Typography } from "@mui/material";
 import { COLORS } from "@muc/constants";
 import {
   Favorite,
-  FeedOutlined,
+
   HomeOutlined,
   MessageOutlined,
   PhotoLibraryOutlined,
@@ -37,12 +37,12 @@ const navItems = [
     icon: <PhotoLibraryOutlined sx={{ fontSize: "33px" }} />,
     requiresAuth: false,
   },
-  {
-    title: "Stories",
-    path: "/stories",
-    icon: <FeedOutlined sx={{ fontSize: "33px" }} />,
-    requiresAuth: false,
-  },
+  // {
+  //   title: "Stories",
+  //   path: "/stories",
+  //   icon: <FeedOutlined sx={{ fontSize: "33px" }} />,
+  //   requiresAuth: false,
+  // },
   {
     title: "Likes",
     path: "/likes",
@@ -76,7 +76,7 @@ export default function Navbar(props: any) {
       setPendingPath(item.path);
       setLoginDialogOpen(true);
     }
- 
+
   };
 
   const handleLoginSuccess = () => {
@@ -172,7 +172,7 @@ export default function Navbar(props: any) {
                       borderBottom: isActive
                         ? `2px solid ${COLORS.primary.main}`
                         : "none",
-                      color: i === 3 ? "red" : COLORS.secondary.main,
+                      color: i === 2 ? "red" : COLORS.secondary.main,
                       backgroundColor: isActive ? "#e2f2f9" : "transparent",
                     })}
                   >
@@ -187,7 +187,7 @@ export default function Navbar(props: any) {
                       {item.icon}
                       <Typography
                         sx={{
-                          color: i === 3 ? "red" : COLORS.secondary.main,
+                          color: i === 2 ? "red" : COLORS.secondary.main,
                           fontSize: "10px",
                         }}
                       >

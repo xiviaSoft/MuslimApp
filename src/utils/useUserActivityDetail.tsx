@@ -32,8 +32,8 @@ const useUserActivityDetail = (name: string) => {
         bio: doc.data().bio,
       }));
     },
-    placeholderData: [],
-     enabled: !!auth.currentUser?.uid,
+    // placeholderData: [],
+    enabled: !!auth.currentUser?.uid,
   });
 };
 

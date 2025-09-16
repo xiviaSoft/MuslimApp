@@ -1,50 +1,68 @@
-import { Box } from "@mui/material";
+import { CustomUserList } from "@muc/components";
+import { COLORS } from "@muc/constants";
+import { useUserActivityDetail } from "@muc/utils";
+import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
 const LIkeTab = () => {
+  const { data: likedUser = [], isLoading, } = useUserActivityDetail("liked");
+  console.log(likedUser, 'this is liked user')
+  if (isLoading) {
+    return <Box
+      width="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      p={10}
+      flexDirection="column"
+      gap={2}
+      height={400}
+    >
+      <CircularProgress />
+      <Typography>Loading...</Typography>
+    </Box>
+  }
   return (
+
     <>
-      <Box
+      <Stack
         sx={{
           bgcolor: "white",
-          height: { md: "700px", xs: "auto" },
           padding: "20px",
           mb: "20px",
+          width: "100%",
         }}
       >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos corrupti
-        odio, corporis quo inventore provident similique eveniet debitis?
-        Consectetur sapiente, eius libero similique laboriosam quisquam corrupti
-        maxime voluptas ad sunt, neque architecto, expedita non natus provident
-        asperiores nulla rem deleniti quibusdam repellendus voluptates cumque
-        fugit? Delectus asperiores ratione minus labore magnam ullam ea neque
-        aspernatur vero laboriosam sit dolorem rerum temporibus veniam quasi
-        error ex doloremque reprehenderit enim, dolore distinctio nulla
-        doloribus modi qui! Modi vitae voluptate quod distinctio quidem!
-        Molestias aspernatur, aut minus labore saepe adipisci beatae facere sunt
-        laudantium ratione impedit commodi error sequi, maxime accusantium
-        assumenda? Nam, iste sint laudantium recusandae maxime dignissimos
-        incidunt voluptatum. Aspernatur, alias a. Deleniti repudiandae maiores
-        reiciendis iusto quae eius sunt cumque delectus, cupiditate rerum sequi
-        quidem aspernatur fugiat maxime deserunt reprehenderit, praesentium
-        dolores ipsum non laudantium placeat assumenda! Veritatis incidunt, eum
-        fuga qui officiis ratione provident, illum iusto harum nisi in itaque
-        natus, quas cumque. Nostrum laboriosam iusto itaque ratione, distinctio
-        a possimus aliquam quidem deserunt cumque aspernatur dolor maxime id
-        consequatur quo numquam ducimus optio autem. Nulla delectus obcaecati,
-        pariatur architecto quia quibusdam cupiditate accusamus. Quibusdam sunt
-        at porro repellat, iste nemo illo cum, vitae, pariatur tenetur similique
-        consequatur commodi unde! Quas iusto non nostrum facere incidunt cum,
-        odio, ratione repellendus voluptatem dolores inventore! Aut perspiciatis
-        laborum at? Sint libero voluptas temporibus deserunt veniam maiores
-        tempore dolorum amet iste ad fuga officia ipsa recusandae quidem dolor
-        dignissimos, natus facere aspernatur possimus aliquam voluptatum!
-        Numquam maxime obcaecati iusto corporis asperiores similique recusandae
-        hic consectetur enim repellat veniam id soluta voluptatum, aliquid quae
-        labore? Corrupti eaque, iste numquam excepturi enim, assumenda accusamus
-        perspiciatis ut quasi labore ex amet sed commodi minus cum ipsam nam
-        obcaecati neque aliquid voluptatum beatae aperiam? Voluptatibus, nulla
-        quasi. Nulla earum, ab molestiae dolores laborum quis impedit
-        consequatur!
-      </Box>
+        <Typography
+          variant="h6"
+          component={"h3"}
+          sx={{ color: COLORS.gray.lightGray, padding: "8px 16px" }}
+        >
+          Members that I liked
+        </Typography>
+
+        <Box>
+          <Grid container spacing={2} sx={{ p: 2 }}>
+            { likedUser.length > 0 ? (
+              likedUser.map((user) => (<>
+                <Grid key={user.id} item md={4} sm={6} xs={12}>
+                  <CustomUserList
+                    bio={user.bio || "No bio available"}
+                    name={`${user.firstName || ""} ${user.lastName || ""}`}
+                  />
+                </Grid>
+              </>
+              ))
+            ) : (
+              <Typography
+                variant="body1"
+                sx={{ color: COLORS.gray.main, textAlign: "center", width: "100%" }}
+              >
+                No one has liked your profile yet.
+
+              </Typography>
+            )}
+          </Grid>
+        </Box>
+      </Stack>
     </>
   );
 };

@@ -48,13 +48,13 @@ const UserInfoContainer = () => {
   const {
     bio,
     dateOfBirth,
-    email,
+    // email,
     firstName,
     lastName,
     gender,
     maritalStatus,
     workExperience,
-    phoneNumber,
+    // phoneNumber,
     skills,
     educationInformation,
     ..._allData
@@ -101,8 +101,8 @@ const UserInfoContainer = () => {
                       label="Full Name"
                       value={`${firstName || ""} ${lastName || ""}`}
                     />
-                    <TitleRow label="Email" value={email || "N/A"} />
-                    <TitleRow label="Phone Number" value={phoneNumber || "N/A"} />
+                    {/* <TitleRow label="Email" value={email || "N/A"} /> */}
+                    {/* <TitleRow label="Phone Number" value={phoneNumber || "N/A"} /> */}
                     <TitleRow label="Date of Birth" value={dateOfBirth || "N/A"} />
                     <TitleRow label="Marital Status" value={maritalStatus || "N/A"} />
                     <TitleRow label="Gender" value={gender || "N/A"} />

@@ -14,10 +14,14 @@ import { COLORS } from "@muc/constants";
 import { useAuth } from "@muc/context";
 
 const AccountMenu = () => {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const completion = 20;
+  const circumference = 2 * Math.PI * 20;
+  const progress = ((100 - completion) / 100) * circumference;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,29 +35,72 @@ const AccountMenu = () => {
       <Box
         sx={{
           display: "flex",
+          position: "relative",
           alignItems: "center",
           textAlign: "center",
           flexDirection: "column",
           cursor: "pointer",
-          ml: 1
+          ml: 1,
         }}
         onClick={handleClick}
         aria-controls={open ? "account-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
       >
-        <Tooltip title="Account settings">
-          <Avatar sx={{ width: "40px", height: "40px", mt: "3px" ,textTransform:'capitalize'}}>{user?.firstName.charAt(0)}</Avatar>
-        </Tooltip>
-        <Typography sx={{ fontSize: "10px", color: COLORS.secondary.main,textTransform:'capitalize' }}>
+        <Box sx={{ position: "relative", width: 48, height: 48 }}>
+          <svg
+            width="48"
+            height="48"
+            style={{ position: "absolute", top: 0, left: 0 }}
+          >
+            <circle
+              cx="24"
+              cy="24"
+              r="20"
+              stroke="#e0e0e0"
+              strokeWidth="4"
+              fill="none"
+            />
+            <circle
+              cx="24"
+              cy="24"
+              r="20"
+              stroke={completion < 50 ? "red" : completion < 100 ? "orange" : "green"}
+              strokeWidth="4"
+              fill="none"
+              strokeDasharray={circumference}
+              strokeDashoffset={progress}
+              strokeLinecap="round"
+              style={{ transition: "stroke-dashoffset 0.3s ease" }}
+            />
+          </svg>
+
+          <Tooltip title="Account settings">
+            <Avatar
+              sx={{
+                width: "40px",
+                height: "40px",
+                position: "absolute",
+                top: "4px",
+                left: "4px",
+                textTransform: "capitalize",
+              }}
+            >
+              {user?.firstName.charAt(0)}
+            </Avatar>
+          </Tooltip>
+        </Box>
+
+        <Typography
+          sx={{
+            fontSize: "10px",
+            color: COLORS.secondary.main,
+            textTransform: "capitalize",
+          }}
+        >
           {user
-            ? `${user.firstName ?? ""} ${user.lastName
-              ? user.lastName
-              : ""
-            }`
+            ? `${user.firstName ?? ""} ${user.lastName ? user.lastName : ""}`
             : "NA"}
-
-
         </Typography>
       </Box>
 
