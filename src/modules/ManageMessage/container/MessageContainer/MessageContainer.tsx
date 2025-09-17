@@ -2,52 +2,53 @@ import * as React from "react";
 
 import { Box, Divider, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { COLORS } from "@muc/constants";
-import MessageCard from "../../components/MessageCard/MessageCard";
+import MessageCard from "../../components/UserMessageCard/UserMessageCard";
 import ShowUserDetailPath from "../../components/ShowUserDetailPath/ShowUserDetailPath";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import SendingChatTextField from "../../components/SendingChatTextField/SendingChatTextField";
+import { useQuery } from "@tanstack/react-query";
+import { collection, getDocs } from "firebase/firestore";
+import { auth, db } from "@muc/libs";
+import { useParams } from "react-router";
+import { UserMessages } from "@muc/hooks";
+
+
 
 const MessageContainer = () => {
-  // const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
-
-  // const handleClickOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
+  const { id: otherUid } = useParams()
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  // const { data } = useQuery({
+  //   queryKey: ["messages",],
+  //   queryFn: async () => {
+  //     const snapshot = await getDocs(collection(db, "dms"));
+  //     return snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //   },
+  // });
+
+  const myUid = auth.currentUser?.uid
+
+  const { data: messages, isLoading } = UserMessages(myUid!, otherUid!);
+
+
+
+
+  console.log(messages, 'this is the data of the threads')
 
   return (
     <React.Fragment>
-      {/* <Stack
-        justifyContent={"space-evenly"}
-        alignItems={"center"}
-        p={"10px"}
-        height={"65px"}
-        onClick={handleClickOpen}
-      >
-        <IconButton sx={{ padding: 0, minHeight: "0", height: "33px" }}>
-          <MessageOutlined
-            sx={{ fontSize: "33px", color: COLORS.secondary.main }}
-          />
-        </IconButton>
-        <Typography color={COLORS.secondary.main} fontSize={"10px"}>
-          Messages
-        </Typography>
-      </Stack> */}
-      {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        maxWidth="md"
-        fullWidth
-      > */}
-      <Box sx={{ 
-      
-         width: "100%", display: "flex" }}>
-        {/* <DialogContent sx={{ display: "flex", padding: 0 }}> */}
+
+      <Box sx={{
+
+        width: "100%", display: "flex"
+      }}>
+
         <Box>
           <Tabs
             value={value}
@@ -101,7 +102,7 @@ const MessageContainer = () => {
           </Box>
           {value === 0 && (
             <>
-              <MessageCard />
+              <MessageCard firstName="ali" lastName="khan" lastMessageText="how are you" />
             </>
           )}
         </Box>
@@ -112,23 +113,16 @@ const MessageContainer = () => {
         />
         <Stack
           width={"100%"}
-          // height={"100vh"}
-          // sx={{ justifyContent: "space-between", position: "relative" }}
         >
-          <ShowUserDetailPath />
-          
-          <ChatBox />
-        
-            <SendingChatTextField />
+          <ShowUserDetailPath firstName="ali" lastName="khan" />
+
+          <ChatBox messages={messages ?? []} isLoading={isLoading} />
+
+          {myUid && otherUid && <SendingChatTextField meUid={myUid} otherUid={otherUid} />}
         </Stack>
-        {/* </DialogContent> */}
+
       </Box>
-      {/* <DialogActions sx={{ position: "absolute", top: "0", right: "0" }}>
-          <IconButton onClick={handleClose}>
-            <Close sx={{ color: COLORS.gray.darkGray, fontSize: "20px" }} />
-          </IconButton>
-        </DialogActions> */}
-      {/* </Dialog> */}
+
     </React.Fragment>
   );
 };

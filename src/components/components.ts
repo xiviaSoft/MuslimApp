@@ -19,3 +19,4 @@ export { default as DeepSearchTitleHighLight } from "./DeepSearchTitleHighLight/
 export { default as ScrollToTopButton } from "./ScrollToTopButton/ScrollToTopButton";
 export { default as LoginDialogBox } from "./LoginDialogBox/LoginDialogBox";
 export { default as CustomUserList } from "./CustomUserLIst/CustomUserLIst";
+export { default as MultipulCustomSelect } from "./MultipulCustomSelect/MultipulCustomSelect";

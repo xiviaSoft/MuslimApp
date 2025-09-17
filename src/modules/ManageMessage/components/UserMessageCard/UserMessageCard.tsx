@@ -2,7 +2,14 @@ import { COLORS } from "@muc/constants";
 import { Close, MoreHoriz } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 
-const MessageCard = () => {
+
+interface UserMessageCardProps {
+  firstName: string;
+  lastName: string;
+  lastMessageText: string;
+}
+
+const UserMessageCard = ({ firstName, lastMessageText, lastName }: UserMessageCardProps) => {
   return (
     <>
       <Stack
@@ -23,14 +30,14 @@ const MessageCard = () => {
         />
         <Stack>
           <Typography sx={{ color: COLORS.green.lightGreen }}>
-            Administrator
+            {firstName} {lastName}
           </Typography>
           <Typography
             variant="body2"
             fontSize={"11px"}
             color={COLORS.gray.darkGray}
           >
-            Salam, How may i help you,
+            {lastMessageText}
           </Typography>
         </Stack>
         <Stack
@@ -49,4 +56,4 @@ const MessageCard = () => {
   );
 };
 
-export default MessageCard;
+export default UserMessageCard;

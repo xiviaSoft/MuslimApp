@@ -1,4 +1,13 @@
 import {
+  collection,
+  CollectionReference,
+  doc,
+  DocumentReference,
+  Firestore,
+  FirestoreDataConverter,
+  Timestamp,
+} from "firebase/firestore";
+import {
   MaritalStatus,
   UserProfileImage,
   AdminRole,
@@ -150,15 +159,163 @@ export interface Review {
   updatedAt: Date; // Firebase server timestamp
 }
 
+// -------------------------------
+// Firestore TypeScript Schema
+// Simple 1-to-1 TEXT DMs
+// -------------------------------
 
-export interface chatingSchema {
+// ========== Core Types ==========
 
-  //chating
-
-
-
-
+// A DM thread between exactly two users.
+export interface DmThread {
+  participants: [string, string]; // exactly two UIDs, sorted ascending
+  createdAt: Timestamp; // set with serverTimestamp()
+  lastMessageText: string; // latest text ("" if none yet)
+  lastMessageSenderId: string; // "" if none yet
+  lastMessageAt: Timestamp; // set with serverTimestamp()
 }
+
+// A single text message inside a thread.
+export interface DmMessage {
+  senderId: string; // UID of author
+  text: string; // plain text only
+  sentAt: Timestamp; // set with serverTimestamp()
+  // Optional light editing/soft delete (omit if you don't need):
+  editedAt?: Timestamp;
+  isDeleted?: boolean;
+}
+export interface NewDmMessage {
+  senderId: string;
+  text: string;
+  sentAt: Timestamp; // serverTimestamp()
+  editedAt?: Timestamp;
+  isDeleted?: boolean;
+}
+// For writes where server generates timestamps:
+export interface NewDmThread {
+  participants: [string, string];
+  createdAt: Timestamp; // serverTimestamp()
+  lastMessageText: string;
+  lastMessageSenderId: string;
+  lastMessageAt: Timestamp; // serverTimestamp()
+}
+
+// ========== Helpers ==========
+
+// Deterministic thread ID to avoid duplicates: "uidA_uidB"
+export const threadIdFor = (a: string, b: string) =>
+  [a, b].sort().join("_") as `${string}_${string}`;
+
+// Path helpers
+export const dmsCol = (db: Firestore): CollectionReference<DmThread> =>
+  collection(db, "dms").withConverter(dmThreadConverter);
+
+export const dmDoc = (
+  db: Firestore,
+  threadId: string
+): DocumentReference<DmThread> =>
+  doc(db, "dms", threadId).withConverter(dmThreadConverter);
+
+export const messagesCol = (
+  db: Firestore,
+  threadId: string
+): CollectionReference<DmMessage> =>
+  collection(db, "dms", threadId, "messages").withConverter(dmMessageConverter);
+
+export const messageDoc = (
+  db: Firestore,
+  threadId: string,
+  messageId: string
+): DocumentReference<DmMessage> =>
+  doc(db, "dms", threadId, "messages", messageId).withConverter(
+    dmMessageConverter
+  );
+
+// ========== Converters (optional but recommended) ==========
+
+const dmThreadConverter: FirestoreDataConverter<DmThread> = {
+  toFirestore: (t: DmThread | NewDmThread) => ({
+    participants: t.participants,
+    createdAt: t.createdAt,
+    lastMessageText: t.lastMessageText,
+    lastMessageSenderId: t.lastMessageSenderId,
+    lastMessageAt: t.lastMessageAt,
+  }),
+  fromFirestore: (snap) => {
+    const d = snap.data();
+    return {
+      participants: d.participants as [string, string],
+      createdAt: d.createdAt as Timestamp,
+      lastMessageText: (d.lastMessageText ?? "") as string,
+      lastMessageSenderId: (d.lastMessageSenderId ?? "") as string,
+      lastMessageAt: d.lastMessageAt as Timestamp,
+    };
+  },
+};
+
+const dmMessageConverter: FirestoreDataConverter<DmMessage> = {
+  toFirestore: (m: DmMessage | NewDmMessage) => ({
+    senderId: m.senderId,
+    text: m.text,
+    sentAt: m.sentAt,
+    ...(m.editedAt ? { editedAt: m.editedAt } : {}),
+    ...(m.isDeleted !== undefined ? { isDeleted: m.isDeleted } : {}),
+  }),
+  fromFirestore: (snap) => {
+    const d = snap.data();
+    return {
+      senderId: d.senderId as string,
+      text: d.text as string,
+      sentAt: d.sentAt as Timestamp,
+      ...(d.editedAt ? { editedAt: d.editedAt as Timestamp } : {}),
+      ...(d.isDeleted !== undefined ? { isDeleted: Boolean(d.isDeleted) } : {}),
+    };
+  },
+};
+
+// ========== Minimal usage examples ==========
+//
+// import { serverTimestamp, addDoc, setDoc, updateDoc, query, where, orderBy, limit } from "firebase/firestore";
+//
+// // 1) Ensure thread exists (create-if-missing)
+// const tid = threadIdFor(meUid, otherUid);
+// await setDoc(
+//   dmDoc(db, tid),
+//   {
+//     participants: [meUid, otherUid].sort() as [string, string],
+//     createdAt: serverTimestamp() as Timestamp,
+//     lastMessageText: "",
+//     lastMessageSenderId: "",
+//     lastMessageAt: serverTimestamp() as Timestamp
+//   },
+//   { merge: true }
+// );
+//
+// // 2) Send a message
+// const msgRef = await addDoc(messagesCol(db, tid), {
+//   senderId: meUid,
+//   text: inputText,
+//   sentAt: serverTimestamp() as Timestamp
+// } satisfies NewDmMessage);
+//
+// await updateDoc(dmDoc(db, tid), {
+//   lastMessageText: inputText,
+//   lastMessageSenderId: meUid,
+//   lastMessageAt: serverTimestamp() as Timestamp
+// });
+//
+// // 3) Queries
+// // My chat list
+// const chatListQ = query(
+//   dmsCol(db),
+//   where("participants", "array-contains", meUid),
+//   orderBy("lastMessageAt", "desc"),
+//   limit(30)
+// );
+//
+// // Messages in a thread (old → new)
+// const msgsQ = query(messagesCol(db, tid), orderBy("sentAt", "asc"), limit(50));
+
 //Future work
 // export interface UserAction {
 //   id: string;             // Unique action ID (Firestore doc id)

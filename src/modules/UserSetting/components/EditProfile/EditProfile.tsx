@@ -2,8 +2,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Box, Button, Typography, Divider, Grid, Paper } from "@mui/material";
 import { User } from "@muc/collections";
 import { useAuth } from "@muc/context";
-import { CustomSelect, CustomTextField } from "@muc/components";
-import { GenderTypes, MaritalStatus } from "@muc/constants";
+import { CustomSelect, CustomTextField, MultipulCustomSelect } from "@muc/components";
+import { GenderTypes, Languages, MaritalStatus, Religions, SoftSkills, TechnicalSkills } from "@muc/constants";
 import { useUpdateUser } from "@muc/hooks";
 
 const Section = ({ title }: { title: string }) => (
@@ -96,11 +96,14 @@ const EditProfile = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <CustomTextField
+           
+                <CustomSelect
                 name="religion"
                 label="Religion"
-                type="text"
-                placeholder="Enter religion"
+                options={Religions.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -193,42 +196,40 @@ const EditProfile = () => {
           {/* Skills */}
           <Section title="Skills" />
           <Grid container spacing={2}>
+            {/* languages */}
             <Grid item xs={12} md={4}>
-              <CustomTextField name="skills.languages.0" type="text" label="Language 1" />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CustomTextField name="skills.languages.1" type="text" label="Language 2" />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CustomTextField name="skills.languages.2" type="text" label="Language 3" />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CustomTextField name="skills.softSkills.0" type="text" label="Soft Skill 1" />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CustomTextField name="skills.softSkills.1" type="text" label="Soft Skill 2" />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CustomTextField name="skills.softSkills.2" type="text" label="Soft Skill 3" />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CustomTextField
-                name="skills.technicalSkills.0"
-                type="text" label="Technical Skill 1"
+              <MultipulCustomSelect
+                name="skills.languages"
+                label="Languages"
+                options={Languages.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
+            {/* soft skill */}
             <Grid item xs={12} md={4}>
-              <CustomTextField
-                name="skills.technicalSkills.1"
-                type="text" label="Technical Skill 2"
+              <MultipulCustomSelect
+                name="skills.softSkills"
+                label="Soft Skills"
+                options={SoftSkills.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
+            {/* tech skill */}
             <Grid item xs={12} md={4}>
-              <CustomTextField
-                name="skills.technicalSkills.2"
-                type="text" label="Technical Skill 3"
+              <MultipulCustomSelect
+                name="skills.technicalSkills"
+                label="Technical Skills"
+                options={TechnicalSkills.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
+
           </Grid>
 
           {/* Work Experience */}

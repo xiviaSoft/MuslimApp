@@ -1,6 +1,9 @@
 import { Box, Paper, Typography } from "@mui/material";
 
-const IncomingChat = () => {
+interface IncomingChatProps {
+  senderMsg: string
+}
+const IncomingChat = ({ senderMsg }: IncomingChatProps) => {
   return (
     <Box
       display="flex"
@@ -12,14 +15,16 @@ const IncomingChat = () => {
       <Paper
         elevation={0}
         sx={{
-          maxWidth: "60%",
+          // width: "100%",
+          maxWidth: '80%',
           padding: "8px 12px",
           borderRadius: "12px 12px 12px 0px",
           whiteSpace: "pre-line",
+
         }}
       >
         <Typography variant="body2">
-          Salaam, How may I help you today? Would you like to take out a Gold Membership package? ...
+          {senderMsg}
         </Typography>
       </Paper>
     </Box>

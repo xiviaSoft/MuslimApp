@@ -1,7 +1,13 @@
 import { COLORS } from "@muc/constants";
 import { Box, Stack, Typography } from "@mui/material";
 
-const ShowUserDetailPath = () => {
+interface ShowUserDetailPathProps {
+  firstName: string;
+  lastName: string;
+}
+
+
+const ShowUserDetailPath = ({ firstName, lastName }: ShowUserDetailPathProps) => {
   return (
     <>
       <Stack
@@ -26,9 +32,10 @@ const ShowUserDetailPath = () => {
             variant="h2"
             sx={{ color: COLORS.green.lightGreen, fontWeight: 500 }}
           >
-            Administrator
+            {firstName} {lastName}
+
           </Typography>
-          <Typography
+          {/* <Typography
             sx={{
               textOverflow: "ellipsis",
               overflow: "hidden",
@@ -38,7 +45,7 @@ const ShowUserDetailPath = () => {
             }}
           >
             Administrator / -- / Just Muslim / Avon / United Kingdom
-          </Typography>
+          </Typography> */}
         </Stack>
       </Stack>
     </>

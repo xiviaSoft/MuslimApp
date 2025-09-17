@@ -1,55 +1,74 @@
+import { CustomTextField } from "@muc/components";
 import { Telegram } from "@mui/icons-material";
-import { Box, Button, TextField } from "@mui/material";
-import { SetStateAction, useState } from "react";
+import { Box, Button } from "@mui/material";
+import { FormProvider, useForm } from "react-hook-form";
+import { useSendMessage } from "../../hooks/useSendMessage";
 
-const SendingChatTextField = () => {
-  const [value, setValue] = useState("");
-  const OnChangeValue = (e: { target: { value: SetStateAction<string> } }) => {
-    setValue(e.target.value);
-  };
-  const submitHandle = () => {
-    console.log(value);
-    setValue("");
+
+interface SendingChatTextFieldProps {
+  meUid: string;
+  otherUid: string;
+}
+
+const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) => {
+  const methods = useForm({
+    defaultValues: {
+      messaging: "",
+    },
+  });
+
+
+  const { mutateAsync: sendMessage, isPending } = useSendMessage();
+
+  const submitHandle = async (data: any) => {
+    if (!data.messaging.trim()) return;
+    await sendMessage({
+      meUid,
+      otherUid,
+      text: data.messaging.trim(),
+    });
+    methods.reset();
   };
 
   return (
-    <Box
-      sx={{
-        border: "1px solid #d3d3d3",
-      
-        height: "80px",
-        borderRadius:'8px',
-        px: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-      
-      }}
-    >
-      <TextField
-        required
-        value={value}
-        onChange={OnChangeValue}
-        sx={{
-          width: "87%",
-        }}
-      />
-      <Button
-        onClick={submitHandle}
-        startIcon={<Telegram />}
-        sx={{
-          minWidth: "13%",
-          paddingX: "10px",
-          height: "59px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        Send
-      </Button>
-    </Box>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(submitHandle)}>
+        <Box
+          sx={{
+            border: "1px solid #d3d3d3",
+            height: "80px",
+            borderRadius: "8px",
+            px: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+          }}
+        >
+          <CustomTextField
+            name="messaging"
+            type="text"
+            placeholder="Type your message..."
+            disabled={isPending}
+          />
+          <Button
+            type="submit"
+            startIcon={<Telegram />}
+            disabled={isPending}
+            sx={{
+              minWidth: "13%",
+              paddingX: "10px",
+              height: "59px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {isPending ? "Sending..." : "Send"}
+          </Button>
+        </Box>
+      </form>
+    </FormProvider>
   );
 };
 

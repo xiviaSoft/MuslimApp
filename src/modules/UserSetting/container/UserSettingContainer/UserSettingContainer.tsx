@@ -1,5 +1,5 @@
 import { AppLayout, SettingLayout } from "@muc/layout";
-import { Stack, Typography } from "@mui/material";
+import { Stack, } from "@mui/material";
 import { useParams } from "react-router-dom";
 import EditPhotoContainer from "../EditPhotoContainer/EditPhotoContainer";
 // import EducationAndWork from "../../components/EducationAndWork/EducationAndWork";
@@ -27,7 +27,7 @@ const ProfileSetting = () => {
       case "edit-profile":
         return (
           <Stack gap={"20px"} py={2}>
-            <EditProfile/>
+            <EditProfile />
             {/* <EducationAndWork />
             <UserPersonal />
             <UserReligion /> */}
@@ -60,7 +60,7 @@ const ProfileSetting = () => {
       case "delete-profile":
         return <DeleteProfile />;
       default:
-        return <Typography>edit</Typography>;
+        return null;
     }
   };
 

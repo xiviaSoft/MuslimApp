@@ -2,7 +2,12 @@ import { COLORS } from "@muc/constants";
 import { Done } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 
-const SendingChat = () => {
+
+interface SendeingChatProps {
+  sendedMsg: string
+}
+
+const SendingChat = ({ sendedMsg }: SendeingChatProps) => {
   return (
     <>
       <Box>
@@ -13,14 +18,14 @@ const SendingChat = () => {
               color: COLORS.white.main,
               padding: "5px 10px",
               // borderRadius: "10px",
-                  borderRadius: "12px 12px 0px 12px",
+              borderRadius: "12px 12px 0px 12px",
               margin: "10px",
-              maxWidth: "60%",
+              // maxWidth: "60%",
               ml: "auto",
+              width: '80%'
             }}  >
             <Typography
-            >How can i help you
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque iste dolore maxime autem sunt nesciunt facilis et reiciendis corrupti asperiores esse, quasi magnam eos a possimus repellendus eveniet vitae ipsum.
+            >{sendedMsg}
 
             </Typography>
             <Done sx={{ fontSize: "15px", ml: "auto" }} />

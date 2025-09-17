@@ -142,7 +142,7 @@ const UserProfileCard = ({
                 onClick={() => handleProtectedClick("message")}
                 aria-label="message"
               >
-                <ChatBubbleOutlineIcon onClick={() => navigate(ROUTES.MESSAGES)} />
+                <ChatBubbleOutlineIcon onClick={() => navigate(`${ROUTES.MESSAGES}/${id}`)} />
               </IconButton>
 
               <IconButton

@@ -89,7 +89,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
             </Typography>)}
             <Controller
                 name={name}
-                defaultValue={defaultValue}
+                // defaultValue={defaultValue}
                 control={control}
                 rules={rules}
                 render={({ field, fieldState }) => (

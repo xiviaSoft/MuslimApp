@@ -33,7 +33,7 @@ const Routes = () => {
       <Route element={<SecureRoutes />}>
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.FOLLOWING} element={<Gallery />} />
-        <Route path="/messages" element={<Messages />} />
+        <Route path={`${ROUTES.MESSAGES}/:id`} element={<Messages />} />
         <Route path={"/likes"} element={<Likes />} />
         {/* <Route path="/user_info/:id" element={<UserInfo />} /> */}
         <Route path={`${ROUTES.USER_INFO}/:id`} element={<UserInfo />} />
