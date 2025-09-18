@@ -6,40 +6,79 @@ import MessageCard from "../../components/UserMessageCard/UserMessageCard";
 import ShowUserDetailPath from "../../components/ShowUserDetailPath/ShowUserDetailPath";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import SendingChatTextField from "../../components/SendingChatTextField/SendingChatTextField";
-import { useQuery } from "@tanstack/react-query";
-import { collection, getDocs } from "firebase/firestore";
-import { auth, db } from "@muc/libs";
+
+import { auth, db, } from "@muc/libs";
 import { useParams } from "react-router";
 import { UserMessages } from "@muc/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 
 
 
 const MessageContainer = () => {
   const [value, setValue] = React.useState(0);
-  const { id: otherUid } = useParams()
+  const { id: otherUid } = useParams();
+  const myUid = auth.currentUser?.uid;
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  // const { data } = useQuery({
-  //   queryKey: ["messages",],
-  //   queryFn: async () => {
-  //     const snapshot = await getDocs(collection(db, "dms"));
-  //     return snapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //   },
-  // });
-
-  const myUid = auth.currentUser?.uid
 
   const { data: messages, isLoading } = UserMessages(myUid!, otherUid!);
 
 
+  const { data: chatUsers } = useQuery({
+    queryKey: ["chatUsers", myUid],
+    queryFn: async () => {
+      if (!myUid) return [];
+      const q = query(
+        collection(db, "dms"),
+        where("participants", "array-contains", myUid)
+      );
+      const snapshot = await getDocs(q);
+
+      const chats = await Promise.all(
+        snapshot.docs.map(async (docSnap) => {
+          const data = docSnap.data();
+          const otherUid = data.participants.find((uid: string) => uid !== myUid);
+
+          let userProfile = null;
+          if (otherUid) {
+            const userDoc = await getDoc(doc(db, "users", otherUid));
+            if (userDoc.exists()) {
+              userProfile = userDoc.data();
+            }
+          }
+
+          return {
+            id: docSnap.id,
+            ...data,
+            otherUid,
+            otherUser: userProfile,
+          };
+        })
+      );
+
+      return chats;
+    },
+    enabled: !!myUid,
+  });
 
 
-  console.log(messages, 'this is the data of the threads')
+  const activeChat = chatUsers?.find((chat: any) => chat.otherUid === otherUid);
+
+
+  const { data: fallbackUser } = useQuery({
+    queryKey: ["userProfile", otherUid],
+    queryFn: async () => {
+      if (!otherUid) return null;
+      const userDoc = await getDoc(doc(db, "users", otherUid));
+      return userDoc.exists() ? userDoc.data() : null;
+    },
+    enabled: !!otherUid && !activeChat,
+  });
+
+  const displayedUser = activeChat?.otherUser || fallbackUser;
 
   return (
     <React.Fragment>
@@ -102,7 +141,19 @@ const MessageContainer = () => {
           </Box>
           {value === 0 && (
             <>
-              <MessageCard firstName="ali" lastName="khan" lastMessageText="how are you" />
+              {(!chatUsers || chatUsers.length === 0) ? (
+                <Typography>you and no friend</Typography>
+              ) : (
+                chatUsers?.map((chat: any) => (
+                  <MessageCard
+                    key={chat.id}
+                    firstName={chat.otherUser?.firstName ?? ""}
+                    lastName={chat.otherUser?.lastName ?? ""}
+                    lastMessageText={chat.lastMessageText ?? ""}
+                    uid={chat.otherUid}
+                  />
+                ))
+              )}
             </>
           )}
         </Box>
@@ -114,7 +165,13 @@ const MessageContainer = () => {
         <Stack
           width={"100%"}
         >
-          <ShowUserDetailPath firstName="ali" lastName="khan" />
+          {otherUid && displayedUser && (
+            <ShowUserDetailPath
+              firstName={displayedUser.firstName ?? ""}
+              lastName={displayedUser.lastName ?? ""}
+            />
+          )}
+
 
           <ChatBox messages={messages ?? []} isLoading={isLoading} />
 

@@ -12,14 +12,12 @@ interface ChatBoxProps {
 
 const ChatBox = ({ messages, isLoading }: ChatBoxProps) => {
   if (isLoading) return <p>Loading...</p>;
-  // if (!messages?.length) return <p style={{ padding: "16px" }}>No messages yet</p>;
 
-  console.log(messages, 'this is messages in the chat')
   return (
     <Stack
       sx={{
         bgcolor: COLORS.gray.whiteGray,
-        height: "60vh",
+        height: !messages?.length ? "100vh" : '60vh',
         overflowY: "auto",
         padding: "10px 16px 26px",
         width: "100%",
