@@ -9,12 +9,13 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Badge, Divider, Stack, Typography } from "@mui/material";
 import { COLORS } from "@muc/constants";
 import {
   Favorite,
 
   HomeOutlined,
+  Mail,
   MessageOutlined,
   PhotoLibraryOutlined,
 } from "@mui/icons-material";
@@ -161,41 +162,52 @@ export default function Navbar(props: any) {
                 }}
               >
                 {navItems.map((item, i) => (
-                  <NavLink
-                    to={item.path}
-                    key={item.title}
-                    onClick={(e) => handleNavClick(item, e)}
-                    style={({ isActive }) => ({
-                      textDecoration: "none",
-                      padding: "0 6px",
-                      border: "none",
-                      borderBottom: isActive
-                        ? `2px solid ${COLORS.primary.main}`
-                        : "none",
-                      color: i === 2 ? "red" : COLORS.secondary.main,
-                      backgroundColor: isActive ? "#e2f2f9" : "transparent",
-                    })}
-                  >
-                    <Stack
-                      sx={{
-                        alignItems: "center",
-                        height: 65,
-                        justifyContent: "space-evenly",
-                        padding: "10px",
-                      }}
+                  <>
+
+                    <NavLink
+                      to={item.path}
+                      key={item.title}
+                      onClick={(e) => handleNavClick(item, e)}
+                      style={({ isActive }) => ({
+                        textDecoration: "none",
+                        padding: "0 6px",
+                        border: "none",
+                        borderBottom: isActive
+                          ? `2px solid ${COLORS.primary.main}`
+                          : "none",
+                        color: i === 2 ? "red" : COLORS.secondary.main,
+                        backgroundColor: isActive ? "#e2f2f9" : "transparent",
+                      })}
                     >
-                      {item.icon}
-                      <Typography
+                      <Stack
                         sx={{
-                          color: i === 2 ? "red" : COLORS.secondary.main,
-                          fontSize: "10px",
+                          alignItems: "center",
+                          height: 65,
+                          justifyContent: "space-evenly",
+                          padding: "10px",
                         }}
                       >
-                        {item.title}
-                      </Typography>
-                    </Stack>
-                  </NavLink>
+                        {i === 3 && <Badge badgeContent={4} color="primary" sx={{ display: i === 3 ? 'block' : 'none' }}>
+
+                          {item.icon}
+                        </Badge>}
+                        {i != 3 && <Box sx={{ display: i != 3 ? 'block' : 'none' }}>
+                          {item.icon}
+                        </Box>}
+
+                        <Typography
+                          sx={{
+                            color: i === 2 ? "red" : COLORS.secondary.main,
+                            fontSize: "10px",
+                          }}
+                        >
+                          {item.title}
+                        </Typography>
+                      </Stack>
+                    </NavLink>
+                  </>
                 ))}
+
                 <AccountMenu />
               </Box>
             </Box>

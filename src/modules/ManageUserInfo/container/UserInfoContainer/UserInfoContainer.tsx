@@ -6,7 +6,7 @@ import { AppLayout } from "@muc/layout";
 import UserProfileDetail from "../../components/UserProfileDetail/UserProfileDetail";
 import ExtraImgDialog from "../../components/ExtraImgDialog/ExtraImgDialog";
 import { useParams } from "react-router";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, } from "firebase/firestore";
 import { db } from "@muc/libs";
 import { User } from "@muc/collections";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +25,8 @@ const UserInfoContainer = () => {
     queryFn: () => getUserData(id as string),
     enabled: !!id
   });
+
+
 
 
   if (isLoading) return <Box

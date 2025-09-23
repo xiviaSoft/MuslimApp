@@ -5,7 +5,7 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -32,7 +32,7 @@ type UserProfielCardProps = {
 const UserProfileCard = ({
   // img,
   name,
-  location,
+
   age,
   id,
   // likes = [],
@@ -125,10 +125,10 @@ const UserProfileCard = ({
             <CheckCircleIcon fontSize="small" sx={{ color: "#3EA6FF" }} />
           </Box>
 
-          <Box display="flex" alignItems="center" gap={0.5} mt={0.5}>
+          {/* <Box display="flex" alignItems="center" gap={0.5} mt={0.5}>
             <LocationOnIcon fontSize="small" />
             <Typography fontSize={13}>{location}</Typography>
-          </Box>
+          </Box> */}
 
           <Box
             display="flex"

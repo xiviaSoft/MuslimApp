@@ -1,24 +1,17 @@
-import * as React from "react";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { COLORS, menuItemData } from "@muc/constants";
+import { menuItemData } from "@muc/constants";
 import { Stack, Typography } from "@mui/material";
+import { CustomSelect } from "@muc/components";
 
 export default function BasicSelect() {
-  const [data, setData] = React.useState(menuItemData[0]);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setData(event.target.value);
-  };
 
   return (
     <Stack
       direction={"row"}
-      sx={{ alignItems: "center", justifyContent: "center",gap:'16px' }}
+      sx={{ alignItems: "center", justifyContent: "center", gap: '16px' }}
     >
-      <Typography sx={{width:'80px',textAlign:'end'}}>From :</Typography>
-      <FormControl >
+      <Typography sx={{ width: '80px', textAlign: 'end' }}>From :</Typography>
+      {/* <FormControl >
         <Select
           value={data}
           onChange={handleChange}
@@ -33,7 +26,16 @@ export default function BasicSelect() {
             <MenuItem value={item}>{item}</MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
+      <CustomSelect
+        name="country"
+        // label="country
+        // k"
+        options={menuItemData.map((item) => ({
+          label: item,
+          value: item,
+        }))}
+      />
     </Stack>
   );
 }

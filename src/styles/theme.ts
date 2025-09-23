@@ -147,7 +147,7 @@ theme = {
           fontSize: "16px",
           fontWeight: 400,
           borderRadius: "4px",
-          // padding: "0 ",
+          // padding: "10px",
           textTransform: "none",
           height: "auto",
           whiteSpace: "nowrap",

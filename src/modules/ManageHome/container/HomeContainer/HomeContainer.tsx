@@ -4,28 +4,18 @@ import { COLORS } from "@muc/constants";
 import { CustomProfileCard } from "@muc/components";
 import HomePagination from "../../components/HomePagination/HomePagination";
 import { auth, db } from "@muc/libs";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc } from "firebase/firestore";
-import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { QueryClient, useMutation, } from "@tanstack/react-query";
 import { User } from "@muc/collections";
+import { useUsers } from "@muc/context";
 
+
+
+const queryClient = new QueryClient();
 
 const HomeContainer = () => {
-  const queryClient = useQueryClient();
-  const { data: allUsers = [], isLoading, isError } = useQuery<any[]>({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as any[];
 
-    },
-
-    placeholderData: keepPreviousData,
-    enabled: !!auth.currentUser?.uid
-
-  });
+  const { users: allUsers, isError, isLoading } = useUsers()
 
 
   const addVisits = useMutation({
@@ -83,6 +73,7 @@ const HomeContainer = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
   });
 
+  console.log(allUsers)
   return (
     <AppLayout>
       <Box sx={{ bgcolor: COLORS.gray.main }}>

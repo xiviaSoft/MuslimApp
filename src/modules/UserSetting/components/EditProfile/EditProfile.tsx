@@ -1,29 +1,57 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { Box, Button, Typography, Divider, Grid, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Divider,
+  Grid,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { User } from "@muc/collections";
 import { useAuth } from "@muc/context";
-import { CustomSelect, CustomTextField, MultipulCustomSelect } from "@muc/components";
-import { GenderTypes, Languages, MaritalStatus, Religions, SoftSkills, TechnicalSkills } from "@muc/constants";
+import {
+  CustomSelect,
+  CustomTextField,
+  MultipulCustomSelect,
+} from "@muc/components";
+import {
+  GenderTypes,
+  Languages,
+  MaritalStatus,
+  Religions,
+  SoftSkills,
+  TechnicalSkills,
+} from "@muc/constants";
 import { useUpdateUser } from "@muc/hooks";
+import { useState } from "react";
 
 const Section = ({ title }: { title: string }) => (
   <Box sx={{ mb: 2 }}>
     <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
       {title}
     </Typography>
-    <Divider sx={{ mb: 2 }} />
+    <Divider sx={{  }} />
   </Box>
 );
 
 const EditProfile = () => {
   const { user } = useAuth();
-  console.log(user, "this is user in the edit profile");
   const updateUser = useUpdateUser(user?.uid || "");
   const methods = useForm<User>({
     defaultValues: user ?? {},
   });
 
   const { handleSubmit } = methods;
+
+  // State for disabling sections
+  const [disableWork, setDisableWork] = useState(false);
+  const [disableSocial, setDisableSocial] = useState(false);
 
   const onSubmit = (data: User) => {
     if (!user?.uid) return;
@@ -54,11 +82,12 @@ const EditProfile = () => {
         <Box
           component="form"
           onSubmit={handleSubmit(onSubmit)}
-          sx={{ display: "flex", flexDirection: "column", gap: 4 }}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           {/* Personal Details */}
           <Section title="Personal Details" />
           <Grid container spacing={2}>
+            {/* --- Personal Info Fields (same as before) --- */}
             <Grid item xs={12} md={6}>
               <CustomTextField
                 name="firstName"
@@ -78,12 +107,7 @@ const EditProfile = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="email"
-                label="Email"
-                type="email"
-                disabled
-              />
+              <CustomTextField name="email" label="Email" type="email" disabled />
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
@@ -96,8 +120,7 @@ const EditProfile = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-           
-                <CustomSelect
+              <CustomSelect
                 name="religion"
                 label="Religion"
                 options={Religions.map((item) => ({
@@ -117,13 +140,8 @@ const EditProfile = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="dateOfBirth"
-                label="Date of Birth"
-                type="date"
-              />
+              <CustomTextField name="dateOfBirth" label="Date of Birth" type="date" />
             </Grid>
-
             <Grid item xs={12} md={6}>
               <CustomSelect
                 name="maritalStatus"
@@ -196,141 +214,169 @@ const EditProfile = () => {
           {/* Skills */}
           <Section title="Skills" />
           <Grid container spacing={2}>
-            {/* languages */}
             <Grid item xs={12} md={4}>
               <MultipulCustomSelect
                 name="skills.languages"
                 label="Languages"
-                options={Languages.map((item) => ({
-                  label: item,
-                  value: item,
-                }))}
+                options={Languages.map((item) => ({ label: item, value: item }))}
               />
             </Grid>
-            {/* soft skill */}
             <Grid item xs={12} md={4}>
               <MultipulCustomSelect
                 name="skills.softSkills"
                 label="Soft Skills"
-                options={SoftSkills.map((item) => ({
-                  label: item,
-                  value: item,
-                }))}
+                options={SoftSkills.map((item) => ({ label: item, value: item }))}
               />
             </Grid>
-            {/* tech skill */}
             <Grid item xs={12} md={4}>
               <MultipulCustomSelect
                 name="skills.technicalSkills"
                 label="Technical Skills"
-                options={TechnicalSkills.map((item) => ({
-                  label: item,
-                  value: item,
-                }))}
-              />
-            </Grid>
-
-          </Grid>
-
-          {/* Work Experience */}
-          <Section title="Work Experience" />
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="workExperience.companyName"
-                label="Company Name"
-                type="text"
-                placeholder="Enter company name"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="workExperience.role"
-                label="Role"
-                type="text"
-                placeholder="Enter role"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="workExperience.address"
-                label="Company Address"
-                type="text"
-                placeholder="Enter address"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="workExperience.isCurrent"
-                label="Currently Working"
-                type="text"
-                placeholder="Enter address"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="workExperience.startDate"
-                label="Start Date"
-                type="date"
-                placeholder="Enter start date"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="workExperience.endDate"
-                label="End Date"
-                type="date"
-                placeholder="Enter end date"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <CustomTextField
-                name="workExperience.description"
-                label="Description"
-                type="text"
-                placeholder="Enter description"
-                multiline
-                minRows={2}
+                options={TechnicalSkills.map((item) => ({ label: item, value: item }))}
               />
             </Grid>
           </Grid>
 
-          {/* Social Links */}
-          <Section title="Social Links" />
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="socialLinks.facebook"
-                label="Facebook"
-                type="text"
-                placeholder="Facebook URL"
+          {/* Work Experience (Accordion + Checkbox) */}
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography sx={{ flexGrow: 1 }}>Work Experience</Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={disableWork}
+                    onChange={(e) => setDisableWork(e.target.checked)}
+                  />
+                }
+                label="Disable"
+                onClick={(e) => e.stopPropagation()}
               />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="socialLinks.instagram"
-                label="Instagram"
-                type="text"
-                placeholder="Instagram URL"
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="workExperience.companyName"
+                    label="Company Name"
+                    type="text"
+                    placeholder="Enter company name"
+                    disabled={disableWork}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="workExperience.role"
+                    label="Role"
+                    type="text"
+                    placeholder="Enter role"
+                    disabled={disableWork}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="workExperience.address"
+                    label="Company Address"
+                    type="text"
+                    placeholder="Enter address"
+                    disabled={disableWork}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="workExperience.isCurrent"
+                    label="Currently Working"
+                    type="text"
+                    placeholder="Enter address"
+                    disabled={disableWork}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="workExperience.startDate"
+                    label="Start Date"
+                    type="date"
+                    disabled={disableWork}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="workExperience.endDate"
+                    label="End Date"
+                    type="date"
+                    disabled={disableWork}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <CustomTextField
+                    name="workExperience.description"
+                    label="Description"
+                    type="text"
+                    placeholder="Enter description"
+                    multiline
+                    minRows={2}
+                    disabled={disableWork}
+                  />
+                </Grid>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* Social Links (Accordion + Checkbox) */}
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography sx={{ flexGrow: 1 }}>Social Links</Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={disableSocial}
+                    onChange={(e) => setDisableSocial(e.target.checked)}
+                  />
+                }
+                label="Disable"
+                onClick={(e) => e.stopPropagation()}
               />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="socialLinks.linkedin"
-                label="LinkedIn"
-                type="text"
-                placeholder="LinkedIn URL"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomTextField
-                name="socialLinks.twitter"
-                label="Twitter"
-                type="text"
-                placeholder="Twitter URL"
-              />
-            </Grid>
-          </Grid>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="socialLinks.facebook"
+                    label="Facebook"
+                    type="text"
+                    placeholder="Facebook URL"
+                    disabled={disableSocial}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="socialLinks.instagram"
+                    label="Instagram"
+                    type="text"
+                    placeholder="Instagram URL"
+                    disabled={disableSocial}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="socialLinks.linkedin"
+                    label="LinkedIn"
+                    type="text"
+                    placeholder="LinkedIn URL"
+                    disabled={disableSocial}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <CustomTextField
+                    name="socialLinks.twitter"
+                    label="Twitter"
+                    type="text"
+                    placeholder="Twitter URL"
+                    disabled={disableSocial}
+                  />
+                </Grid>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
             <Button type="submit" variant="contained">

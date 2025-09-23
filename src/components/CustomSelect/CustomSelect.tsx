@@ -113,7 +113,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
               }
               sx={{
                 width: width || "100%",
-                borderRadius: "50px",
+                // borderRadius: "50px",
                 backgroundColor: COLORS.gray.lightDarkGray,
                 height: height || "56px",
                 "& fieldset": { border: "none" },

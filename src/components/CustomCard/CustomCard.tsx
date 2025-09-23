@@ -46,19 +46,19 @@ const CustomCard = ({
 
       }}
     >
-    
+
       <Box
         component="img"
         src={img}
         alt={name}
         sx={{
           width: "100%",
-        
+
           objectFit: "cover",
         }}
       />
 
-      
+
       {extraPics && (
         <Box
           sx={{
@@ -82,18 +82,18 @@ const CustomCard = ({
         </Box>
       )}
 
-      
+
       <Box
         sx={{
           padding: "12px",
-                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-        backdropFilter: "blur(5px)",
-        WebkitBackdropFilter: "blur(10px)",
-        boxShadow: "0 8px 32px rgba(31, 38, 135, 0.37)",
-        border: "1px solid rgba(255, 255, 255, 0.18)",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(5px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 8px 32px rgba(31, 38, 135, 0.37)",
+          border: "1px solid rgba(255, 255, 255, 0.18)",
           // position:'absolute',
-          width:'100%',
-// bottom:0,
+          width: '100%',
+          // bottom:0,
         }}
       >
         <Stack direction="row" justifyContent="space-between">
@@ -130,9 +130,9 @@ const CustomCard = ({
           alignItems="center"
           sx={{ mt: 1 }}
         >
-          <Typography variant="body2" sx={{ color: COLORS.gray.lightGray }}>
+          {/* <Typography variant="body2" sx={{ color: COLORS.gray.lightGray }}>
             {location}
-          </Typography>
+          </Typography> */}
           {countryFlag && (
             <Box
               component="img"

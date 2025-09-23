@@ -78,6 +78,11 @@ export interface User {
     };
   };
   religion: string;
+  blocked: {
+    name: "John";
+    email: "john@email.com";
+    blocked: ["userId_123", "userId_456"];
+  };
 
   likes?: string[]; // Array of user IDs that this user has liked
   visits?: string[]; // Array of user IDs that this user has visited

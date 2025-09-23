@@ -28,13 +28,14 @@ const DeepSearchDialog = () => {
         color="white"
         icon={<Search />}
         variant="contained"
+
         onClick={handleClickOpen}
       />
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <DeepSearch />
         </DialogContent>
-        <DialogActions sx={{bgcolor:COLORS.gray.whiteGray,borderTop:`1px solid ${COLORS.gray.lightGray}`,padding:1}}>
+        <DialogActions sx={{ bgcolor: COLORS.gray.whiteGray, borderTop: `1px solid ${COLORS.gray.lightGray}`, padding: 1 }}>
           <CustomButton
             onClick={handleClose}
             title="Close"
