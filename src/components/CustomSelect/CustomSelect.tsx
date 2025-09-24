@@ -22,6 +22,7 @@ interface CustomSelectProps {
   options: Option[];
   dependsOn?: string;
   width?: string;
+  isRequired?: boolean;
   height?: string;
   iconColor?: string;
   labelOutside?: boolean;
@@ -37,6 +38,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   dependsOn,
   width,
   height,
+  isRequired,
   iconColor = COLORS.blue.main,
   showSearchIcon = false,
   onChange,
@@ -71,7 +73,12 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         name={name}
         control={control}
         defaultValue="" // ✅ ensures controlled
-        rules={{ required: `${label || "This field"} is required` }}
+        rules={{
+          required: isRequired
+            ? `${label || "This field"} is required`
+            : false, // ✅ conditionally required
+        }}
+
         render={({ field, fieldState }) => (
           <>
             <Select

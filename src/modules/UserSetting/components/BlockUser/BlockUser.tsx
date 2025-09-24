@@ -17,7 +17,7 @@ import {
   query,
   where,
   updateDoc,
-  arrayUnion,
+
   arrayRemove,
 } from "firebase/firestore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -48,20 +48,7 @@ const BlockUser = () => {
     enabled: !!currentUserId,
   });
 
-  // ✅ Block user mutation
-  const blockUserMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      if (!currentUserId) return;
-      await updateDoc(doc(db, "users", currentUserId), {
-        blocked: arrayUnion(userId),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blockedUsers", currentUserId] });
-    },
-  });
 
-  // ✅ Unblock user mutation
   const unblockUserMutation = useMutation({
     mutationFn: async (userId: string) => {
       if (!currentUserId) return;

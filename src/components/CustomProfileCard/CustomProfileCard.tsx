@@ -1,16 +1,15 @@
-import { useState } from "react";
+
 import {
   Paper,
   Box,
   Typography,
   IconButton,
+  // CircularProgress,
 } from "@mui/material";
 
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useAuth } from "@muc/context";
-import { LoginDialogBox } from "@muc/components";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@muc/constants";
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -27,48 +26,23 @@ type UserProfielCardProps = {
   onRemoveLike?: () => void;
   isLiked: boolean;
   onVisit?: () => void;
+  // likeLoading: boolean
 };
 
 const UserProfileCard = ({
   // img,
   name,
-
+  // location,
   age,
   id,
   // likes = [],
   isLiked,
   onLike,
+  // likeLoading,
   onRemoveLike,
   onVisit,
 }: UserProfielCardProps) => {
-  const { user, } = useAuth();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [intendedAction, setIntendedAction] = useState<"like" | "message" | null>(null);
   const navigate = useNavigate()
-  const handleProtectedClick = (action: "like" | "message") => {
-    if (!user) {
-      setIntendedAction(action);
-      setDialogOpen(true);
-    } else {
-      if (action === "like") {
-        // perform like logic
-        console.log("liked");
-      } else if (action === "message") {
-        // open messaging
-        console.log("message");
-      }
-    }
-  };
-
-  const handleLoginSuccess = () => {
-
-    if (intendedAction === "like") {
-      console.log("liked after login");
-    } else if (intendedAction === "message") {
-      console.log("message after login");
-    }
-    setIntendedAction(null);
-  };
   const calculateAge = (dobString: number) => {
     const dob = new Date(dobString);
     const today = new Date();
@@ -80,7 +54,7 @@ const UserProfileCard = ({
     return age;
   };
 
-  // const isLiked = user ? likes?.includes(user?.uid) : false;
+
 
 
   return (
@@ -93,7 +67,6 @@ const UserProfileCard = ({
           borderRadius: 4,
           overflow: "hidden",
           position: "relative",
-          // backgroundImage: `url('assets/images/girl-img.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           coursor: 'pointer',
@@ -139,7 +112,7 @@ const UserProfileCard = ({
             <Box display="flex" gap={1}>
               <IconButton
                 sx={{ color: "#fff", bgcolor: "rgba(0,0,0,0.3)" }}
-                onClick={() => handleProtectedClick("message")}
+
                 aria-label="message"
               >
                 <ChatBubbleOutlineIcon onClick={() => navigate(`${ROUTES.MESSAGES}/${id}`)} />
@@ -147,10 +120,11 @@ const UserProfileCard = ({
 
               <IconButton
                 sx={{ color: "#fff", bgcolor: "rgba(0,0,0,0.3)" }}
-                onClick={() => handleProtectedClick("like")}
+
                 aria-label="like"
               >
-                {isLiked ? <FavoriteIcon onClick={onRemoveLike} sx={{ color: 'red' }} /> : <FavoriteBorderIcon onClick={onLike} />}
+                {isLiked ? <FavoriteIcon onClick={onRemoveLike} sx={{ color: 'red' }} /> :
+                  < FavoriteBorderIcon onClick={onLike} />}
               </IconButton>
             </Box>
 
@@ -161,17 +135,6 @@ const UserProfileCard = ({
         </Box>
       </Paper>
 
-      <LoginDialogBox
-        open={dialogOpen}
-        onClose={() => {
-          setDialogOpen(false);
-          setIntendedAction(null);
-        }}
-        onLoginSuccess={() => {
-          handleLoginSuccess();
-          setDialogOpen(false);
-        }}
-      />
     </Box>
   );
 };

@@ -2,10 +2,10 @@
 import { createContext, useContext } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
-import { auth, db } from "@muc/libs";
+import { db } from "@muc/libs";
 
 
-type User = {
+export type User = {
     id: string;
     [key: string]: any; // extend with your user fields
 };

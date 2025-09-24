@@ -13,14 +13,14 @@ import { Badge, Divider, Stack, Typography } from "@mui/material";
 import { COLORS } from "@muc/constants";
 import {
   Favorite,
-
   HomeOutlined,
-  Mail,
   MessageOutlined,
   PhotoLibraryOutlined,
 } from "@mui/icons-material";
 import { AccountMenu, LoginDialogBox } from "@muc/components";
 import { useAuth } from "@muc/context";
+import { UseUnreadCount } from "@muc/hooks";
+import { auth } from "@muc/libs";
 
 
 const drawerWidth = 320;
@@ -58,7 +58,11 @@ const navItems = [
   },
 ];
 
+
 export default function Navbar(props: any) {
+  const { total, chats } = UseUnreadCount(auth.currentUser?.uid);
+
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
@@ -70,6 +74,8 @@ export default function Navbar(props: any) {
   const handleDrawerToggle = () => {
     setMobileOpen((prev) => !prev);
   };
+  console.log(total, 'this is the unrread')
+  console.log(chats, 'this is the chat')
 
   const handleNavClick = (item: typeof navItems[number], e: React.MouseEvent) => {
     if (item.requiresAuth && !user) {
@@ -187,7 +193,7 @@ export default function Navbar(props: any) {
                           padding: "10px",
                         }}
                       >
-                        {i === 3 && <Badge badgeContent={4} color="primary" sx={{ display: i === 3 ? 'block' : 'none' }}>
+                        {i === 3 && <Badge badgeContent={total} color="primary" sx={{ display: i === 3 ? 'block' : 'none' }}>
 
                           {item.icon}
                         </Badge>}

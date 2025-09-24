@@ -3,77 +3,13 @@ import { Box, CircularProgress, Container, Grid, Paper, Typography } from "@mui/
 import { COLORS } from "@muc/constants";
 import { CustomProfileCard } from "@muc/components";
 import HomePagination from "../../components/HomePagination/HomePagination";
-import { auth, db } from "@muc/libs";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { QueryClient, useMutation, } from "@tanstack/react-query";
-import { User } from "@muc/collections";
+import { auth, } from "@muc/libs";
+
 import { useUsers } from "@muc/context";
-
-
-
-const queryClient = new QueryClient();
-
+import { useUserActions } from "@muc/utils";
 const HomeContainer = () => {
-
+  const { addVisit, likeUser, removeLike } = useUserActions()
   const { users: allUsers, isError, isLoading } = useUsers()
-
-
-  const addVisits = useMutation({
-    mutationFn: async (visitedUserId: string) => {
-      if (!auth.currentUser?.uid || !visitedUserId) {
-        throw new Error('User not authenticated or invalid visitedUserId');
-      }
-      const currentUserId = auth.currentUser.uid;
-      await updateDoc(doc(db, "users", visitedUserId), {
-        visits: arrayUnion(currentUserId),
-      });
-      return { visitedUserId, currentUserId };
-    },
-    onSuccess: ({ visitedUserId, currentUserId }: { visitedUserId: string; currentUserId: string }) => {
-      // update in the cache
-      queryClient.setQueryData(["users"], (oldData: User[]) => {
-        if (!oldData) return [];
-        return oldData.map((user) => {
-          if (user.uid === visitedUserId) {
-            if (!user.visits?.includes(currentUserId) && user.visits) {
-              return { ...user, visits: [...user?.visits, currentUserId] };
-            }
-          }
-          return user;
-        });
-      });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-
-  const likedUser = useMutation({
-    mutationFn: async (likedUserId: string) => {
-      if (!auth.currentUser?.uid || !likedUserId) return;
-      const currentUserId = auth.currentUser.uid;
-
-      await updateDoc(doc(db, "users", likedUserId), {
-        likes: arrayUnion(currentUserId),
-      });
-
-      await updateDoc(doc(db, "users", currentUserId), {
-        liked: arrayUnion(likedUserId),
-      });
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
-  });
-
-  const removeLike = useMutation({
-    mutationFn: async (likedUserId: string) => {
-      if (!auth.currentUser?.uid || !likedUserId) return;
-      const currentUserId = auth.currentUser.uid;
-      await updateDoc(doc(db, "users", likedUserId), {
-        likes: arrayRemove(currentUserId),
-      });
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
-  });
-
-  console.log(allUsers)
   return (
     <AppLayout>
       <Box sx={{ bgcolor: COLORS.gray.main }}>
@@ -107,10 +43,10 @@ const HomeContainer = () => {
                       name={`${item.firstName} ${item.lastName}`}
                       countryFlag={item.countryflag}
                       location={item.Companyaddress}
-                      onLike={() => likedUser.mutate(item.id)}
+                      onLike={() => likeUser.mutate(item.id)}
                       onRemoveLike={() => removeLike.mutate(item.id)}
                       isLiked={item.likes?.includes(auth.currentUser?.uid)}
-                      onVisit={() => addVisits.mutate(item.id)}
+                      onVisit={() => addVisit.mutate(item.id)}
                     />
                   </Grid>
                 ))

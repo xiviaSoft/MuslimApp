@@ -2,7 +2,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@muc/libs";
-import { dmDoc, messagesCol, threadIdFor } from "@muc/collections";
+import { dmDoc, messagesCol, threadIdFor } from "@muc/utils";
+
 
 interface SendMessageArgs {
     meUid: string;

@@ -22,7 +22,7 @@ const CustomCard = ({
   name,
   rating,
   // height,
-  location,
+  // location,
   extraPics,
   profession,
   countryFlag,

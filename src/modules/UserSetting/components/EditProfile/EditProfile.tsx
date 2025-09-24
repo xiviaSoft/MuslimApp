@@ -36,7 +36,7 @@ const Section = ({ title }: { title: string }) => (
     <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
       {title}
     </Typography>
-    <Divider sx={{  }} />
+    <Divider sx={{}} />
   </Box>
 );
 

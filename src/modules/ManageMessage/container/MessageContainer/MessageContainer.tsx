@@ -1,18 +1,24 @@
 import * as React from "react";
-
-import { Box, Divider, Stack, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { COLORS } from "@muc/constants";
 import MessageCard from "../../components/UserMessageCard/UserMessageCard";
 import ShowUserDetailPath from "../../components/ShowUserDetailPath/ShowUserDetailPath";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import SendingChatTextField from "../../components/SendingChatTextField/SendingChatTextField";
 
-import { auth, db, } from "@muc/libs";
+import { auth, db } from "@muc/libs";
 import { useParams } from "react-router";
-import { UserMessages } from "@muc/hooks";
+import { UserMessages, UseUnreadCount } from "@muc/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-
+import { collection, doc, getDoc, getDocs, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import UnreadTab from "../../components/UnreadTab/UnreadTab";
 
 
 const MessageContainer = () => {
@@ -24,9 +30,10 @@ const MessageContainer = () => {
     setValue(newValue);
   };
 
-  const { data: messages, isLoading } = UserMessages(myUid!, otherUid!);
+  // messages for active chat
+  const { data: messages, isLoading, } = UserMessages(myUid!, otherUid!);
 
-
+  // all chat threads with users
   const { data: chatUsers } = useQuery({
     queryKey: ["chatUsers", myUid],
     queryFn: async () => {
@@ -40,7 +47,9 @@ const MessageContainer = () => {
       const chats = await Promise.all(
         snapshot.docs.map(async (docSnap) => {
           const data = docSnap.data();
-          const otherUid = data.participants.find((uid: string) => uid !== myUid);
+          const otherUid = data.participants.find(
+            (uid: string) => uid !== myUid
+          );
 
           let userProfile = null;
           if (otherUid) {
@@ -64,10 +73,9 @@ const MessageContainer = () => {
     enabled: !!myUid,
   });
 
-
   const activeChat = chatUsers?.find((chat: any) => chat.otherUid === otherUid);
 
-
+  // fallback if user profile not in chatUsers
   const { data: fallbackUser } = useQuery({
     queryKey: ["userProfile", otherUid],
     queryFn: async () => {
@@ -80,14 +88,22 @@ const MessageContainer = () => {
 
   const displayedUser = activeChat?.otherUser || fallbackUser;
 
+  const { total, } = UseUnreadCount(myUid);
+  // ✅ mark thread as read when user opens chat
+  const markThreadAsRead = async (threadId: string, myUid: string) => {
+    await updateDoc(doc(db, "dms", threadId), {
+      [`lastReadAt.${myUid}`]: serverTimestamp(),
+    });
+  };
+  React.useEffect(() => {
+    if (myUid && activeChat?.id) {
+      markThreadAsRead(activeChat.id, myUid);
+    }
+  }, [myUid, activeChat?.id]);
+
   return (
     <React.Fragment>
-
-      <Box sx={{
-
-        width: "100%", display: "flex"
-      }}>
-
+      <Box sx={{ width: "100%", display: "flex" }}>
         <Box>
           <Tabs
             value={value}
@@ -117,7 +133,7 @@ const MessageContainer = () => {
               }}
             />
             <Tab
-              label="Unread"
+              label={`Unread (${total})`} // ✅ show unread total here
               sx={{
                 border: "1px solid #ccc",
                 bgcolor: value === 1 ? "white" : "inherit",
@@ -131,7 +147,6 @@ const MessageContainer = () => {
           <Box
             sx={{
               bgcolor: COLORS.gray.whiteGray,
-
               color: COLORS.secondary.main,
               padding: "10px",
               textAlign: "end",
@@ -139,10 +154,21 @@ const MessageContainer = () => {
           >
             <Typography sx={{ cursor: "pointer" }}>Edit</Typography>
           </Box>
+
+          {/* All Messages */}
           {value === 0 && (
             <>
-              {(!chatUsers || chatUsers.length === 0) ? (
-                <Typography>you and no friend</Typography>
+              {!chatUsers || chatUsers.length === 0 ? (
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    width: "100%",
+                    bgcolor: COLORS.gray.lightDarkGray,
+                    padding: 2,
+                  }}
+                >
+                  you have and no friend
+                </Typography>
               ) : (
                 chatUsers?.map((chat: any) => (
                   <MessageCard
@@ -156,15 +182,44 @@ const MessageContainer = () => {
               )}
             </>
           )}
+
+          {/* Unread Messages */}
+          {value === 1 && (
+            <>
+              <UnreadTab />
+              {/* {!unreadChats || unreadChats.length === 0 ? (
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    width: "100%",
+                    bgcolor: COLORS.gray.lightDarkGray,
+                    padding: 2,
+                  }}
+                >
+                  No unread messages
+                </Typography>
+              ) : (
+                unreadChats.map((chat: any) => (
+                  <MessageCard
+                    key={chat.id}
+                    firstName={chat.otherUser?.firstName ?? ""}
+                    lastName={chat.otherUser?.lastName ?? ""}
+                    lastMessageText={chat.lastMessageText ?? ""}
+                    uid={chat.otherUid}
+                  />
+                ))
+              )} */}
+            </>
+          )}
         </Box>
+
+        {/* Right Panel */}
         <Divider
           orientation="vertical"
           flexItem
           sx={{ bgcolor: COLORS.gray.main, height: "602px" }}
         />
-        <Stack
-          width={"100%"}
-        >
+        <Stack width={"100%"}>
           {otherUid && displayedUser && (
             <ShowUserDetailPath
               firstName={displayedUser.firstName ?? ""}
@@ -172,14 +227,19 @@ const MessageContainer = () => {
             />
           )}
 
+          {/* <ChatBox messages={messages ?? []} isLoading={isLoading} /> */}
+          <ChatBox
+            threadId={activeChat?.id ?? ''}
+            messages={messages ?? []}
+            isLoading={isLoading}
+          />
 
-          <ChatBox messages={messages ?? []} isLoading={isLoading} />
 
-          {myUid && otherUid && <SendingChatTextField meUid={myUid} otherUid={otherUid} />}
+          {myUid && otherUid && (
+            <SendingChatTextField meUid={myUid} otherUid={otherUid} />
+          )}
         </Stack>
-
       </Box>
-
     </React.Fragment>
   );
 };
