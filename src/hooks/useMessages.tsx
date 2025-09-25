@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { db } from "@muc/libs";
-import { threadIdFor, messagesCol } from "@muc/collections";
+
 import { onSnapshot, orderBy, query, getDocs } from "firebase/firestore";
+import { messagesCol, threadIdFor } from "@muc/utils";
 
 const useMessages = (meUid: string, otherUid: string) => {
   const queryClient = useQueryClient();
   const threadId = threadIdFor(meUid, otherUid);
 
-  // Initial fetch (fallback, in case snapshot lags)
   const messagesQuery = useQuery({
     queryKey: ["messages", threadId],
     queryFn: async () => {
@@ -17,7 +17,7 @@ const useMessages = (meUid: string, otherUid: string) => {
       return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     },
     enabled: !!meUid && !!otherUid,
-    placeholderData:[]
+    placeholderData: []
   });
 
 

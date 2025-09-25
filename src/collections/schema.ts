@@ -194,6 +194,7 @@ export interface NewDmThread {
   lastMessageAt: Timestamp; // serverTimestamp()
 }
 
+
 // ========== Helpers ==========
 
 // Deterministic thread ID to avoid duplicates: "uidA_uidB"

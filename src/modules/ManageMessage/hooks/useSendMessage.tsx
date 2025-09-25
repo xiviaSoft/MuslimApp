@@ -18,7 +18,7 @@ const sendMessageFn = async ({ meUid, otherUid, text }: SendMessageArgs) => {
     await setDoc(
         dmDoc(db, tid),
         {
-            participants: [meUid, otherUid].sort(),
+            participants: [meUid, otherUid],
             createdAt: serverTimestamp(),
             lastMessageText: text,
             lastMessageSenderId: meUid,

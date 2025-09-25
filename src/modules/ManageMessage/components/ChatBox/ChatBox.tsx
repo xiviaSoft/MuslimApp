@@ -1,29 +1,21 @@
+
 import { COLORS } from "@muc/constants";
-import { Box, Stack, Typography, IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import IncomingChat from "../IncomingChat/IncomingChat";
+import { auth } from "@muc/libs";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import SendingChat from "../SendingChat/SendingChat";
-import { auth, db } from "@muc/libs";
-import { deleteDoc, doc } from "firebase/firestore";
+import { Delete } from "@mui/icons-material";
+import IncomingChat from "../IncomingChat/IncomingChat";
+import { useDeleteMessage } from "@muc/hooks";
 
 interface ChatBoxProps {
-  threadId: string; // thread id for deletion
+  threadId: string;
   messages: any[];
   isLoading: boolean;
 }
-
 const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
-  if (isLoading) return <p>Loading...</p>;
+  const { mutate: deleteMessage } = useDeleteMessage(threadId);
 
-  // 🔹 Delete message function
-  const handleDelete = async (msgId: string) => {
-    try {
-      await deleteDoc(doc(db, "dms", threadId, "messages", msgId));
-      console.log("Message deleted:", msgId);
-    } catch (error) {
-      console.error("Error deleting message:", error);
-    }
-  };
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <Stack
@@ -64,7 +56,7 @@ const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
                 display: "flex",
                 flexDirection: "column",
                 position: "relative",
-                "&:hover .delete-btn": { opacity: 1 }, // 👈 show delete button on hover
+                "&:hover .delete-btn": { opacity: 1 },
               }}
             >
               {isMe ? (
@@ -72,24 +64,7 @@ const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
                   <SendingChat sendedMsg={msg.text} />
                   <IconButton
                     size="small"
-                    onClick={() => handleDelete(msg.id)}
-                    className="delete-btn"
-                    sx={{
-                      ml: 1,
-                      opacity: 0, // hidden by default
-                      transition: "opacity 0.2s",
-                    }}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-              ) : (
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <IncomingChat senderMsg={msg.text} />
-                  {/* Uncomment if you want delete for others' messages */}
-                  {/* <IconButton
-                    size="small"
-                    onClick={() => handleDelete(msg.id)}
+                    onClick={() => deleteMessage(msg.id)} // 👈 mutation
                     className="delete-btn"
                     sx={{
                       ml: 1,
@@ -97,8 +72,12 @@ const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
                       transition: "opacity 0.2s",
                     }}
                   >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton> */}
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Box>
+              ) : (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <IncomingChat senderMsg={msg.text} />
                 </Box>
               )}
             </Box>
@@ -109,4 +88,4 @@ const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
   );
 };
 
-export default ChatBox;
+export default ChatBox

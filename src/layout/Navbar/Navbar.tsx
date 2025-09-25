@@ -11,56 +11,43 @@ import Toolbar from "@mui/material/Toolbar";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Badge, Divider, Stack, Typography } from "@mui/material";
 import { COLORS } from "@muc/constants";
-import {
-  Favorite,
-  HomeOutlined,
-  MessageOutlined,
-  PhotoLibraryOutlined,
-} from "@mui/icons-material";
 import { AccountMenu, LoginDialogBox } from "@muc/components";
 import { useAuth } from "@muc/context";
 import { UseUnreadCount } from "@muc/hooks";
-import { auth } from "@muc/libs";
+import { ChatBubbleOutlineRounded, ExploreRounded, FavoriteBorderRounded, HomeRounded } from "@mui/icons-material";
 
 
 const drawerWidth = 320;
-
 const navItems = [
   {
     title: "HOME",
     path: "/",
-    icon: <HomeOutlined sx={{ fontSize: "33px" }} />,
+    icon: <HomeRounded sx={{ fontSize: "30px" }} />,
     requiresAuth: false,
   },
   {
     title: "Following",
     path: "/following",
-    icon: <PhotoLibraryOutlined sx={{ fontSize: "33px" }} />,
+    icon: <ExploreRounded sx={{ fontSize: "30px" }} />,
     requiresAuth: false,
   },
-  // {
-  //   title: "Stories",
-  //   path: "/stories",
-  //   icon: <FeedOutlined sx={{ fontSize: "33px" }} />,
-  //   requiresAuth: false,
-  // },
   {
     title: "Likes",
     path: "/likes",
-    icon: <Favorite sx={{ fontSize: "33px" }} />,
+    icon: <FavoriteBorderRounded sx={{ fontSize: "30px" }} />,
     requiresAuth: true,
   },
   {
     title: "Messages",
     path: "/messages",
-    icon: <MessageOutlined sx={{ fontSize: "33px" }} />,
+    icon: <ChatBubbleOutlineRounded sx={{ fontSize: "30px" }} />,
     requiresAuth: true,
   },
 ];
 
-
 export default function Navbar(props: any) {
-  const { total, chats } = UseUnreadCount(auth.currentUser?.uid);
+  const { user, } = useAuth();
+  const { total, } = UseUnreadCount(user?.uid);
 
 
   const { window } = props;
@@ -69,13 +56,11 @@ export default function Navbar(props: any) {
   const [pendingPath, setPendingPath] = React.useState<string | null>(null);
 
   const navigate = useNavigate();
-  const { user, } = useAuth(); // assuming useAuth exposes login()
+
 
   const handleDrawerToggle = () => {
     setMobileOpen((prev) => !prev);
   };
-  console.log(total, 'this is the unrread')
-  console.log(chats, 'this is the chat')
 
   const handleNavClick = (item: typeof navItems[number], e: React.MouseEvent) => {
     if (item.requiresAuth && !user) {
@@ -167,52 +152,51 @@ export default function Navbar(props: any) {
                   display: { xs: "none", sm: "flex", alignItems: "center" },
                 }}
               >
-                {navItems.map((item, i) => (
-                  <>
-
-                    <NavLink
-                      to={item.path}
-                      key={item.title}
-                      onClick={(e) => handleNavClick(item, e)}
-                      style={({ isActive }) => ({
-                        textDecoration: "none",
-                        padding: "0 6px",
-                        border: "none",
-                        borderBottom: isActive
-                          ? `2px solid ${COLORS.primary.main}`
-                          : "none",
-                        color: i === 2 ? "red" : COLORS.secondary.main,
-                        backgroundColor: isActive ? "#e2f2f9" : "transparent",
-                      })}
+                {navItems.map((item) => (
+                  <NavLink
+                    to={item.path}
+                    key={item.title}
+                    onClick={(e) => handleNavClick(item, e)}
+                    style={({ isActive }) => ({
+                      textDecoration: "none",
+                      padding: "0 6px",
+                      borderBottom: isActive ? `2px solid ${COLORS.primary.main}` : "none",
+                      color: item.title === "Likes" ? "red" : COLORS.secondary.main,
+                      backgroundColor: isActive ? "#e2f2f9" : "transparent",
+                    })}
+                  >
+                    <Stack
+                      sx={{
+                        alignItems: "center",
+                        height: 65,
+                        justifyContent: "space-evenly",
+                        padding: "10px",
+                      }}
                     >
-                      <Stack
+                      {item.title === "Messages" ? (
+                        <Badge
+                          badgeContent={total}
+                          color="primary"
+                          invisible={total === 0} // hides when no unread
+                        >
+                          {item.icon}
+                        </Badge>
+                      ) : (
+                        item.icon
+                      )}
+
+                      <Typography
                         sx={{
-                          alignItems: "center",
-                          height: 65,
-                          justifyContent: "space-evenly",
-                          padding: "10px",
+                          color: item.title === "Likes" ? "red" : COLORS.secondary.main,
+                          fontSize: "10px",
                         }}
                       >
-                        {i === 3 && <Badge badgeContent={total} color="primary" sx={{ display: i === 3 ? 'block' : 'none' }}>
-
-                          {item.icon}
-                        </Badge>}
-                        {i != 3 && <Box sx={{ display: i != 3 ? 'block' : 'none' }}>
-                          {item.icon}
-                        </Box>}
-
-                        <Typography
-                          sx={{
-                            color: i === 2 ? "red" : COLORS.secondary.main,
-                            fontSize: "10px",
-                          }}
-                        >
-                          {item.title}
-                        </Typography>
-                      </Stack>
-                    </NavLink>
-                  </>
+                        {item.title}
+                      </Typography>
+                    </Stack>
+                  </NavLink>
                 ))}
+
 
                 <AccountMenu />
               </Box>

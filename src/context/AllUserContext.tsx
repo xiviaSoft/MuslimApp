@@ -32,7 +32,7 @@ export const AllUserProvider = ({ children }: { children: React.ReactNode }) => 
 
 
     });
-    console.log(users, 'user in the context')
+
 
     return (
         <AllUserContext.Provider value={{ users, isLoading, isError }}>

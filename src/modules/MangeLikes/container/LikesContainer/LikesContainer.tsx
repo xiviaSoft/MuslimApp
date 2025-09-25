@@ -1,8 +1,12 @@
 import { AppLayout } from "@muc/layout";
 import React from "react";
-import { Box, Button, Container, Tab, Tabs } from "@mui/material";
+import { Box, Container, Tab, Tabs } from "@mui/material";
 import { COLORS } from "@muc/constants";
-import { JoinLeft, Visibility, VolunteerActivism } from "@mui/icons-material";
+import {
+  FavoriteBorderRounded,
+  FavoriteRounded,m
+  VisibilityRounded,
+} from "@mui/icons-material";
 import LikeMeTab from "../../components/LIkeMeTab/LikeMeTab";
 import LIkeTab from "../../components/LIkeTab/LIkeTab";
 import VistorTab from "../../components/VistorTab/VistorTab";
@@ -12,54 +16,61 @@ const LikesContainer = () => {
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
   return (
     <AppLayout>
-      <Box sx={{ bgcolor: COLORS.gray.lightDarkGray, pb: "30px", pt: "50px" }}>
-        <Container maxWidth={"lg"}>
+      <Box sx={{ bgcolor: COLORS.gray.lightDarkGray, pb: 6, pt: 6 }}>
+        <Container maxWidth="lg">
           <Tabs
             value={value}
             onChange={handleChange}
-            textColor="secondary"
-            indicatorColor="secondary"
             variant="scrollable"
             sx={{
-              ".MuiTabs-indicator": {
-                top: 0,
-                bottom: "auto",
-                bgcolor: COLORS.secondary.main,
+              "& .MuiTabs-indicator": {
+                display: "none", // remove underline
               },
-              borderBottom: "none",
+              "& .MuiTab-root": {
+                textTransform: "none",
+                borderRadius: "12px",
+                minHeight: "55px",
+                px: 3,
+                mr: 2,
+                fontWeight: 600,
+                color: COLORS.gray.lightGray,
+                backgroundColor: COLORS.white.main,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  backgroundColor: COLORS.gray.main,
+                  color: COLORS.dark.darkblack,
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                },
+              },
+              "& .Mui-selected": {
+                backgroundColor: COLORS.secondary.main,
+                color: COLORS.white.grayWhite,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                transform: "translateY(-2px)",
+              },
             }}
-            aria-label="secondary tabs example"
           >
             {tabsData.map((item, i) => (
               <Tab
-                sx={{
-                  bgcolor: value === i ? COLORS.white.main : COLORS.gray.main,
-                  marginRight: "7px",
-                  width: "228px",
-                  height: "55px",
-                  borderTop:
-                    value === i
-                      ? `3px solid ${COLORS.secondary.main}`
-                      : "transparent",
-                }}
-                value={item.value}
-                label={
-                  <Button
-                    sx={{ color: COLORS.gray.lightGray, fontWeight: 700 }}
-                    startIcon={item.icon}
-                  >
-                    {item.title}
-                  </Button>
-                }
+                key={i}
+                icon={item.icon}
+                iconPosition="start"
+                label={item.title}
               />
             ))}
           </Tabs>
-          {value === 0 && <Box>{<LIkeTab />}</Box>}
-          {value === 1 && <Box>{<LikeMeTab />}</Box>}
-          {value === 2 && <Box>{<LikeMeTab />}</Box>}
-          {value === 3 && <Box>{<VistorTab />}</Box>}
+
+          <Box mt={4}>
+            {value === 0 && <LIkeTab />}
+            {value === 1 && <LikeMeTab />}
+            {/* {value === 2 && <LikeMeTab />} */}
+            {value === 2 && <VistorTab />}
+          </Box>
         </Container>
       </Box>
     </AppLayout>
@@ -71,22 +82,22 @@ export default LikesContainer;
 const tabsData = [
   {
     value: 0,
-    icon: <VolunteerActivism />,
+    icon: <FavoriteBorderRounded sx={{ fontSize: 22 }} />,
     title: "I Like",
   },
   {
     value: 1,
-    icon: <VolunteerActivism />,
+    icon: <FavoriteRounded sx={{ fontSize: 22 }} />,
     title: "Likes Me",
   },
+  // {
+  //   value: 2,
+  //   icon: <PeopleAltRounded sx={{ fontSize: 22 }} />,
+  //   title: "Matches",
+  // },
   {
     value: 2,
-    icon: <JoinLeft />,
-    title: "Matches",
-  },
-  {
-    value: 3,
-    icon: <Visibility />,
-    title: "Vistors",
+    icon: <VisibilityRounded sx={{ fontSize: 22 }} />,
+    title: "Visitors",
   },
 ];

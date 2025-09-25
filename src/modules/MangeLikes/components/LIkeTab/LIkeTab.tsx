@@ -4,7 +4,7 @@ import { useUserActivityDetail } from "@muc/utils";
 import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
 const LIkeTab = () => {
   const { data: likedUser = [], isLoading, } = useUserActivityDetail("liked");
-  console.log(likedUser, 'this is liked user')
+ 
   if (isLoading) {
     return <Box
       width="100%"
