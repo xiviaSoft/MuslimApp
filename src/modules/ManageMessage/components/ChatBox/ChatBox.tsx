@@ -15,7 +15,15 @@ interface ChatBoxProps {
 const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
   const { mutate: deleteMessage } = useDeleteMessage(threadId);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Typography
+    sx={{
+      height: '100vh',
+      width: "100%",
+      display: 'grid',
+      placeItems: 'center'
+    }}>
+    You have no messages
+  </Typography>;
 
   return (
     <Stack
@@ -62,7 +70,7 @@ const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
               {isMe ? (
                 <Box sx={{ display: "flex", alignSelf: "end", alignItems: "center" }}>
                   <SendingChat sendedMsg={msg.text} />
-                  <IconButton
+                  {/* <IconButton
                     size="small"
                     onClick={() => deleteMessage(msg.id)} // 👈 mutation
                     className="delete-btn"
@@ -73,7 +81,7 @@ const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
                     }}
                   >
                     <Delete fontSize="small" />
-                  </IconButton>
+                  </IconButton> */}
                 </Box>
               ) : (
                 <Box sx={{ display: "flex", alignItems: "center" }}>

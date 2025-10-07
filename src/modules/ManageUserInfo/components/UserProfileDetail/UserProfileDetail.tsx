@@ -11,6 +11,7 @@ import {
 import { Flag, Report, Block } from "@mui/icons-material";
 import { COLORS } from "@muc/constants";
 import { useParams } from "react-router";
+import { useState } from "react";
 
 import {
   arrayUnion,
@@ -21,6 +22,8 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@muc/libs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import ReportDialog from "../ReportDialog/ReportDialog";
+
 
 const profileData = [
   { label: "My Sect", value: "Just Muslim" },
@@ -47,6 +50,8 @@ const UserProfileDetail = () => {
   const currentUserId = auth.currentUser?.uid;
   const queryClient = useQueryClient();
 
+  // ✅ Dialog state
+  const [openReportDialog, setOpenReportDialog] = useState(false);
 
   const { data: isBlocked, isLoading } = useQuery({
     queryKey: ["blockedStatus", currentUserId, otherUserId],
@@ -59,7 +64,6 @@ const UserProfileDetail = () => {
     },
     enabled: !!currentUserId && !!otherUserId,
   });
-
 
   const blockMutation = useMutation({
     mutationFn: async () => {
@@ -132,11 +136,12 @@ const UserProfileDetail = () => {
             p: 2,
           }}
         >
+          {/* ✅ Report Button Opens Dialog */}
           <Button
             variant="text"
             startIcon={<Report />}
             sx={{ color: "gray" }}
-            onClick={() => console.log("open report")}
+            onClick={() => setOpenReportDialog(true)}
           >
             Report
           </Button>
@@ -168,6 +173,13 @@ const UserProfileDetail = () => {
           )}
         </Box>
       </TableContainer>
+
+      {/* ✅ Report Dialog Box */}
+      <ReportDialog
+        open={openReportDialog}
+        onClose={() => setOpenReportDialog(false)}
+        reportedUserId={otherUserId || ""}
+      />
     </>
   );
 };

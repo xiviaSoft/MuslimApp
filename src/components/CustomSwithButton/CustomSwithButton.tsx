@@ -1,41 +1,49 @@
 import { Button, ButtonGroup } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { auth, db } from "@muc/libs";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
-const CustomSwithButton = () => {
-  const [isYes, setIsYes] = useState(true);
 
+const CustomSwitchButton = () => {
+
+
+  const myUid = auth.currentUser?.uid;
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const fetchVisibility = async () => {
+      if (!myUid) return;
+      const docSnap = await getDoc(doc(db, "users", myUid));
+      setIsVisible(docSnap.data()?.isVisible ?? true);
+    };
+    fetchVisibility();
+  }, [myUid]);
+
+  const handleToggle = async (value: boolean) => {
+    setIsVisible(value);
+    if (!myUid) return;
+    await updateDoc(doc(db, "users", myUid), { isVisible: value });
+  };
+
+  console.log()
   return (
-    <>
-      <ButtonGroup>
-        <Button
-          variant={isYes ? "contained" : "outlined"}
-          sx={{
-            width: "52px",
-            height: "40px",
-            bgcolor: isYes
-              ? "#5cb85c"
-              : "linear-gradient(to bottom,#fff,#e6e6e6)",
-          }}
-          onClick={() => setIsYes(true)}
-        >
-          Yes
-        </Button>
-        <Button
-          variant={!isYes ? "contained" : "outlined"}
-          sx={{
-            width: "52px",
-            height: "40px",
-            background: !isYes
-              ? "#d43f3a"
-              : "linear-gradient(to bottom,#fff,#e6e6e6)",
-          }}
-          onClick={() => setIsYes(false)}
-        >
-          No
-        </Button>
-      </ButtonGroup>
-    </>
+    <ButtonGroup>
+      <Button
+        variant={isVisible ? "contained" : "outlined"}
+        onClick={() => handleToggle(true)}
+        sx={{ width: 52, height: 40, bgcolor: isVisible ? "#5cb85c" : "#fff" }}
+      >
+        Yes
+      </Button>
+      <Button
+        variant={!isVisible ? "contained" : "outlined"}
+        onClick={() => handleToggle(false)}
+        sx={{ width: 52, height: 40, bgcolor: !isVisible ? "#d43f3a" : "#fff" }}
+      >
+        No
+      </Button>
+    </ButtonGroup>
   );
 };
 
-export default CustomSwithButton;
+export default CustomSwitchButton;

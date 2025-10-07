@@ -18,6 +18,7 @@ export type ChatSummary = {
   unread: number;
   lastMessageText?: string;
   lastMessageAt?: any;
+  lastReadAt?: any;
 };
 
 const useUnreadCount = (myUid?: string | null) => {

@@ -1,39 +1,59 @@
 // hooks/useUserActivityDetail.ts
-import { auth, db } from '@muc/libs';
+import { useAuth, useUsers } from '@muc/context';
+import { db } from '@muc/libs';
 import { useQuery } from '@tanstack/react-query';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 const useUserActivityDetail = (name: string) => {
+  const { user } = useAuth();
+  const { users: allUsers, myBlocked: blockedUsers } = useUsers();
+
   return useQuery({
-    queryKey: ["userActivity", name, auth.currentUser?.uid],
+    queryKey: ["userActivity", name, user?.uid],
     queryFn: async () => {
-      if (!auth.currentUser?.uid) return [];
+      if (!user?.uid) return [];
 
-      const userRef = doc(db, "users", auth.currentUser.uid);
+
+      const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
-
       if (!userSnap.exists()) return [];
 
-      // dynamically access the field (likes, views, etc.)
-      const ids: string[] = userSnap.data()[name] || [];
+
+      let ids: string[] = userSnap.data()[name] || [];
       if (ids.length === 0) return [];
 
-      // fetch users where ID is in that array
-      const q = query(
-        collection(db, "users"),
-        where("__name__", "in", ids.slice(0, 10)) // limit Firestore "in" to max 10
-      );
-      const snap = await getDocs(q);
+      ids = ids.filter(id => !blockedUsers.includes(id));
 
-      return snap.docs.map((doc) => ({
-        id: doc.id,
-        firstName: doc.data().firstName,
-        lastName: doc.data().lastName,
-        bio: doc.data().bio,
-      }));
+      if (ids.length === 0) return [];
+
+
+      const localMatches = allUsers.filter(u => ids.includes(u.id));
+
+
+      const missingIds = ids.filter(id => !localMatches.some(u => u.id === id));
+
+      let firestoreMatches: any[] = [];
+      if (missingIds.length > 0) {
+        const usersCol = collection(db, "users");
+        const q = query(
+          usersCol,
+          where("__name__", "in", missingIds.slice(0, 10))
+        );
+        const snap = await getDocs(q);
+
+        firestoreMatches = snap.docs.map(d => ({
+          id: d.id,
+          firstName: d.data().firstName,
+          lastName: d.data().lastName,
+          bio: d.data().bio,
+        }));
+      }
+
+
+      const combined = [...localMatches, ...firestoreMatches];
+      return ids.map(id => combined.find(u => u.id === id)).filter(Boolean);
     },
-    // placeholderData: [],
-    enabled: !!auth.currentUser?.uid,
+    enabled: !!user?.uid,
   });
 };
 

@@ -77,7 +77,7 @@ const MultipulCustomSelect: React.FC<MultipulCustomSelectProps> = ({
                 name={name}
                 control={control}
                 defaultValue={[]} // ✅ array for multiple
-                rules={{ required: `${label || "This field"} is required` }}
+                // rules={{ required: `${label || "This field"} is required` }}
                 render={({ field, fieldState }) => (
                     <>
                         <Select

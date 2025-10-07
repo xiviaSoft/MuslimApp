@@ -4,7 +4,7 @@ import { Box, Container, Tab, Tabs } from "@mui/material";
 import { COLORS } from "@muc/constants";
 import {
   FavoriteBorderRounded,
-  FavoriteRounded,m
+  FavoriteRounded,
   VisibilityRounded,
 } from "@mui/icons-material";
 import LikeMeTab from "../../components/LIkeMeTab/LikeMeTab";

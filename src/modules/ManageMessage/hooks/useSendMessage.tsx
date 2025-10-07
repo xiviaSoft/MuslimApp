@@ -1,9 +1,7 @@
-// hooks/useSendMessage.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, serverTimestamp, setDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@muc/libs";
 import { dmDoc, messagesCol, threadIdFor } from "@muc/utils";
-
 
 interface SendMessageArgs {
     meUid: string;
@@ -11,10 +9,24 @@ interface SendMessageArgs {
     text: string;
 }
 
+const MAX_MESSAGES = 5;
+
 const sendMessageFn = async ({ meUid, otherUid, text }: SendMessageArgs) => {
     const tid = threadIdFor(meUid, otherUid);
 
-    // 1️⃣ Ensure thread exists
+    // Count all messages sent by this user, including deleted
+    const messagesQuery = query(
+        collection(db, "dms", tid, "messages"),
+        where("senderId", "==", meUid)
+    );
+    const messagesSnapshot = await getDocs(messagesQuery);
+    const totalMessages = messagesSnapshot.docs.length;
+
+    if (totalMessages >= MAX_MESSAGES) {
+        throw new Error(`You can send only ${MAX_MESSAGES} messages in this chat.`);
+    }
+
+    // Ensure thread exists
     await setDoc(
         dmDoc(db, tid),
         {
@@ -27,14 +39,14 @@ const sendMessageFn = async ({ meUid, otherUid, text }: SendMessageArgs) => {
         { merge: true }
     );
 
-    // 2️⃣ Add message
+    // Add message
     await addDoc(messagesCol(db, tid), {
         senderId: meUid,
         text,
         sentAt: serverTimestamp(),
     });
 
-    // 3️⃣ Update preview
+    // Update thread preview
     await updateDoc(dmDoc(db, tid), {
         lastMessageText: text,
         lastMessageSenderId: meUid,
@@ -42,19 +54,17 @@ const sendMessageFn = async ({ meUid, otherUid, text }: SendMessageArgs) => {
     });
 };
 
+
+
 export const useSendMessage = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: sendMessageFn,
         onSuccess: (_, variables) => {
-            // 🔄 Invalidate queries so chat list/messages refresh
-            queryClient.invalidateQueries({
-                queryKey: ["chatList", variables.meUid],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ["messages", threadIdFor(variables.meUid, variables.otherUid)],
-            });
+            // Refresh chat list/messages
+            queryClient.invalidateQueries({ queryKey: ["chatList", variables.meUid] });
+            queryClient.invalidateQueries({ queryKey: ["messages", threadIdFor(variables.meUid, variables.otherUid)] });
         },
     });
 };

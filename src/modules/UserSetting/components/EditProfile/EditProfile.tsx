@@ -30,39 +30,82 @@ import {
 } from "@muc/constants";
 import { useUpdateUser } from "@muc/hooks";
 import { useState } from "react";
+import { formatDateForInput } from "@muc/utils";
+import { Timestamp } from "firebase/firestore";
+
+
 
 const Section = ({ title }: { title: string }) => (
   <Box sx={{ mb: 2 }}>
     <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
       {title}
     </Typography>
-    <Divider sx={{}} />
+    <Divider />
   </Box>
 );
 
 const EditProfile = () => {
   const { user } = useAuth();
-  const updateUser = useUpdateUser(user?.uid || "");
+  const { mutate, isPending } = useUpdateUser(user?.uid || "");
+
+  // ✅ Prepare default values with date formatting
   const methods = useForm<User>({
-    defaultValues: user ?? {},
+    defaultValues: user
+      ? {
+        ...user,
+        dateOfBirth: formatDateForInput(user.dateOfBirth), // ✅ string not Date
+        workExperience: {
+          ...user.workExperience,
+          startDate: formatDateForInput(user.workExperience?.startDate),
+          endDate: formatDateForInput(user.workExperience?.endDate),
+        },
+      }
+      : undefined,
   });
+
+
+
 
   const { handleSubmit } = methods;
 
-  // State for disabling sections
   const [disableWork, setDisableWork] = useState(false);
   const [disableSocial, setDisableSocial] = useState(false);
 
   const onSubmit = (data: User) => {
     if (!user?.uid) return;
+
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(([_, v]) => v !== undefined)
     );
-    updateUser.mutate(cleanedData);
+
+    // ✅ Convert dateOfBirth (string → Firestore Timestamp)
+    if (typeof cleanedData.dateOfBirth === "string") {
+      cleanedData.dateOfBirth = Timestamp.fromDate(new Date(cleanedData.dateOfBirth));
+    }
+
+    // ✅ Convert workExperience dates too (if exist)
+    if (cleanedData.workExperience?.startDate && typeof cleanedData.workExperience.startDate === "string") {
+      cleanedData.workExperience.startDate = Timestamp.fromDate(
+        new Date(cleanedData.workExperience.startDate)
+      );
+    }
+
+    if (cleanedData.workExperience?.endDate && typeof cleanedData.workExperience.endDate === "string") {
+      cleanedData.workExperience.endDate = Timestamp.fromDate(
+        new Date(cleanedData.workExperience.endDate)
+      );
+    }
+
+    console.log("🧩 Final data sent to Firestore:", cleanedData);
+
+    mutate(cleanedData, {
+      onSuccess: () => console.log("✅ Firestore update success"),
+      onError: (error) => console.error("❌ Firestore update error:", error),
+    });
   };
 
   if (!user) return <p>Loading...</p>;
-
+  console.log("🕓 DOB value:", user?.dateOfBirth, formatDateForInput(user?.dateOfBirth));
   return (
     <FormProvider {...methods}>
       <Paper
@@ -87,7 +130,6 @@ const EditProfile = () => {
           {/* Personal Details */}
           <Section title="Personal Details" />
           <Grid container spacing={2}>
-            {/* --- Personal Info Fields (same as before) --- */}
             <Grid item xs={12} md={6}>
               <CustomTextField
                 name="firstName"
@@ -140,7 +182,12 @@ const EditProfile = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <CustomTextField name="dateOfBirth" label="Date of Birth" type="date" />
+              <CustomTextField
+                name="dateOfBirth"
+                label="Date of Birth"
+                type="date"
+                defaultValue={formatDateForInput(user?.dateOfBirth)}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomSelect
@@ -237,7 +284,7 @@ const EditProfile = () => {
             </Grid>
           </Grid>
 
-          {/* Work Experience (Accordion + Checkbox) */}
+          {/* Work Experience */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={{ flexGrow: 1 }}>Work Experience</Typography>
@@ -283,15 +330,6 @@ const EditProfile = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <CustomTextField
-                    name="workExperience.isCurrent"
-                    label="Currently Working"
-                    type="text"
-                    placeholder="Enter address"
-                    disabled={disableWork}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <CustomTextField
                     name="workExperience.startDate"
                     label="Start Date"
                     type="date"
@@ -321,7 +359,7 @@ const EditProfile = () => {
             </AccordionDetails>
           </Accordion>
 
-          {/* Social Links (Accordion + Checkbox) */}
+          {/* Social Links */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography sx={{ flexGrow: 1 }}>Social Links</Typography>
@@ -379,8 +417,8 @@ const EditProfile = () => {
           </Accordion>
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <Button type="submit" variant="contained">
-              Update Profile
+            <Button type="submit" variant="contained" disabled={isPending}>
+              {isPending ? "Updating..." : "Update Profile"}
             </Button>
           </Box>
         </Box>

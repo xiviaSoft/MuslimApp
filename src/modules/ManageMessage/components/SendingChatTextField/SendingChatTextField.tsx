@@ -9,6 +9,7 @@ interface SendingChatTextFieldProps {
   meUid: string;
   otherUid: string;
 }
+; // Maximum messages per user per thread
 
 const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) => {
   const methods = useForm({
@@ -17,18 +18,23 @@ const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) =>
     },
   });
 
-
   const { mutateAsync: sendMessage, isPending } = useSendMessage();
 
   const submitHandle = async (data: any) => {
     if (!data.messaging.trim()) return;
-    await sendMessage({
-      meUid,
-      otherUid,
-      text: data.messaging.trim(),
-    });
-    methods.reset();
+
+    try {
+      await sendMessage({
+        meUid,
+        otherUid,
+        text: data.messaging.trim(),
+      });
+      methods.reset();
+    } catch (err: any) {
+      alert(err.message); // shows: "You can send only 5 messages in this chat."
+    }
   };
+
 
   return (
     <FormProvider {...methods}>

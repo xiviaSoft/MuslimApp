@@ -4,12 +4,13 @@ import { COLORS } from "@muc/constants";
 import { CustomProfileCard } from "@muc/components";
 import HomePagination from "../../components/HomePagination/HomePagination";
 import { auth, } from "@muc/libs";
-
 import { useUsers } from "@muc/context";
 import { useUserActions } from "@muc/utils";
+
 const HomeContainer = () => {
   const { addVisit, likeUser, removeLike } = useUserActions()
   const { users: allUsers, isError, isLoading } = useUsers()
+  console.log(allUsers, 'alluser in the home')
   return (
     <AppLayout>
       <Box sx={{ bgcolor: COLORS.gray.main }}>

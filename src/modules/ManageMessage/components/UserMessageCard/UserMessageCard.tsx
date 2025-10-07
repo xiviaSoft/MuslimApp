@@ -1,12 +1,13 @@
 // components/UserMessageCard/UserMessageCard.tsx
 import { COLORS } from "@muc/constants";
-import { auth, } from "@muc/libs";
-import { Close, MoreHoriz } from "@mui/icons-material";
+import { auth, db } from "@muc/libs";
+import { Close, MoreHoriz, Block } from "@mui/icons-material";
 import { Box, Stack, Typography, IconButton, Menu, MenuItem } from "@mui/material";
-
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { useMarkAsRead } from "@muc/hooks";
+import { arrayUnion, arrayRemove, doc, getDoc, updateDoc } from "firebase/firestore";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface UserMessageCardProps {
   firstName: string;
@@ -22,14 +23,15 @@ const UserMessageCard = ({
   firstName,
   lastMessageText,
   lastName,
-  uid,
+  uid: otherUid,
   threadId,
   unread = 0,
   isActive = false,
 }: UserMessageCardProps) => {
   const navigate = useNavigate();
-  const myUid = auth.currentUser?.uid;
   const { markThreadAsRead, markThreadAsUnread } = useMarkAsRead();
+  const queryClient = useQueryClient();
+  const myUid = auth.currentUser?.uid;
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const open = Boolean(menuAnchor);
@@ -47,11 +49,60 @@ const UserMessageCard = ({
     await markThreadAsUnread(threadId, myUid);
   };
 
+  // 🔹 Check mutual block status
+  const { data: isBlocked, isLoading: isBlockedLoading } = useQuery({
+    queryKey: ["mutualBlockedStatus", myUid, otherUid],
+    queryFn: async () => {
+      if (!myUid || !otherUid) return false;
+
+      const [myDoc, otherDoc] = await Promise.all([
+        getDoc(doc(db, "users", myUid)),
+        getDoc(doc(db, "users", otherUid)),
+      ]);
+
+      if (!myDoc.exists() || !otherDoc.exists()) return false;
+
+      const myBlocked = myDoc.data().blocked || [];
+      const otherBlocked = otherDoc.data().blocked || [];
+
+      return myBlocked.includes(otherUid) || otherBlocked.includes(myUid);
+    },
+    enabled: !!myUid && !!otherUid,
+  });
+
+  // 🔹 Block mutation
+  const blockMutation = useMutation({
+    mutationFn: async () => {
+      if (!myUid || !otherUid) return;
+      await updateDoc(doc(db, "users", myUid), {
+        blocked: arrayUnion(otherUid),
+      });
+    },
+    onSuccess: () => {
+      if (myUid && otherUid) {
+        queryClient.invalidateQueries({ queryKey: ["mutualBlockedStatus", myUid, otherUid] });
+      }
+    },
+  });
+
+  const unblockMutation = useMutation({
+    mutationFn: async () => {
+      if (!myUid || !otherUid) return;
+      await updateDoc(doc(db, "users", myUid), {
+        blocked: arrayRemove(otherUid),
+      });
+    },
+    onSuccess: () => {
+      if (myUid && otherUid) {
+        queryClient.invalidateQueries({ queryKey: ["mutualBlockedStatus", myUid, otherUid] });
+      }
+    },
+  });
+
+
   const handleClick = () => {
-    if (threadId && !isActive) {
-      markReadLocal();
-    }
-    navigate(`/messages/${uid}`);
+    if (threadId && !isActive) markReadLocal();
+    navigate(`/messages/${otherUid}`);
   };
 
   return (
@@ -67,12 +118,11 @@ const UserMessageCard = ({
         cursor: "pointer",
         position: "relative",
         backgroundColor: isActive ? COLORS.gray.lightDarkGray : "transparent",
-        '&:hover': {
-          backgroundColor: COLORS.gray.lightDarkGray,
-        }
+        '&:hover': { backgroundColor: COLORS.gray.lightDarkGray },
       }}
       onClick={handleClick}
     >
+      {/* Avatar */}
       <Box
         component={"img"}
         src="/assets/images/girl-img.jpg"
@@ -80,10 +130,11 @@ const UserMessageCard = ({
           width: "50px",
           height: "50px",
           borderRadius: "50%",
-          border: unread > 0 ? `2px solid ${COLORS.secondary.main}` : 'none'
+          border: unread > 0 ? `2px solid ${COLORS.secondary.main}` : 'none',
         }}
       />
 
+      {/* Name & Last Message */}
       <Stack width={"60%"} overflow="hidden">
         <Typography
           sx={{
@@ -94,11 +145,9 @@ const UserMessageCard = ({
         >
           {firstName} {lastName}
         </Typography>
-
         <Typography
           variant="body2"
           fontSize={"11px"}
-          color={unread > 0 ? COLORS.gray.main : COLORS.gray.darkGray}
           height={"20px"}
           sx={{
             overflow: "hidden",
@@ -112,6 +161,7 @@ const UserMessageCard = ({
         </Typography>
       </Stack>
 
+      {/* Actions */}
       <Stack sx={{ justifyContent: "space-around", alignItems: "end", ml: "auto" }}>
         <IconButton size="small">
           <Close sx={{ fontSize: "16px" }} />
@@ -119,41 +169,50 @@ const UserMessageCard = ({
         <IconButton size="small" onClick={handleOpenMenu}>
           <MoreHoriz sx={{ fontSize: "20px" }} />
         </IconButton>
-        <Typography sx={{ fontSize: "10px" }}>Fri</Typography>
       </Stack>
 
-      <Menu anchorEl={menuAnchor} open={open} onClose={handleCloseMenu} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+      <Menu
+        anchorEl={menuAnchor}
+        open={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
         {unread > 0 ? (
           <MenuItem onClick={() => { handleCloseMenu(); markReadLocal(); }}>Mark as read</MenuItem>
         ) : (
           <MenuItem onClick={() => { handleCloseMenu(); markUnreadLocal(); }}>Mark as unread</MenuItem>
         )}
+
+        {isBlockedLoading ? (
+          <MenuItem disabled>Loading...</MenuItem>
+        ) : isBlocked ? (
+          <MenuItem onClick={() => { handleCloseMenu(); unblockMutation.mutate(); }}>
+            <Block sx={{ mr: 1 }} /> Unblock
+          </MenuItem>
+        ) : (
+          <MenuItem onClick={() => { handleCloseMenu(); blockMutation.mutate(); }}>
+            <Block sx={{ mr: 1 }} /> Block
+          </MenuItem>
+        )}
       </Menu>
 
-      {/* Unread badge */}
+      {/* Unread Badge */}
       {unread > 0 && (
-        <Box
-          sx={{
-            position: "absolute",
-            right: 12,
-            top: 12,
-          }}
-        >
-          <Box
-            sx={{
-              bgcolor: COLORS.secondary.main,
-              color: COLORS.white.main,
-              borderRadius: "50%",
-              minWidth: 20,
-              height: 20,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 12,
-              fontWeight: 600,
-              px: 0.5,
-            }}
-          >
+        <Box sx={{ position: "absolute", right: 12, top: 12 }}>
+          <Box sx={{
+            bgcolor: COLORS.secondary.main,
+            color: COLORS.white.main,
+            borderRadius: "50%",
+            minWidth: 20,
+            height: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 12,
+            fontWeight: 600,
+            px: 0.5,
+          }}>
             {unread > 99 ? "99+" : unread}
           </Box>
         </Box>

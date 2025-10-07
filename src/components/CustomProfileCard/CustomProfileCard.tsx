@@ -13,6 +13,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@muc/constants";
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { calculateAge } from "@muc/utils";
 
 type UserProfielCardProps = {
   // img: string;
@@ -43,16 +44,22 @@ const UserProfileCard = ({
   onVisit,
 }: UserProfielCardProps) => {
   const navigate = useNavigate()
-  const calculateAge = (dobString: number) => {
-    const dob = new Date(dobString);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    return age;
-  };
+
+
+
+
+
+
+  // const calculateAge = (dobString: number) => {
+  //   const dob = new Date(dobString);
+  //   const today = new Date();
+  //   let age = today.getFullYear() - dob.getFullYear();
+  //   const monthDiff = today.getMonth() - dob.getMonth();
+  //   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+  //     age--;
+  //   }
+  //   return age;
+  // };
 
 
 

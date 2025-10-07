@@ -1,24 +1,16 @@
 // pages/messages/MessageContainer.tsx
 import * as React from "react";
-import { Box, Stack, Typography, Paper } from "@mui/material";
+import { Box, Stack, Typography, Paper, Divider } from "@mui/material";
 import { COLORS } from "@muc/constants";
 import MessageCard from "../../components/UserMessageCard/UserMessageCard";
 import ShowUserDetailPath from "../../components/ShowUserDetailPath/ShowUserDetailPath";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import SendingChatTextField from "../../components/SendingChatTextField/SendingChatTextField";
-
 import { auth, db } from "@muc/libs";
 import { useParams } from "react-router";
 import { useMarkAsRead, UseUnreadCount } from "@muc/hooks";
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { useQuery } from "@tanstack/react-query";
 
 const MessageContainer = () => {
   const { id: otherUid } = useParams();
@@ -29,13 +21,32 @@ const MessageContainer = () => {
   const [messages, setMessages] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
 
-  // 🔹 unread count hook
   const { total, chats: unreadChats = [] } = UseUnreadCount(myUid);
 
-  // 🔹 Listen to all chat threads in realtime
+  // 🔹 Check mutual block status
+  const { data: isBlocked, isLoading: isBlockedLoading } = useQuery({
+    queryKey: ["mutualBlockedStatus", myUid, otherUid],
+    queryFn: async () => {
+      if (!myUid || !otherUid) return false;
+
+      const [myDoc, otherDoc] = await Promise.all([
+        getDoc(doc(db, "users", myUid)),
+        getDoc(doc(db, "users", otherUid)),
+      ]);
+
+      if (!myDoc.exists() || !otherDoc.exists()) return false;
+
+      const myBlocked = myDoc.data().blocked || [];
+      const otherBlocked = otherDoc.data().blocked || [];
+
+      return myBlocked.includes(otherUid) || otherBlocked.includes(myUid);
+    },
+    enabled: !!myUid && !!otherUid,
+  });
+
+  // 🔹 Listen to all chat threads
   React.useEffect(() => {
     if (!myUid) return;
-
     const q = query(collection(db, "dms"), where("participants", "array-contains", myUid));
 
     const unsub = onSnapshot(q, async (snapshot) => {
@@ -47,48 +58,35 @@ const MessageContainer = () => {
           let userProfile = null;
           if (other) {
             const userDoc = await getDoc(doc(db, "users", other));
-            if (userDoc.exists()) {
-              userProfile = userDoc.data();
-            }
+            if (userDoc.exists()) userProfile = userDoc.data();
           }
 
-          return {
-            id: docSnap.id,
-            ...data,
-            otherUid: other,
-            otherUser: userProfile,
-          };
+          return { id: docSnap.id, ...data, otherUid: other, otherUser: userProfile };
         })
       );
-
       setChatUsers(chats);
     });
 
     return () => unsub();
   }, [myUid]);
 
-  // 🔹 Listen to active chat messages in realtime
+  // 🔹 Listen to messages in active chat
   React.useEffect(() => {
     if (!myUid || !otherUid) return;
-
     const q = query(
       collection(db, "dms", [myUid, otherUid].sort().join("_"), "messages"),
       orderBy("sentAt", "asc")
     );
-
     const unsub = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-      setMessages(msgs);
+      setMessages(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
-
     return () => unsub();
   }, [myUid, otherUid]);
 
-  // 🔹 Merge unread counts into chat list
+  // 🔹 Merge unread counts
   const enrichedChats = React.useMemo(() => {
     const base = chatUsers ?? [];
-
     const getTime = (t: any) => {
       if (!t) return 0;
       if (typeof t.toMillis === "function") return t.toMillis();
@@ -99,53 +97,30 @@ const MessageContainer = () => {
 
     const merged = base.map((chat: any) => {
       const unreadChat = unreadChats.find((x: any) => x.id === chat.id);
-      return {
-        ...chat,
-        unread: unreadChat?.unread ?? 0,
-        lastReadAt: unreadChat?.lastReadAt,
-      };
+      return { ...chat, unread: unreadChat?.unread ?? 0, lastReadAt: unreadChat?.lastReadAt };
     });
-
     merged.sort((a: any, b: any) => getTime(b.lastMessageAt) - getTime(a.lastMessageAt));
     return merged;
   }, [chatUsers, unreadChats]);
 
   const activeChat = enrichedChats?.find((chat: any) => chat.otherUid === otherUid);
 
-  // 🔹 Mark active thread as read when opened
+  // 🔹 Mark thread as read
   React.useEffect(() => {
     if (!myUid || !activeChat?.id) return;
     markThreadAsRead(activeChat.id, myUid);
   }, [myUid, activeChat?.id, markThreadAsRead]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        width: "100%",
-        height: "85vh",
-        bgcolor: COLORS.gray.lightDarkGray,
-        borderRadius: 3,
-        overflow: "hidden",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-      }}
-    >
+    <Box sx={{ display: "flex", width: "100%", height: "85vh", bgcolor: COLORS.gray.lightDarkGray, borderRadius: 3, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+
       {/* Sidebar */}
-      <Paper
-        elevation={0}
-        sx={{
-          width: 320,
-          borderRight: `1px solid ${COLORS.gray.main}`,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <Paper elevation={0} sx={{ width: 320, borderRight: `1px solid ${COLORS.gray.main}`, display: "flex", flexDirection: "column" }}>
         <Box sx={{ px: 2, py: 1 }}>
           <Typography sx={{ fontWeight: 700, fontSize: 16, color: COLORS.gray.darkGray }}>
             Chats {total > 0 ? `(${total})` : ""}
           </Typography>
         </Box>
-
         <Box sx={{ flex: 1, overflowY: "auto", p: 1 }}>
           {!enrichedChats || enrichedChats.length === 0 ? (
             <Typography sx={{ textAlign: "center", color: COLORS.gray.darkGray, py: 5 }}>
@@ -171,16 +146,30 @@ const MessageContainer = () => {
       {/* Active chat */}
       <Stack sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: COLORS.gray.whiteGray }}>
         {otherUid && activeChat?.otherUser && (
-          <ShowUserDetailPath
-            firstName={activeChat.otherUser.firstName ?? ""}
-            lastName={activeChat.otherUser.lastName ?? ""}
-          />
+          <>
+            <ShowUserDetailPath firstName={activeChat.otherUser.firstName ?? ""} lastName={activeChat.otherUser.lastName ?? ""} />
+            <Divider sx={{ my: 1 }} />
+          </>
         )}
 
         <ChatBox threadId={activeChat?.id ?? ""} messages={messages} isLoading={loading} />
 
-        {myUid && otherUid && (
-          <SendingChatTextField meUid={myUid} otherUid={otherUid} />
+        {myUid && otherUid ? (
+          isBlockedLoading ? (
+            <Typography sx={{ textAlign: "center", color: "gray", py: 2 }}>
+              Loading...
+            </Typography>
+          ) : isBlocked ? (
+            <Typography sx={{ textAlign: "center", color: "red", py: 2 }}>
+              You cannot send messages because one of you has blocked the other.
+            </Typography>
+          ) : (
+            <SendingChatTextField meUid={myUid} otherUid={otherUid} />
+          )
+        ) : (
+          <Typography sx={{ textAlign: "center", color: "red", py: 2 }}>
+            You cannot send messages.
+          </Typography>
         )}
       </Stack>
     </Box>

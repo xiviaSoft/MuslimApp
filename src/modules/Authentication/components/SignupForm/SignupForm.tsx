@@ -47,7 +47,7 @@ const SignupForm = () => {
                 ...rest
             } = data;
 
-            // 2️⃣ Save to Firestore
+
             await setDoc(doc(db, "users", uid), {
                 ...rest,
                 uid,
@@ -117,10 +117,8 @@ const SignupForm = () => {
 
 
     const stepFields: (keyof FormData)[][] = [
-        ["firstName", "lastName", "email", "dateOfBirth", "gender",], // 
-        // ["highestDegree"],
-        // ["companyName", "role", "startDate"],
-        ["facebook", "twitter", "linkedin", "instagram"],
+        ["firstName", "lastName", "email", "dateOfBirth", "gender",]
+        // ["facebook", "twitter", "linkedin", "instagram"],
     ];
 
     const handleNext = async () => {

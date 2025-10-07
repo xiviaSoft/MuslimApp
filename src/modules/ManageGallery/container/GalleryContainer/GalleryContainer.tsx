@@ -22,11 +22,12 @@ import { Search } from "@mui/icons-material";
 import { User, useUsers } from "@muc/context";
 import { auth } from "@muc/libs";
 import { useState, useEffect } from "react";
-import { useUserActions } from "@muc/utils";
+import { calculateAge, useUserActions } from "@muc/utils";
 
 function valuetext(value: number) {
   return `${value}`;
 }
+
 
 const GalleryContainer = () => {
   const { users: allUsers, isError, isLoading } = useUsers();
@@ -40,25 +41,7 @@ const GalleryContainer = () => {
       return;
     }
     setFilteredUsers(allUsers.filter((user) => user.id !== currentUserId));
-  }, [allUsers]);
-
-  const submitData = (data: any) => {
-    const { search } = data;
-
-    const filtered = allUsers.filter((user: User) => {
-      if (user.id === currentUserId) return false;
-
-      const matchesSearch = search
-        ? `${user.firstName} ${user.lastName}`
-          .toLowerCase()
-          .includes(search.toLowerCase())
-        : true;
-
-      return matchesSearch;
-    });
-
-    setFilteredUsers(filtered);
-  };
+  }, [allUsers, currentUserId]);
 
   const methods = useForm({
     defaultValues: {
@@ -66,6 +49,33 @@ const GalleryContainer = () => {
       age: [18, 50],
     },
   });
+
+  const submitData = (data: any) => {
+    const { search, age } = data;
+    const [minAge, maxAge] = age;
+
+    const filtered = allUsers.filter((user: User) => {
+      if (user.id === currentUserId) return false;
+
+      // 🔍 Search match
+      const matchesSearch = search
+        ? `${user.firstName} ${user.lastName}`
+          .toLowerCase()
+          .includes(search.toLowerCase())
+        : false; // false because we want OR logic
+
+
+      const userAge = calculateAge(user.dateOfBirth);
+      const matchesAge =
+        userAge !== null && userAge >= minAge && userAge <= maxAge;
+
+      // ✅ Return true if **any filter matches**
+      return matchesSearch || matchesAge;
+    });
+
+    setFilteredUsers(filtered);
+  };
+
 
   return (
     <AppLayout>
@@ -173,19 +183,12 @@ const GalleryContainer = () => {
                   gap={2}
                 >
                   <CircularProgress size={36} />
-                  <Typography
-                    variant="body2"
-                    color={COLORS.gray.darkGray}
-                  >
+                  <Typography variant="body2" color={COLORS.gray.darkGray}>
                     Loading users...
                   </Typography>
                 </Box>
               ) : isError ? (
-                <Typography
-                  textAlign="center"
-                  color="error"
-                  sx={{ py: 5 }}
-                >
+                <Typography textAlign="center" color="error" sx={{ py: 5 }}>
                   Error loading users
                 </Typography>
               ) : filteredUsers.length === 0 ? (
@@ -219,7 +222,7 @@ const GalleryContainer = () => {
                     <Grid item md={3} sm={4} xs={12} key={item.id}>
                       <CustomProfileCard
                         id={item.id}
-                        age={item.dateOfBirth}
+                        age={item.dateOfBirth} // ✅ Show numeric age
                         likes={item?.likes || []}
                         name={`${item.firstName} ${item.lastName}`}
                         onLike={() => likeUser.mutate(item.id)}

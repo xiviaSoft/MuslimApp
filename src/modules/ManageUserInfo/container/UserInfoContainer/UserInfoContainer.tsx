@@ -61,7 +61,7 @@ const UserInfoContainer = () => {
     educationInformation,
     ..._allData
   } = userData as User || {};
-  console.log(userData, 'user data in the info container');
+  // console.log(userData, 'user data in the info container');
 
   return (
     <AppLayout>
