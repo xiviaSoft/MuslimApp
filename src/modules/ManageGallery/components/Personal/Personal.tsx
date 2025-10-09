@@ -10,7 +10,8 @@ import {
   HeightOptions,
   LivingArrangements,
   LookingToMarry,
-  MaritalStatus,
+  MARITAL_STATUS,
+  // MaritalStatus,
   Relocate,
   Smoke,
   WantsChildren,
@@ -96,7 +97,7 @@ const Personal = () => {
           name="Marital Status"
           label="Marital Status"
           labelOutside={true}
-          options={MaritalStatus.map((item) => ({
+          options={MARITAL_STATUS.map((item) => ({
             label: item,
             value: item,
           }))}

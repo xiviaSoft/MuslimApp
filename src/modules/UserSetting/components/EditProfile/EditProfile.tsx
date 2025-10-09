@@ -1,7 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import {
   Box,
-  Button,
   Typography,
   Divider,
   Grid,
@@ -11,29 +10,30 @@ import {
   AccordionDetails,
   Checkbox,
   FormControlLabel,
+  Stack,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { User } from "@muc/collections";
-import { useAuth } from "@muc/context";
+import { useEffect, useState } from "react";
 import {
+  CustomButton,
   CustomSelect,
   CustomTextField,
   MultipulCustomSelect,
 } from "@muc/components";
 import {
+  COLORS,
   GenderTypes,
   Languages,
-  MaritalStatus,
+  MARITAL_STATUS,
   Religions,
   SoftSkills,
   TechnicalSkills,
 } from "@muc/constants";
+
+import { User } from "@muc/collections";
 import { useUpdateUser } from "@muc/hooks";
-import { useState } from "react";
-import { formatDateForInput } from "@muc/utils";
 import { Timestamp } from "firebase/firestore";
-
-
+import { useAuth } from "@muc/context";
 
 const Section = ({ title }: { title: string }) => (
   <Box sx={{ mb: 2 }}>
@@ -45,31 +45,40 @@ const Section = ({ title }: { title: string }) => (
 );
 
 const EditProfile = () => {
-  const { user } = useAuth();
-  const { mutate, isPending } = useUpdateUser(user?.uid || "");
-
-  // ✅ Prepare default values with date formatting
-  const methods = useForm<User>({
-    defaultValues: user
-      ? {
-        ...user,
-        dateOfBirth: formatDateForInput(user.dateOfBirth), // ✅ string not Date
-        workExperience: {
-          ...user.workExperience,
-          startDate: formatDateForInput(user.workExperience?.startDate),
-          endDate: formatDateForInput(user.workExperience?.endDate),
-        },
-      }
-      : undefined,
-  });
-
-
-
-
-  const { handleSubmit } = methods;
 
   const [disableWork, setDisableWork] = useState(false);
   const [disableSocial, setDisableSocial] = useState(false);
+  const { user } = useAuth();
+
+  const updateUser = useUpdateUser(user?.uid || "");
+
+  const methods = useForm<User>({
+    defaultValues: user ?? {},
+  });
+  const { handleSubmit, reset } = methods;
+
+  const toDateInputValue = (value: any): string | "" => {
+    if (!value) return "";
+    const date = value instanceof Timestamp ? value.toDate() : new Date(value);
+    return date.toISOString().split("T")[0];
+  };
+
+  useEffect(() => {
+    if (user) {
+      const formattedUser: Partial<User> & Record<string, any> = {
+        ...user,
+        dateOfBirth: toDateInputValue(user.dateOfBirth),
+        workExperience: user.workExperience
+          ? {
+            ...user.workExperience,
+            startDate: toDateInputValue(user.workExperience.startDate),
+            endDate: toDateInputValue(user.workExperience.endDate),
+          }
+          : undefined,
+      };
+      reset(formattedUser);
+    }
+  }, [user, reset]);
 
   const onSubmit = (data: User) => {
     if (!user?.uid) return;
@@ -78,34 +87,9 @@ const EditProfile = () => {
       Object.entries(data).filter(([_, v]) => v !== undefined)
     );
 
-    // ✅ Convert dateOfBirth (string → Firestore Timestamp)
-    if (typeof cleanedData.dateOfBirth === "string") {
-      cleanedData.dateOfBirth = Timestamp.fromDate(new Date(cleanedData.dateOfBirth));
-    }
-
-    // ✅ Convert workExperience dates too (if exist)
-    if (cleanedData.workExperience?.startDate && typeof cleanedData.workExperience.startDate === "string") {
-      cleanedData.workExperience.startDate = Timestamp.fromDate(
-        new Date(cleanedData.workExperience.startDate)
-      );
-    }
-
-    if (cleanedData.workExperience?.endDate && typeof cleanedData.workExperience.endDate === "string") {
-      cleanedData.workExperience.endDate = Timestamp.fromDate(
-        new Date(cleanedData.workExperience.endDate)
-      );
-    }
-
-    console.log("🧩 Final data sent to Firestore:", cleanedData);
-
-    mutate(cleanedData, {
-      onSuccess: () => console.log("✅ Firestore update success"),
-      onError: (error) => console.error("❌ Firestore update error:", error),
-    });
+    updateUser.mutate(cleanedData as Partial<User>);
   };
 
-  if (!user) return <p>Loading...</p>;
-  console.log("🕓 DOB value:", user?.dateOfBirth, formatDateForInput(user?.dateOfBirth));
   return (
     <FormProvider {...methods}>
       <Paper
@@ -115,7 +99,7 @@ const EditProfile = () => {
           mx: "auto",
           p: 4,
           borderRadius: 3,
-          backgroundColor: "#fafafa",
+          backgroundColor: COLORS.white?.main || "#fafafa",
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
@@ -127,7 +111,7 @@ const EditProfile = () => {
           onSubmit={handleSubmit(onSubmit)}
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
-          {/* Personal Details */}
+
           <Section title="Personal Details" />
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -149,16 +133,23 @@ const EditProfile = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <CustomTextField name="email" label="Email" type="email" disabled />
+              <CustomTextField
+                name="email"
+                label="Email"
+                type="email"
+                placeholder=""
+                disabled
+              // rules={{ required: "Last name is required" }}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomTextField
                 name="phoneNumber"
                 label="Phone Number"
                 type="text"
-                placeholder="Enter phone number"
-                allowOnly="numeric"
-                maxLength={11}
+                placeholder="Update you Phone Number"
+
+              // rules={{ required: "Last name is required" }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -186,14 +177,13 @@ const EditProfile = () => {
                 name="dateOfBirth"
                 label="Date of Birth"
                 type="date"
-                defaultValue={formatDateForInput(user?.dateOfBirth)}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <CustomSelect
                 name="maritalStatus"
                 label="Marital Status"
-                options={MaritalStatus.map((item) => ({
+                options={MARITAL_STATUS.map((item) => ({
                   label: item,
                   value: item,
                 }))}
@@ -221,7 +211,7 @@ const EditProfile = () => {
             </Grid>
           </Grid>
 
-          {/* Education */}
+          {/* ---------- EDUCATION ---------- */}
           <Section title="Education" />
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -258,36 +248,45 @@ const EditProfile = () => {
             </Grid>
           </Grid>
 
-          {/* Skills */}
+          {/* ---------- SKILLS ---------- */}
           <Section title="Skills" />
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
               <MultipulCustomSelect
                 name="skills.languages"
                 label="Languages"
-                options={Languages.map((item) => ({ label: item, value: item }))}
+                options={Languages.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
             <Grid item xs={12} md={4}>
               <MultipulCustomSelect
                 name="skills.softSkills"
                 label="Soft Skills"
-                options={SoftSkills.map((item) => ({ label: item, value: item }))}
+                options={SoftSkills.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
             <Grid item xs={12} md={4}>
               <MultipulCustomSelect
                 name="skills.technicalSkills"
                 label="Technical Skills"
-                options={TechnicalSkills.map((item) => ({ label: item, value: item }))}
+                options={TechnicalSkills.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
               />
             </Grid>
           </Grid>
 
-          {/* Work Experience */}
-          <Accordion defaultExpanded>
+          {/* ---------- WORK EXPERIENCE ---------- */}
+          <Accordion defaultExpanded sx={{ backgroundColor: COLORS.white?.grayWhite }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography sx={{ flexGrow: 1 }}>Work Experience</Typography>
+              <Section title="Work Experience" />
               <FormControlLabel
                 control={
                   <Checkbox
@@ -297,6 +296,7 @@ const EditProfile = () => {
                 }
                 label="Disable"
                 onClick={(e) => e.stopPropagation()}
+                sx={{ ml: "auto" }}
               />
             </AccordionSummary>
             <AccordionDetails>
@@ -359,10 +359,10 @@ const EditProfile = () => {
             </AccordionDetails>
           </Accordion>
 
-          {/* Social Links */}
-          <Accordion defaultExpanded>
+          {/* ---------- SOCIAL LINKS ---------- */}
+          <Accordion defaultExpanded sx={{ backgroundColor: COLORS.white?.grayWhite }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography sx={{ flexGrow: 1 }}>Social Links</Typography>
+              <Section title="Social Links" />
               <FormControlLabel
                 control={
                   <Checkbox
@@ -372,6 +372,7 @@ const EditProfile = () => {
                 }
                 label="Disable"
                 onClick={(e) => e.stopPropagation()}
+                sx={{ ml: "auto" }}
               />
             </AccordionSummary>
             <AccordionDetails>
@@ -416,10 +417,11 @@ const EditProfile = () => {
             </AccordionDetails>
           </Accordion>
 
+          {/* ---------- ACTION BUTTONS ---------- */}
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <Button type="submit" variant="contained" disabled={isPending}>
-              {isPending ? "Updating..." : "Update Profile"}
-            </Button>
+            <Stack direction="row" gap={2}>
+              <CustomButton title="Update Profile" type="submit" />
+            </Stack>
           </Box>
         </Box>
       </Paper>

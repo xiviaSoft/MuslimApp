@@ -2870,7 +2870,18 @@ export const LookingToMarry = [
   "Next year",
   "UNsure",
 ];
-export const MaritalStatus = ["single", "married", "divorced", "widowed"];
+// export const MaritalStatus = ["single", "married", "divorced", "widowed"];
+export const MARITAL_STATUS = [
+  // "Never married",
+  // "Legally separated",
+  // "Divorced",
+  // "Widowed",
+  // "Annulled",
+  "Single",
+  "Married",
+  "Divorced",
+  "Widowed",
+];
 export const HasChilldren = [
   "Yes",
   "No",

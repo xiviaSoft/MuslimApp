@@ -1,9 +1,15 @@
 import Typography from "@mui/material/Typography";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { useState } from "react";
+
 import { styled } from "@mui/material/styles";
 import { COLORS } from "@muc/constants";
+interface HomePaginationProps {
+  page: number;
+  count: number;
+  onChange: (event: React.ChangeEvent<unknown>, value: number) => void;
+}
+
 
 const StyledPagination = styled(Pagination)(({ theme }) => ({
   "& .MuiPaginationItem-root": {
@@ -17,25 +23,27 @@ const StyledPagination = styled(Pagination)(({ theme }) => ({
     "&.Mui-selected": {
       backgroundColor: COLORS.primary.main,
       color: theme.palette.common.white,
-   
+
     },
   },
 }));
 
-const HomePagination = () => {
-  const [page, setPage] = useState(1);
-  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+const HomePagination = ({ page, count, onChange }: HomePaginationProps) => {
 
   return (
     <Stack spacing={2} alignItems="center" mt={4}>
       <Typography variant="h6" color="text.secondary">
-        Current Page: <strong>{page}</strong>
+
       </Typography>
-      <StyledPagination count={10} page={page} onChange={handleChange} />
+      <StyledPagination count={count} page={page} onChange={onChange} />
     </Stack>
   );
 };
 
 export default HomePagination;
+
+
+
+
+
+
