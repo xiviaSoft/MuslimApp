@@ -64,8 +64,8 @@ export type Education = {
 export type WorkerExperience = {
   companyName: string;
   role: string;
-  startDate: Date;
-  endDate?: Date; // If currently working, this can be undefined
+  startDate: Date | string;
+  endDate?: Date | string; // If currently working, this can be undefined
   isCurrent?: boolean; // To indicate if it's the current job
   description?: string; // Optional description of the role
 };

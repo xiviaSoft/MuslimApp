@@ -47,21 +47,8 @@ const UserInfoContainer = () => {
   if (isError) return <Typography color="error">Error loading user</Typography>;
 
 
-  const {
-    bio,
-    dateOfBirth,
-    // email,
-    firstName,
-    lastName,
-    gender,
-    maritalStatus,
-    workExperience,
-    // phoneNumber,
-    skills,
-    educationInformation,
-    ..._allData
-  } = userData as User || {};
-  // console.log(userData, 'user data in the info container');
+
+
 
   return (
     <AppLayout>
@@ -91,7 +78,7 @@ const UserInfoContainer = () => {
               <Stack gap={2} mb={2}>
                 <CustomReadMoreCard
                   title="A Little Bit About Me"
-                  description={bio || "No bio available."}
+                  description={userData?.bio || "No bio available."}
                 />
               </Stack>
 
@@ -101,18 +88,18 @@ const UserInfoContainer = () => {
                   <CustomPersonalDetailCard title="Personal Details">
                     <TitleRow
                       label="Full Name"
-                      value={`${firstName || ""} ${lastName || ""}`}
+                      value={`${userData?.firstName || ""} ${userData?.lastName || ""}`}
                     />
                     {/* <TitleRow label="Email" value={email || "N/A"} /> */}
                     {/* <TitleRow label="Phone Number" value={phoneNumber || "N/A"} /> */}
-                    <TitleRow label="Date of Birth" value={dateOfBirth || "N/A"} />
-                    <TitleRow label="Marital Status" value={maritalStatus || "N/A"} />
-                    <TitleRow label="Gender" value={gender || "N/A"} />
+                    <TitleRow label="Date of Birth" value={userData?.dateOfBirth || "N/A"} />
+                    <TitleRow label="Marital Status" value={userData?.maritalStatus || "N/A"} />
+                    <TitleRow label="Gender" value={userData?.gender || "N/A"} />
                   </CustomPersonalDetailCard>
                 </Box>
 
                 {/* Work Experience */}
-                {workExperience && (
+                {userData?.workExperience && (
                   <Box
                     width={{ md: "49%", sm: "47%", xs: "100%" }}
                     key={`${id}-work`}
@@ -121,34 +108,34 @@ const UserInfoContainer = () => {
 
                       <TitleRow
                         label="Company Name"
-                        value={workExperience?.companyName || "N/A"}
+                        value={userData?.workExperience?.companyName || "N/A"}
                       />
                       <TitleRow
                         label="Company Decription"
-                        value={workExperience?.description || "N/A"}
+                        value={userData?.workExperience?.description || "N/A"}
                       />
                       <TitleRow
                         label="Currently Working"
-                        value={workExperience?.isCurrent ? "Yes" : "No"}
+                        value={userData?.workExperience?.isCurrent ? "Yes" : "No"}
                       />
                       <TitleRow
                         label="Job Role"
-                        value={workExperience?.role || "N/A"}
+                        value={userData?.workExperience?.role || "N/A"}
 
                       />
                       <TitleRow
                         label="Start Date"
-                        value={workExperience?.startDate || "N/A"}
+                        value={userData?.workExperience?.startDate || "N/A"}
                       />
                       <TitleRow
                         label="End Date"
-                        value={workExperience?.endDate || "N/A"}
+                        value={userData?.workExperience?.endDate || "N/A"}
                       />
                     </CustomPersonalDetailCard>
 
                   </Box>
                 )}
-                {skills && (
+                {userData?.skills && (
                   <Box
                     width={{ md: "49%", sm: "47%", xs: "100%" }}
                     key={`${id}-skills`}
@@ -156,20 +143,20 @@ const UserInfoContainer = () => {
                     <CustomPersonalDetailCard title="Skills Details">
                       <TitleRow
                         label="Technical Skills"
-                        value={skills.technicalSkills?.join(", ") || "N/A"}
+                        value={userData?.skills?.technicalSkills?.join(", ") || "N/A"}
                       />
                       <TitleRow
                         label="Soft Skills"
-                        value={skills.softSkills?.join(", ") || "N/A"}
+                        value={userData?.skills?.softSkills?.join(", ") || "N/A"}
                       />
                       <TitleRow
                         label="Languages"
-                        value={skills.languages?.join(", ") || "N/A"}
+                        value={userData?.skills?.languages?.join(", ") || "N/A"}
                       />
                     </CustomPersonalDetailCard>
                   </Box>
                 )}
-                {educationInformation && (
+                {userData?.educationInformation && (
                   <Box
                     width={{ md: "49%", sm: "47%", xs: "100%" }}
                     key={`${id}-education`}
@@ -177,19 +164,19 @@ const UserInfoContainer = () => {
                     <CustomPersonalDetailCard title="Education Details">
                       <TitleRow
                         label="Field Of Study"
-                        value={educationInformation.fieldOfStudy || "N/A"}
+                        value={userData?.educationInformation?.fieldOfStudy || "N/A"}
                       />
                       <TitleRow
                         label="Highest Degree"
-                        value={educationInformation.highestDegree || "N/A"}
+                        value={userData?.educationInformation?.highestDegree || "N/A"}
                       />
                       <TitleRow
                         label="Graduation Year"
-                        value={educationInformation.graduationYear || "N/A"}
+                        value={userData?.educationInformation?.graduationYear || "N/A"}
                       />
                       <TitleRow
                         label="Institution Name"
-                        value={educationInformation.institutionName || "N/A"}
+                        value={userData?.educationInformation?.institutionName || "N/A"}
                       />
                     </CustomPersonalDetailCard>
                   </Box>

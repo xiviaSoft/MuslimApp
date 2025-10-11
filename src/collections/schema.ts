@@ -22,7 +22,7 @@ export interface User {
   profileImageData: UserProfileImage;
   userGallery?: Array<UserProfileImage>;
   gender: Gender;
-  dateOfBirth: Date;
+  dateOfBirth: Date | string;
   maritalStatus: MaritalStatus;
   address?: string;
   bio?: string; //Short biography or description
@@ -193,7 +193,6 @@ export interface NewDmThread {
   lastMessageSenderId: string;
   lastMessageAt: Timestamp; // serverTimestamp()
 }
-
 
 // ========== Helpers ==========
 

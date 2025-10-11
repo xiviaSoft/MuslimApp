@@ -1,19 +1,19 @@
 
 import { COLORS } from "@muc/constants";
 import { auth } from "@muc/libs";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import SendingChat from "../SendingChat/SendingChat";
-import { Delete } from "@mui/icons-material";
+// import { Delete } from "@mui/icons-material";
 import IncomingChat from "../IncomingChat/IncomingChat";
-import { useDeleteMessage } from "@muc/hooks";
+// import { useDeleteMessage } from "@muc/hooks";
 
 interface ChatBoxProps {
   threadId: string;
   messages: any[];
   isLoading: boolean;
 }
-const ChatBox = ({ threadId, messages, isLoading }: ChatBoxProps) => {
-  const { mutate: deleteMessage } = useDeleteMessage(threadId);
+const ChatBox = ({ messages, isLoading }: ChatBoxProps) => {
+  // const { mutate: deleteMessage } = useDeleteMessage(threadId);
 
   if (isLoading) return <Typography
     sx={{
