@@ -7,14 +7,17 @@ import {
 } from "@mui/material";
 import { auth, db } from "@muc/libs";
 import { COLORS, ROUTES } from "@muc/constants";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { FormData } from "@muc/types";
 import SignUpPersonalInfo from "../SignUpPersonalInfo/SignUpPersonalInfo";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { signUpPersonalInfoSchema } from "@muc/validations";
 
 const SignupForm = () => {
-  const methods = useForm<FormData>({ defaultValues: {} as FormData });
+  const methods = useForm<FormData>({ resolver: yupResolver(signUpPersonalInfoSchema), defaultValues: {} as FormData });
+
   const { handleSubmit } = methods;
   const navigate = useNavigate();
 
@@ -29,10 +32,22 @@ const SignupForm = () => {
 
       const convertDates = (obj: any): any => {
         if (obj === null || obj === undefined) return obj;
-        if (typeof obj === "string" && /^\d{4}-\d{2}-\d{2}$/.test(obj)) {
-          return new Date(obj);
+
+        // 🔹 If it's already a Date object
+        if (obj instanceof Date) {
+          return Timestamp.fromDate(obj);
         }
+
+        // 🔹 If it's a string that can be parsed as a date
+        if (typeof obj === "string") {
+          const parsed = new Date(obj);
+          if (!isNaN(parsed.getTime())) {
+            return Timestamp.fromDate(parsed);
+          }
+        }
+
         if (Array.isArray(obj)) return obj.map(convertDates);
+
         if (typeof obj === "object") {
           const result: any = {};
           for (const [key, value] of Object.entries(obj)) {
@@ -40,26 +55,30 @@ const SignupForm = () => {
           }
           return result;
         }
+
         return obj;
       };
 
       const cleanedData = convertDates(data);
-
+      console.log(data, 'data below the clean objet...........//////')
+      console.log(cleanedData)
       await setDoc(doc(db, "users", uid), {
         ...cleanedData,
         uid,
         isActive: true,
         isSuspended: false,
+        dateOfBirth: cleanedData.dateOfBirth,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         lastLogin: serverTimestamp(),
       });
 
-      alert("🎉 User signed up successfully!");
+      alert(" User signed up successfully!");
       navigate(ROUTES.HOME);
     } catch (error) {
-      console.error("❌ Error:", error);
-      alert("Signup failed. Check console for details.");
+      // console.error("❌ Error:", error);
+      throw error;
+      // alert("Signup failed. Check console for details.");
     }
   };
 
@@ -76,10 +95,10 @@ const SignupForm = () => {
           maxWidth: "800px",
           width: "100%",
           mx: "auto",
-          height: "90vh", // ✅ fixed height for inner scroll
+          height: "90vh",
           display: "flex",
           flexDirection: "column",
-          overflowY: "auto", // ✅ scroll enabled inside the form
+          overflowY: "auto", //
           scrollbarWidth: "thin",
           "&::-webkit-scrollbar": { width: "8px" },
           "&::-webkit-scrollbar-thumb": {
@@ -95,12 +114,12 @@ const SignupForm = () => {
           Create Your Account
         </Typography>
 
-  
+
         <Box sx={{ flexGrow: 1 }}>
           <SignUpPersonalInfo />
         </Box>
 
-   
+
         <Stack
           direction="row"
           justifyContent="center"

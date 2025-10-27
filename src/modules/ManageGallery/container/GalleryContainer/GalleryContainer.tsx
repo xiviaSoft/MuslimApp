@@ -14,7 +14,7 @@ import { COLORS } from "@muc/constants";
 import { FormProvider, useForm, Controller } from "react-hook-form";
 import {
   CustomButton,
-  CustomMenu,
+  // CustomMenu,
   CustomProfileCard,
   CustomTextField,
 } from "@muc/components";
@@ -57,20 +57,18 @@ const GalleryContainer = () => {
     const filtered = allUsers.filter((user: User) => {
       if (user.id === currentUserId) return false;
 
-      // 🔍 Search match
       const matchesSearch = search
         ? `${user.firstName} ${user.lastName}`
           .toLowerCase()
           .includes(search.toLowerCase())
-        : false; // false because we want OR logic
+        : false;
 
 
       const userAge = calculateAge(user.dateOfBirth);
       const matchesAge =
         userAge !== null && userAge >= minAge && userAge <= maxAge;
 
-      // ✅ Return true if **any filter matches**
-      return matchesSearch || matchesAge;
+      return matchesSearch && matchesAge;
     });
 
     setFilteredUsers(filtered);
@@ -83,7 +81,7 @@ const GalleryContainer = () => {
         <form onSubmit={methods.handleSubmit(submitData)}>
           <Box sx={{ bgcolor: COLORS.gray.lightDarkGray, minHeight: "100vh" }}>
             <Container maxWidth="lg" disableGutters sx={{ py: 3 }}>
-              {/* Header */}
+
               <Box textAlign="center" mb={4}>
                 <Typography
                   variant="h5"
@@ -123,11 +121,11 @@ const GalleryContainer = () => {
                     />
                   </Grid>
 
-                  <Grid item md={4} sm={6} xs={12}>
+                  {/* <Grid item md={4} sm={6} xs={12}>
                     <CustomMenu />
-                  </Grid>
+                  </Grid> */}
 
-                  <Grid item md={4} sm={12} xs={12}>
+                  <Grid item md={4} sm={12} xs={12} sx={{ ml: 'auto' }}>
                     <Stack
                       direction="row"
                       alignItems="center"
@@ -222,7 +220,7 @@ const GalleryContainer = () => {
                     <Grid item md={3} sm={4} xs={12} key={item.id}>
                       <CustomProfileCard
                         id={item.id}
-                        age={item.dateOfBirth} // ✅ Show numeric age
+                        age={item.dateOfBirth}
                         likes={item?.likes || []}
                         name={`${item.firstName} ${item.lastName}`}
                         onLike={() => likeUser.mutate(item.id)}

@@ -31,37 +31,18 @@ type UserProfielCardProps = {
 };
 
 const UserProfileCard = ({
-  // img,
+
   name,
-  // location,
+
   age,
   id,
-  // likes = [],
+
   isLiked,
   onLike,
-  // likeLoading,
   onRemoveLike,
   onVisit,
 }: UserProfielCardProps) => {
   const navigate = useNavigate()
-
-
-
-
-
-
-  // const calculateAge = (dobString: number) => {
-  //   const dob = new Date(dobString);
-  //   const today = new Date();
-  //   let age = today.getFullYear() - dob.getFullYear();
-  //   const monthDiff = today.getMonth() - dob.getMonth();
-  //   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-  //     age--;
-  //   }
-  //   return age;
-  // };
-
-
 
 
   return (

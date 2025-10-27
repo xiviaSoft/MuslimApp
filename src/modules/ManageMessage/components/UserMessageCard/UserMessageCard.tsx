@@ -110,7 +110,9 @@ const UserMessageCard = ({
       direction={"row"}
       sx={{
         width: "100%",
-        maxWidth: 320,
+        // maxWidth: 320,
+        minWidth: 320,
+        // bgcolor:'red',
         padding: "10px",
         height: "70px",
         gap: "15px",

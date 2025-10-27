@@ -3,3 +3,4 @@ export { default as useUserActions } from "./useUserActions";
 export * from "./FirebaseFunctionForDms";
 export * from "./dateHelpers";
 export * from "./CalculateAge";
+export * from "./utileStyle";

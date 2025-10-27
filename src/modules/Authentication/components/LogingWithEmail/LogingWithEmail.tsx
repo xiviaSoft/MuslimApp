@@ -1,6 +1,8 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { CustomButton, CustomTextField } from "@muc/components";
 import { COLORS, ROUTES } from "@muc/constants";
 import { useAuth } from "@muc/context";
+import { LoginSchema } from "@muc/validations";
 import {
   Checkbox,
   FormControlLabel,
@@ -17,7 +19,9 @@ interface LoginFormValues {
 
 const LoginWithEmail = () => {
   const { login } = useAuth();
-  const methods = useForm<LoginFormValues>();
+  const methods = useForm<LoginFormValues>({
+    resolver: yupResolver(LoginSchema),
+  });
   const navigate = useNavigate();
 
 
@@ -31,7 +35,7 @@ const LoginWithEmail = () => {
     }
   };
 
-  
+
   return (
     <Stack
       component="section"

@@ -66,7 +66,7 @@ const HomeContainer = () => {
             )}
           </Grid>
 
-          {/* ✅ Pagination component */}
+
           <HomePagination
             page={page}
             count={totalPages}

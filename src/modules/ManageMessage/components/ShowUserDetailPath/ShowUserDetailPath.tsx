@@ -13,9 +13,12 @@ const ShowUserDetailPath = ({ firstName, lastName }: ShowUserDetailPathProps) =>
       <Stack
         direction={"row"}
         sx={{
-          background: "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)",
+          // background: "linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%)",
           width: "100%",
           // flexFlow: 1,
+          display: 'flex',
+          alignItems: "center",
+          // justifyContent: {sm:'start',xs:'center'},
           height: "100px",
           gap: "16px",
           p: "16px",
@@ -25,12 +28,12 @@ const ShowUserDetailPath = ({ firstName, lastName }: ShowUserDetailPathProps) =>
         <Box
           component={"img"}
           src="/assets/images/girl-img.jpg"
-          sx={{ width: "70px", height: "70px", borderRadius: "50%" }}
+          sx={{ width: {md:'70px',xs:'40px'}, height: {md:'70px',xs:'40px'}, borderRadius: "50%" }}
         />
         <Stack>
           <Typography
             variant="h2"
-            sx={{ color: COLORS.green.lightGreen, fontWeight: 500 }}
+            sx={{ color: COLORS.green.lightGreen, fontWeight: 500, fontSize: { md: '24px', xs: '18px' } }}
           >
             {firstName} {lastName}
 

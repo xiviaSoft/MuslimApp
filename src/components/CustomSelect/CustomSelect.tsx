@@ -10,6 +10,7 @@ import {
 
 import SearchIcon from "@mui/icons-material/Search";
 import { COLORS } from "@muc/constants";
+import { errorTextStyle } from "@muc/utils";
 
 interface Option {
   value: string;
@@ -22,6 +23,8 @@ interface CustomSelectProps {
   options: Option[];
   dependsOn?: string;
   width?: string;
+  showHelperText?: boolean;
+
   isRequired?: boolean;
   height?: string;
   iconColor?: string;
@@ -43,6 +46,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   showSearchIcon = false,
   onChange,
   disabled: disabledProp = false,
+  showHelperText = true,
 }) => {
   const { control, watch } = useFormContext();
   const dependencyValue = dependsOn ? watch(dependsOn) : null;
@@ -90,7 +94,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 onChange?.(e.target.value);
               }}
               disabled={disabled}
-              error={!!fieldState.error} // ✅ red border on error
+              error={!!fieldState.error}
               IconComponent={(props) => (
                 <Box
                   component="svg"
@@ -144,7 +148,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 },
               }}
             >
-              {/* ✅ Placeholder option */}
+
               <MenuItem value="">
                 <em style={{ fontSize: "14px", color: "gray" }}>Select any</em>
               </MenuItem>
@@ -182,13 +186,18 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 </MenuItem>
               )}
             </Select>
-
-            {/* ✅ Show error message */}
-            {fieldState.error && (
-              <Typography sx={{ fontSize: "12px", color: "red", mt: 0.5 }}>
+            {showHelperText && fieldState.error?.message && (
+              <Typography sx={errorTextStyle}>
                 {fieldState.error.message}
               </Typography>
             )}
+
+            {/* ✅ Show error message */}
+            {/* {fieldState.error && (
+              <Typography sx={{ fontSize: "12px", color: "red", mt: 0.5 }}>
+                {fieldState.error.message}
+              </Typography>
+            )} */}
           </>
         )}
       />

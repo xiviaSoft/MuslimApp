@@ -6,7 +6,7 @@ import { User } from "@muc/context";
 const useUserActions = () => {
     const queryClient = useQueryClient();
 
-    // ✅ Add visit
+
     const addVisit = useMutation({
         mutationFn: async (visitedUserId: string) => {
             if (!auth.currentUser?.uid || !visitedUserId) {
@@ -53,7 +53,7 @@ const useUserActions = () => {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
     });
 
-    // ✅ Remove like
+
     const removeLike = useMutation({
         mutationFn: async (likedUserId: string) => {
             if (!auth.currentUser?.uid || !likedUserId) return;
@@ -61,6 +61,10 @@ const useUserActions = () => {
 
             await updateDoc(doc(db, "users", likedUserId), {
                 likes: arrayRemove(currentUserId),
+            });
+
+            await updateDoc(doc(db, "users", currentUserId), {
+                liked: arrayRemove(likedUserId),
             });
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),

@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import LogingWithEmail from "../../components/LogingWithEmail/LogingWithEmail";
-import LoginwithNumber from "../../components/LoginwithNumber/LoginwithNumber";
+
 import AuthLayout from "../../AuthLayout/AuthLayout";
 
 const LogingContainer = () => {
@@ -14,7 +14,7 @@ const LogingContainer = () => {
         width="100%"
       >
         <LogingWithEmail />
-        <LoginwithNumber />
+        {/* <LoginwithNumber /> */}
       </Stack>
     </AuthLayout>
   );

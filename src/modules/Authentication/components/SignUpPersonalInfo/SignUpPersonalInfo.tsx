@@ -11,42 +11,42 @@ const SignUpPersonalInfo = () => {
                 name="firstName"
                 label="First Name"
                 type="text"
-                rules={{ required: "Required" }}
+            // rules={{ required: "Required" }}
             />
             <CustomTextField
                 placeholder='Last Name'
                 name="lastName"
                 label="Last Name"
                 type="text"
-                rules={{ required: "Required" }}
+            // rules={{ required: "Required" }}
             />
             <CustomTextField
                 placeholder='Email'
                 name="email"
                 label="Email"
                 type="email"
-                rules={{ required: "Required" }}
+            // rules={{ required: "Required" }}
             />
             <CustomTextField
                 placeholder='password'
                 name="password"
                 label="Password"
                 type="password"
-                rules={{ required: "Required" }}
+            // rules={{ required: "Required" }}
             />
             <CustomTextField
                 placeholder='phoneNumber'
                 name="phoneNumber"
                 label="Phone Number"
                 type="number"
-                rules={{ required: "Required" }}
+            // rules={{ required: "Required" }}
             />
             <CustomTextField
                 name="dateOfBirth"
                 label='Date of Birth'
                 placeholder='Date of Birth'
                 type="date"
-                rules={{ required: "Required" }}
+            // rules={{ required: "Required" }}
             />
 
 

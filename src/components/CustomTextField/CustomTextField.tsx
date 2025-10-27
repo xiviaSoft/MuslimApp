@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { COLORS } from "@muc/constants";
+import { errorTextStyle } from "@muc/utils";
 
 
 interface CustomTextFieldProps {
@@ -133,6 +134,12 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
                             onBlur?.(event);
                         }}
                         onFocus={onFocus}
+                        helperText={showHelperText && fieldState.error?.message && (
+                            <Typography sx={{ ...errorTextStyle, margin: 0 }}>
+                                {fieldState.error.message}
+                            </Typography>
+                        )}
+
                     />
                 )}
             />
