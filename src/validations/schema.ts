@@ -86,4 +86,12 @@ export const editProfileSchema = yup.object().shape({
       /[@$!%*?&#]/,
       "Password must contain at least one special character (@, $, !, %, *, ?, & or #)"
     ),
+  dateOfBirth: yup
+    .date()
+    .required("Date of birth is required")
+    .max(new Date(), "Date of birth cannot be in the future")
+    .max(
+      new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
+      "You must be at least 18 years old"
+    ),
 });
