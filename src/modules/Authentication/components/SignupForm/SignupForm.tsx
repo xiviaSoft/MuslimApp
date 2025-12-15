@@ -33,12 +33,12 @@ const SignupForm = () => {
       const convertDates = (obj: any): any => {
         if (obj === null || obj === undefined) return obj;
 
-        // 🔹 If it's already a Date object
+        //  If it's already a Date object
         if (obj instanceof Date) {
           return Timestamp.fromDate(obj);
         }
 
-        // 🔹 If it's a string that can be parsed as a date
+        //  If it's a string that can be parsed as a date
         if (typeof obj === "string") {
           const parsed = new Date(obj);
           if (!isNaN(parsed.getTime())) {
@@ -60,12 +60,13 @@ const SignupForm = () => {
       };
 
       const cleanedData = convertDates(data);
-      console.log(data, 'data below the clean objet...........//////')
-      console.log(cleanedData)
+
+
       await setDoc(doc(db, "users", uid), {
         ...cleanedData,
         uid,
         isActive: true,
+
         isSuspended: false,
         dateOfBirth: cleanedData.dateOfBirth,
         createdAt: serverTimestamp(),
@@ -76,9 +77,9 @@ const SignupForm = () => {
       alert(" User signed up successfully!");
       navigate(ROUTES.HOME);
     } catch (error) {
-      // console.error("❌ Error:", error);
+
       throw error;
-      // alert("Signup failed. Check console for details.");
+
     }
   };
 
