@@ -11,9 +11,10 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router";
-import { ROUTES } from "@muc/constants";
+// import { ROUTES } from "@muc/constants";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { calculateAge } from "@muc/utils";
+import { ROUTES } from "@muc/constants";
 
 type UserProfielCardProps = {
   // img: string;
