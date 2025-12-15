@@ -19,7 +19,7 @@ export default defineConfig({
       "@muc/types": path.resolve(__dirname, "src/types/types.ts"),
         "@muc/constants": path.resolve(__dirname, "src/constants/constants.ts"),
       // "@muc/routes": path.resolve(__dirname, "src/constants/routes.ts"),
-      "@muc/router": path.resolve(__dirname, "src/core/core.ts"),
+      "@muc/core": path.resolve(__dirname, "src/core/core.ts"),
       "@muc/styles": path.resolve(__dirname, "src/styles/theme.ts"),
       "@muc/layout": path.resolve(__dirname, "src/layout/layout.ts"),
       "@muc/hooks": path.resolve(__dirname, "src/hooks/hooks.ts"),
