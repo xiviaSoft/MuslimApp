@@ -95,6 +95,12 @@ const UserInfoContainer = () => {
                     <TitleRow label="Date of Birth" value={userData?.dateOfBirth || "N/A"} />
                     <TitleRow label="Marital Status" value={userData?.maritalStatus || "N/A"} />
                     <TitleRow label="Gender" value={userData?.gender || "N/A"} />
+                    {userData?.showAddress && (
+                      <TitleRow
+                        label="Address"
+                        value={userData?.address || "N/A"}
+                      />
+                    )}
                   </CustomPersonalDetailCard>
                 </Box>
 

@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { User } from "@muc/collections";
 import { auth, db } from "@muc/libs";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "./ToastContext";
 
 interface AuthContextType {
     user: User | null;
@@ -19,6 +20,7 @@ const AuthContextData = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setuser] = useState<FirebaseUser | null>(null);
     const [loading, setLoading] = useState(true);
+    const { showToast } = useToast();
 
 
     useEffect(() => {
@@ -44,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = async () => {
         await signOut(auth);
         setuser(null);
-        console.log("user logout");
+        showToast("User logged out successfully", "success");
     };
 
     const login = async (data: { email: string; password: string }) => {

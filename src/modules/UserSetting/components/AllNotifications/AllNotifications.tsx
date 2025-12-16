@@ -1,4 +1,4 @@
-import { CustomSelect, CustomSwithButton } from "@muc/components";
+import { CustomSelect, } from "@muc/components";
 import { COLORS, newMessages } from "@muc/constants";
 import { Divider, Stack, Typography } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ const AllNotifications = () => {
   const methods = useForm();
   return (
     <>
-      <Stack padding={{md:'45px',sm:'20px',xs:'10px'}}>
+      <Stack padding={{ md: '45px', sm: '20px', xs: '10px' }}>
         <Stack gap={"10px"} color={COLORS.gray.darkGray}>
           <Typography variant="h3" sx={{ fontWeight: 500, fontSize: "24px" }}>
             Notifications
@@ -18,33 +18,33 @@ const AllNotifications = () => {
           </Typography>
           <Stack sx={styleNotification}>
             <Typography>Someone views your profile (Alerts Only)</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
 
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>A favourite user is online (Alert Only)</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>Profile is approved</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>Picture(s) are approved</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>Private gallery requests</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>Private gallery requests approved/declined</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
 
           <Divider />
@@ -74,25 +74,25 @@ const AllNotifications = () => {
           </FormProvider>
           <Stack sx={styleNotification}>
             <Typography>Someone Likes You (Alert Only)</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
 
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>Someone Matched With You</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
 
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>See your recommendations</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
 
           <Divider />
           <Stack sx={styleNotification}>
             <Typography>Email Opt-in</Typography>
-            <CustomSwithButton />
+            {/* <CustomSwithButton /> */}
           </Stack>
 
           <Divider />

@@ -25,16 +25,22 @@ const GeneralNotification = () => {
             <Stack
               sx={{ justifyContent: "space-between" }}
               mt={2}
-              direction={"row"}
+              direction="row"
             >
               <Typography>Profile status</Typography>
-              <CustomSwithButton />
+              <CustomSwithButton field="isVisible" />
             </Stack>
+
             <Divider />
-            <Stack sx={{ justifyContent: "space-between" }} direction={"row"}>
+            {/* <Stack sx={{ justifyContent: "space-between" }} direction={"row"}>
               <Typography>Show Picture Guidelines</Typography>
               <CustomSwithButton />
+            </Stack> */}
+            <Stack sx={{ justifyContent: "space-between" }} direction="row">
+              <Typography>Show  your address to others</Typography>
+              <CustomSwithButton field="showAddress" />
             </Stack>
+
             <Divider />
           </Stack>
         </Stack>

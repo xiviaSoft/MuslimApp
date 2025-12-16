@@ -3,42 +3,44 @@ import { useState, useEffect } from "react";
 import { auth, db } from "@muc/libs";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 
+interface Props {
+  field: string; //  dynamic field name
+}
 
-const CustomSwitchButton = () => {
-
-
+const CustomSwitchButton = ({ field }: Props) => {
   const myUid = auth.currentUser?.uid;
-  const [isVisible, setIsVisible] = useState(true);
+  const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
-    const fetchVisibility = async () => {
+    const fetchValue = async () => {
       if (!myUid) return;
       const docSnap = await getDoc(doc(db, "users", myUid));
-      setIsVisible(docSnap.data()?.isVisible ?? true);
+      setEnabled(docSnap.data()?.[field] ?? true);
     };
-    fetchVisibility();
-  }, [myUid]);
+    fetchValue();
+  }, [myUid, field]);
 
   const handleToggle = async (value: boolean) => {
-    setIsVisible(value);
+    setEnabled(value);
     if (!myUid) return;
-    await updateDoc(doc(db, "users", myUid), { isVisible: value });
+    await updateDoc(doc(db, "users", myUid), {
+      [field]: value,
+    });
   };
 
-  console.log()
   return (
     <ButtonGroup>
       <Button
-        variant={isVisible ? "contained" : "outlined"}
+        variant={enabled ? "contained" : "outlined"}
         onClick={() => handleToggle(true)}
-        sx={{ width: 52, height: 40, bgcolor: isVisible ? "#5cb85c" : "#fff" }}
+        sx={{ width: 52, height: 40, bgcolor: enabled ? "#5cb85c" : "#fff" }}
       >
         Yes
       </Button>
       <Button
-        variant={!isVisible ? "contained" : "outlined"}
+        variant={!enabled ? "contained" : "outlined"}
         onClick={() => handleToggle(false)}
-        sx={{ width: 52, height: 40, bgcolor: !isVisible ? "#d43f3a" : "#fff" }}
+        sx={{ width: 52, height: 40, bgcolor: !enabled ? "#d43f3a" : "#fff" }}
       >
         No
       </Button>

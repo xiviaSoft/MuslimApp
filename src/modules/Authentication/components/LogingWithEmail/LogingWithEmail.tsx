@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CustomButton, CustomTextField } from "@muc/components";
 import { COLORS, ROUTES } from "@muc/constants";
-import { useAuth } from "@muc/context";
+import { useAuth, useToast } from "@muc/context";
 import { LoginSchema } from "@muc/validations";
 import {
   Checkbox,
@@ -19,6 +19,7 @@ interface LoginFormValues {
 
 const LoginWithEmail = () => {
   const { login } = useAuth();
+  const { showToast } = useToast();
   const methods = useForm<LoginFormValues>({
     resolver: yupResolver(LoginSchema),
   });
@@ -29,9 +30,11 @@ const LoginWithEmail = () => {
     try {
       await login(data);
       navigate(ROUTES.HOME);
-      console.log("Form Data:", data);
+      showToast("User logged in successfully", "success");
+  
     } catch (error: any) {
-      console.error("Login error:", error.message);
+      showToast(`Login failed: ${error.message}`, "error");
+
     }
   };
 

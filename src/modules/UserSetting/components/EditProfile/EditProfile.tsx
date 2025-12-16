@@ -55,7 +55,7 @@ const EditProfile = () => {
   const methods = useForm<User>({
     defaultValues: user ?? {},
   });
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, } = methods;
 
   const toDateInputValue = (value: any): string | "" => {
     if (!value) return "";
@@ -420,7 +420,7 @@ const EditProfile = () => {
           {/* ---------- ACTION BUTTONS ---------- */}
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
             <Stack direction="row" gap={2}>
-              <CustomButton title="Update Profile" type="submit" />
+              <CustomButton title="Update Profile" type="submit" isLoading={updateUser.isPending} />
             </Stack>
           </Box>
         </Box>

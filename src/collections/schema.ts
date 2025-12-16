@@ -33,6 +33,7 @@ export interface User {
     instagram?: string;
     [key: string]: string | undefined; // For any additional social links
   };
+  showAddress: boolean;
   hideProfile: boolean;
   createdAt: Date; //firebase server timestamp
   updatedAt: Date; //firebase server timestamp

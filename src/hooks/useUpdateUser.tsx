@@ -2,8 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { User } from "@muc/collections";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@muc/libs";
+import { useToast } from "@muc/context";
 
-// ✅ Cleans undefined/null recursively
+//  Cleans undefined/null recursively
 const cleanDeep = (obj: any): any => {
     if (Array.isArray(obj)) {
         return obj.map(cleanDeep).filter((v) => v !== undefined);
@@ -19,7 +20,7 @@ const cleanDeep = (obj: any): any => {
     return obj;
 };
 
-// ✅ Converts date strings (YYYY-MM-DD or ISO) to JS Date objects
+//  Converts date strings (YYYY-MM-DD or ISO) to JS Date objects
 const convertDatesToDateObjects = (obj: any): any => {
     if (obj === null || obj === undefined) return obj;
 
@@ -57,6 +58,7 @@ const convertDatesToDateObjects = (obj: any): any => {
 
 const useUpdateUser = (uid: string) => {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
 
     return useMutation({
         mutationFn: async (updates: Partial<User>) => {
@@ -64,17 +66,17 @@ const useUpdateUser = (uid: string) => {
 
             const userRef = doc(db, "users", uid);
 
-            // ✅ Convert all date strings to JS Date objects
+            //  Convert all date strings to JS Date objects
             const converted = convertDatesToDateObjects(updates);
 
-            // ✅ Clean undefined/null values
+            //  Clean undefined/null values
             const cleaned = cleanDeep(converted);
 
-            console.log("📌 Final Firestore data:", cleaned);
+            console.log(" Final Firestore data:", cleaned);
 
-            // ✅ Debug each field type
+            // Debug each field type
             for (const [k, v] of Object.entries(cleaned)) {
-                console.log(`➡️ ${k}:`, v, v instanceof Date ? "✅ Date" : typeof v);
+                console.log(`➡️ ${k}:`, v, v instanceof Date ? " Date" : typeof v);
             }
 
             await setDoc(
@@ -87,6 +89,7 @@ const useUpdateUser = (uid: string) => {
             );
         },
         onSuccess: () => {
+            showToast("User information updated successfully", "success");
             queryClient.invalidateQueries({ queryKey: ["user", uid] });
         },
     });

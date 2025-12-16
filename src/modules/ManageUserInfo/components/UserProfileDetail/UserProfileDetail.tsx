@@ -50,7 +50,7 @@ const UserProfileDetail = () => {
   const currentUserId = auth.currentUser?.uid;
   const queryClient = useQueryClient();
 
-  // ✅ Dialog state
+
   const [openReportDialog, setOpenReportDialog] = useState(false);
 
   const { data: isBlocked, isLoading } = useQuery({
@@ -136,7 +136,7 @@ const UserProfileDetail = () => {
             p: 2,
           }}
         >
-          {/* ✅ Report Button Opens Dialog */}
+          {/*  Report Button Opens Dialog */}
           <Button
             variant="text"
             startIcon={<Report />}
@@ -174,7 +174,7 @@ const UserProfileDetail = () => {
         </Box>
       </TableContainer>
 
-      {/* ✅ Report Dialog Box */}
+      {/*  Report Dialog Box */}
       <ReportDialog
         open={openReportDialog}
         onClose={() => setOpenReportDialog(false)}

@@ -36,7 +36,7 @@ const useUserActions = () => {
         },
     });
 
-    // ✅ Like user
+    //  Like user
     const likeUser = useMutation({
         mutationFn: async (likedUserId: string) => {
             if (!auth.currentUser?.uid || !likedUserId) return;
