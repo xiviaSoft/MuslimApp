@@ -10,12 +10,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Badge, Divider, Stack, Typography } from "@mui/material";
-import { COLORS } from "@muc/constants";
+import { COLORS, ROUTES } from "@muc/constants";
 import { AccountMenu, LoginDialogBox } from "@muc/components";
 import { useAuth } from "@muc/context";
 import { UseUnreadCount } from "@muc/hooks";
-import { ChatBubbleOutlineRounded, ExploreRounded, FavoriteBorderRounded, HomeRounded } from "@mui/icons-material";
-
+import {
+  ChatBubbleOutlineRounded,
+  ExploreRounded,
+  FavoriteBorderRounded,
+  HomeRounded,
+} from "@mui/icons-material";
 
 const drawerWidth = 320;
 const navItems = [
@@ -46,9 +50,8 @@ const navItems = [
 ];
 
 export default function Navbar(props: any) {
-  const { user, } = useAuth();
-  const { total, } = UseUnreadCount(user?.uid);
-
+  const { user } = useAuth();
+  const { total } = UseUnreadCount(user?.uid);
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -57,22 +60,22 @@ export default function Navbar(props: any) {
 
   const navigate = useNavigate();
 
-
   const handleDrawerToggle = () => {
     setMobileOpen((prev) => !prev);
   };
 
-  const handleNavClick = (item: typeof navItems[number], e: React.MouseEvent) => {
+  const handleNavClick = (
+    item: (typeof navItems)[number],
+    e: React.MouseEvent,
+  ) => {
     if (item.requiresAuth && !user) {
       e.preventDefault();
       setPendingPath(item.path);
       setLoginDialogOpen(true);
     }
-
   };
 
   const handleLoginSuccess = () => {
-
     if (pendingPath) {
       navigate(pendingPath);
     }
@@ -89,7 +92,7 @@ export default function Navbar(props: any) {
       sx={{ textAlign: "center" }}
     >
       <List>
-        {navItems.map((item,) => (
+        {navItems.map((item) => (
           <ListItem key={item.title} disablePadding>
             <NavLink
               to={item.path}
@@ -145,6 +148,7 @@ export default function Navbar(props: any) {
                 alt="Logo"
                 width={252}
                 sx={{ height: "100%", width: "193px" }}
+                onClick={() => navigate(ROUTES.HOME)}
               />
 
               <Box
@@ -160,8 +164,11 @@ export default function Navbar(props: any) {
                     style={({ isActive }) => ({
                       textDecoration: "none",
                       padding: "0 6px",
-                      borderBottom: isActive ? `2px solid ${COLORS.primary.main}` : "none",
-                      color: item.title === "Likes" ? "red" : COLORS.secondary.main,
+                      borderBottom: isActive
+                        ? `2px solid ${COLORS.primary.main}`
+                        : "none",
+                      color:
+                        item.title === "Likes" ? "red" : COLORS.secondary.main,
                       backgroundColor: isActive ? "#e2f2f9" : "transparent",
                     })}
                   >
@@ -187,7 +194,10 @@ export default function Navbar(props: any) {
 
                       <Typography
                         sx={{
-                          color: item.title === "Likes" ? "red" : COLORS.secondary.main,
+                          color:
+                            item.title === "Likes"
+                              ? "red"
+                              : COLORS.secondary.main,
                           fontSize: "10px",
                         }}
                       >
@@ -196,7 +206,6 @@ export default function Navbar(props: any) {
                     </Stack>
                   </NavLink>
                 ))}
-
 
                 <AccountMenu />
               </Box>

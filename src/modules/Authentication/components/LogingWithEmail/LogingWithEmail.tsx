@@ -3,12 +3,7 @@ import { CustomButton, CustomTextField } from "@muc/components";
 import { COLORS, ROUTES } from "@muc/constants";
 import { useAuth, useToast } from "@muc/context";
 import { LoginSchema } from "@muc/validations";
-import {
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Checkbox, FormControlLabel, Stack, Typography } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 
@@ -25,19 +20,15 @@ const LoginWithEmail = () => {
   });
   const navigate = useNavigate();
 
-
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
       await login(data);
       navigate(ROUTES.HOME);
       showToast("User logged in successfully", "success");
-  
     } catch (error: any) {
       showToast(`Login failed: ${error.message}`, "error");
-
     }
   };
-
 
   return (
     <Stack
@@ -104,6 +95,7 @@ const LoginWithEmail = () => {
             color="white"
             width="100%"
             height="56px"
+            disabled={methods.formState.isSubmitting}
           />
 
           {/* Forgot Password */}
@@ -122,7 +114,6 @@ const LoginWithEmail = () => {
             Forgotten Password?
           </Typography>
 
-          {/* 🔥 Create New Account */}
           <Typography
             component={Link}
             to={ROUTES.SIGNUP} // <-- make sure you have this in your routes

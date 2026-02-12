@@ -1,10 +1,5 @@
 import { useForm, FormProvider } from "react-hook-form";
-import {
-  Box,
-  Button,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { auth, db } from "@muc/libs";
 import { COLORS, ROUTES } from "@muc/constants";
 import { doc, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
@@ -16,7 +11,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpPersonalInfoSchema } from "@muc/validations";
 
 const SignupForm = () => {
-  const methods = useForm<FormData>({ resolver: yupResolver(signUpPersonalInfoSchema), defaultValues: {} as FormData });
+  const methods = useForm<FormData>({
+    resolver: yupResolver(signUpPersonalInfoSchema),
+    defaultValues: {} as FormData,
+  });
 
   const { handleSubmit } = methods;
   const navigate = useNavigate();
@@ -26,7 +24,7 @@ const SignupForm = () => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
-        data.password
+        data.password,
       );
       const uid = userCredential.user.uid;
 
@@ -61,7 +59,6 @@ const SignupForm = () => {
 
       const cleanedData = convertDates(data);
 
-
       await setDoc(doc(db, "users", uid), {
         ...cleanedData,
         uid,
@@ -77,9 +74,7 @@ const SignupForm = () => {
       alert(" User signed up successfully!");
       navigate(ROUTES.HOME);
     } catch (error) {
-
       throw error;
-
     }
   };
 
@@ -115,18 +110,21 @@ const SignupForm = () => {
           Create Your Account
         </Typography>
 
-
         <Box sx={{ flexGrow: 1 }}>
           <SignUpPersonalInfo />
         </Box>
-
 
         <Stack
           direction="row"
           justifyContent="center"
           sx={{ mt: 4, flexShrink: 0 }}
         >
-          <Button type="submit" variant="contained">
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={methods.formState.isSubmitting}
+            sx={{ width: "50%" }}
+          >
             Sign Up
           </Button>
         </Stack>
