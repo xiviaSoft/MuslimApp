@@ -38,7 +38,7 @@ const LoginWithEmail = () => {
         width: { xs: "100%", sm: "450px", md: "500px", lg: "585px" },
         gap: 6,
         alignItems: "center",
-        py: 4.5,
+        py: 4,
         boxShadow: "0 5px 8px rgba(0,0,0,0.2), 0 9px 26px rgba(0,0,0,0.19)",
         minHeight: 604,
         borderRadius: 3,
