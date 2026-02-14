@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import { useSendMessage } from "../../hooks/useSendMessage";
 import { CustomButton } from "@muc/components";
-import { useToast } from "@muc/context";
 
 interface SendingChatTextFieldProps {
   meUid: string;
@@ -21,7 +20,6 @@ const SendingChatTextField = ({
   });
 
   const { mutateAsync: sendMessage, isPending } = useSendMessage();
-  const { showToast } = useToast();
 
   const submitHandle = async (data: any) => {
     if (!data.messaging.trim()) return;
@@ -33,7 +31,6 @@ const SendingChatTextField = ({
         text: data.messaging.trim(),
       });
       methods.reset();
-      showToast("Message sent successfully", "success");
     } catch (err: any) {
       alert(err.message); // shows: "You can send only 5 messages in this chat."
     }

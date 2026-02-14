@@ -1,10 +1,9 @@
 import { Box } from "@mui/material";
 import { Footer, Navbar } from "../layout";
 import { ScrollToTopButton } from "@muc/components";
-import { useMessageNotifications } from "../../hooks/useMessageNotifications";
+// import { ScrollToTopButton } from "@muc/components";
 
 const AppLayout = ({ children }: any) => {
-  useMessageNotifications(); // 👈 Global listener
   return (
     <>
       <Navbar />
