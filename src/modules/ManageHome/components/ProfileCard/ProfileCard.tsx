@@ -1,11 +1,12 @@
 import { CustomCard } from "@muc/components";
-import {  userData } from "@muc/constants";
-import { Button, Grid, Paper, Stack } from "@mui/material";
+import { userData } from "@muc/constants";
+import { Grid, Paper, Stack } from "@mui/material";
 // import Tabs from "@mui/material/Tabs";
 // import Tab from "@mui/material/Tab";
 // import { useState } from "react";
 // import { AvTimer, Language, WhereToVote } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import { CustomButton } from "@muc/components";
 
 const ProfileCard = () => {
   // const [value, setValue] = useState<number>(1);
@@ -28,7 +29,7 @@ const ProfileCard = () => {
         centered
         sx={{ width: "100%" }}
       > */}
-        {/* {TabsLabel.map((item) => (
+      {/* {TabsLabel.map((item) => (
           <Tab
             key={item.value}
             sx={{
@@ -49,52 +50,45 @@ const ProfileCard = () => {
       {/* </Tabs> */}
 
       {/* {value === 1 && ( */}
-        <Stack
-          direction={"row"}
-          sx={{
-            flexWrap: "wrap",
-            mx: "auto",
-            // bgcolor: COLORS.red.main,
-            gap: "16px",
-            padding: { md: "40px", sm: "0px", xs: "0px" },
-            justifyContent: "center",
-            width: "100%",
-          }}
-        >
-          <Grid container spacing={3}>
-            {userData.map((item) => (
-              <Grid md={3} p={2}>
-                <CustomCard
-                  key={item.name}
-                  name={item.name}
-                  age={item.age}
-                  img={item.img}
-                  location={item.location}
-                  countryFlag={item.countryflag}
-                  id={item?.id}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Stack>
+      <Stack
+        direction={"row"}
+        sx={{
+          flexWrap: "wrap",
+          mx: "auto",
+          // bgcolor: COLORS.red.main,
+          gap: "16px",
+          padding: { md: "40px", sm: "0px", xs: "0px" },
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <Grid container spacing={3}>
+          {userData.map((item) => (
+            <Grid md={3} p={2}>
+              <CustomCard
+                key={item.name}
+                name={item.name}
+                age={item.age}
+                img={item.img}
+                location={item.location}
+                countryFlag={item.countryflag}
+                id={item?.id}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Stack>
       {/* )} */}
 
       {/* {value === 2 && <div>Content for Item Two</div>}
       {value === 3 && <div>Content for Item Three</div>} */}
-      <Button
+      <CustomButton
         onClick={() => Navigate("/gallery")}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          fontSize: "21px",
-          padding: "10px 15px",
-          mx: "auto",
-        }}
-      >
-        View all
-      </Button>
+        title="View all"
+        variant="contained"
+        width="100%"
+        height="56px"
+      />
     </Paper>
   );
 };

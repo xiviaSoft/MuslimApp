@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { COLORS } from "@muc/constants";
-import { Box, Stack, Typography, Button } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
+import { CustomButton } from "@muc/components";
 
 const SuccessStoriesCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -34,7 +35,7 @@ const SuccessStoriesCard = () => {
           padding: 2,
           borderRadius: "5px",
           // bgcolor: COLORS.secondary.main,
-          bgcolor:' #D26981',
+          bgcolor: " #D26981",
           color: COLORS.white.main,
         }}
       >
@@ -45,35 +46,32 @@ const SuccessStoriesCard = () => {
         >
           Our story
         </Typography>
-   
 
         <Typography
           variant="body1"
           sx={{
-  maxHeight: isExpanded ? "300px" : "auto",
-  whiteSpace: isExpanded ? "normal" : "nowrap",
-  overflow: isExpanded ? "auto" : "hidden",
-  textOverflow: isExpanded ? "clip" : "ellipsis",
-  transition: "all 0.3s ease",
-  color: COLORS.white.main,
-  overflowY: isExpanded ? "auto" : "hidden",
+            maxHeight: isExpanded ? "300px" : "auto",
+            whiteSpace: isExpanded ? "normal" : "nowrap",
+            overflow: isExpanded ? "auto" : "hidden",
+            textOverflow: isExpanded ? "clip" : "ellipsis",
+            transition: "all 0.3s ease",
+            color: COLORS.white.main,
+            overflowY: isExpanded ? "auto" : "hidden",
 
-  
-  "&::-webkit-scrollbar": {
-    width: "4px",
-  },
-  "&::-webkit-scrollbar-thumb": {
-    backgroundColor: COLORS.primary.main,
-    borderRadius: "4px",
-  },
-  "&::-webkit-scrollbar-thumb:hover": {
-    backgroundColor: COLORS.gray.lightGray,
-  },
-  "&::-webkit-scrollbar-track": {
-    backgroundColor: COLORS.gray.lightDarkGray,
-  },
-}}
-
+            "&::-webkit-scrollbar": {
+              width: "4px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: COLORS.primary.main,
+              borderRadius: "4px",
+            },
+            "&::-webkit-scrollbar-thumb:hover": {
+              backgroundColor: COLORS.gray.lightGray,
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: COLORS.gray.lightDarkGray,
+            },
+          }}
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus error
           sapiente corporis porro hic cum iure? Quisquam maiores repudiandae
@@ -122,13 +120,14 @@ const SuccessStoriesCard = () => {
           sed fugit voluptas ipsum dolore obcaecati consequuntur tempore!
         </Typography>
 
-        <Button onClick={handleToggle}
-        variant="text" 
-        sx={{
-color:COLORS.white.main        }}>
-      
-          {isExpanded ? "Read Less" : "Read More"}
-        </Button>
+        <CustomButton
+          onClick={handleToggle}
+          variant="outlined"
+          color={COLORS.white.main}
+          title={isExpanded ? "Read Less" : "Read More"}
+          height="32px"
+          width="120px"
+        />
         {isExpanded && (
           <>
             <Box

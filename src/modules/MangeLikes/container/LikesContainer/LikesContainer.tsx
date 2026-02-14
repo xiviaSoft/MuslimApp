@@ -25,9 +25,12 @@ const LikesContainer = () => {
             value={value}
             onChange={handleChange}
             variant="scrollable"
+            centered
+            scrollButtons="auto"
+            ScrollButtonComponent={"button"}
             sx={{
               "& .MuiTabs-indicator": {
-                display: "none", // remove underline
+                display: "none",
               },
               "& .MuiTab-root": {
                 textTransform: "none",
@@ -48,8 +51,8 @@ const LikesContainer = () => {
                 },
               },
               "& .Mui-selected": {
-                backgroundColor: COLORS.secondary.main,
-                color: COLORS.white.grayWhite,
+                backgroundColor: COLORS.white.main,
+                color: COLORS.secondary.main,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                 transform: "translateY(-2px)",
               },

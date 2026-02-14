@@ -7,7 +7,6 @@ import {
 } from "@mui/icons-material";
 import {
   Box,
-  Button,
   IconButton,
   Paper,
   Rating,
@@ -16,6 +15,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import LiveAndHideSwitch from "../LiveAndHideSwitch/LiveAndHideSwitch";
+import { CustomButton } from "@muc/components";
 
 const UserProfile = () => {
   const Navigate = useNavigate();
@@ -23,7 +23,7 @@ const UserProfile = () => {
     <>
       <Box
         component={Paper}
-        width={'100%'}
+        width={"100%"}
         sx={{ padding: "21px 0", height: "385px", mb: "10px" }}
       >
         <Stack
@@ -34,27 +34,17 @@ const UserProfile = () => {
             px: "20px",
           }}
         >
-          <Button
+          <CustomButton
+            title="Logout"
             variant="outlined"
-            sx={{
-              minWidth: 0,
-              minHeight: 0,
-              paddingX: "9px",
-              height: "25px",
-              borderRadius: "32px",
-              fontSize: "13px",
-              color: COLORS.red.main,
-              borderColor: COLORS.red.main,
-              ":hover": {
-                bgcolor: COLORS.red.main,
-                color: COLORS.white.main,
-              },
-            }}
-          >
-            Logout
-          </Button>
+            onClick={() => {}} // Add logout logic if available
+            color={COLORS.red.main}
+            background="transparent"
+            height="25px"
+            width="80px"
+          />
           <Box display="flex" alignItems="center" gap={2}>
-            <LiveAndHideSwitch/>
+            <LiveAndHideSwitch />
           </Box>
         </Stack>
 

@@ -4,9 +4,10 @@ import { useUserActivityDetail } from "@muc/utils";
 import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
 
 const LikeMeTab = () => {
-  const { data: likeUsers = [], isLoading, } = useUserActivityDetail("likes");
-    if (isLoading) {
-      return <Box
+  const { data: likeUsers = [], isLoading } = useUserActivityDetail("likes");
+  if (isLoading) {
+    return (
+      <Box
         width="100%"
         display="flex"
         justifyContent="center"
@@ -19,7 +20,8 @@ const LikeMeTab = () => {
         <CircularProgress />
         <Typography>Loading...</Typography>
       </Box>
-    }
+    );
+  }
   return (
     <Stack
       sx={{
@@ -39,23 +41,28 @@ const LikeMeTab = () => {
 
       <Box>
         <Grid container spacing={2} sx={{ p: 2 }}>
-          { likeUsers.length > 0 ? (
-            likeUsers.map((user) => (<>
-              <Grid key={user.id} item md={4} sm={6} xs={12}>
-                <CustomUserList
-                  bio={user.bio || "No bio available"}
-                  name={`${user.firstName || ""} ${user.lastName || ""}`}
-                />
-              </Grid>
-            </>
+          {likeUsers.length > 0 ? (
+            likeUsers.map((user) => (
+              <>
+                <Grid key={user.id} item md={4} sm={6} xs={12}>
+                  <CustomUserList
+                    bio={user.bio || "No bio available"}
+                    name={`${user.firstName || ""} ${user.lastName || ""}`}
+                    uid={user.id}
+                  />
+                </Grid>
+              </>
             ))
           ) : (
             <Typography
               variant="body1"
-              sx={{ color: COLORS.gray.main, textAlign: "center", width: "100%" }}
+              sx={{
+                color: COLORS.gray.main,
+                textAlign: "center",
+                width: "100%",
+              }}
             >
               No one has liked your profile yet.
-
             </Typography>
           )}
         </Grid>

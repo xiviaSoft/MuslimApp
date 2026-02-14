@@ -1,5 +1,5 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { auth, db } from "@muc/libs";
 import { COLORS, ROUTES } from "@muc/constants";
 import { doc, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
@@ -9,6 +9,7 @@ import { FormData } from "@muc/types";
 import SignUpPersonalInfo from "../SignUpPersonalInfo/SignUpPersonalInfo";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpPersonalInfoSchema } from "@muc/validations";
+import { CustomButton } from "@muc/components";
 
 const SignupForm = () => {
   const methods = useForm<FormData>({
@@ -119,14 +120,14 @@ const SignupForm = () => {
           justifyContent="center"
           sx={{ mt: 4, flexShrink: 0 }}
         >
-          <Button
+          <CustomButton
             type="submit"
             variant="contained"
-            disabled={methods.formState.isSubmitting}
-            sx={{ width: "50%" }}
-          >
-            Sign Up
-          </Button>
+            title="Sign Up"
+            isLoading={methods.formState.isSubmitting}
+            width="50%"
+            background={COLORS.primary.main}
+          />
         </Stack>
 
         <Stack alignItems="center" mt={3} sx={{ flexShrink: 0 }}>

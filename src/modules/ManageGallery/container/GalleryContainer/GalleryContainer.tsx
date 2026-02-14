@@ -28,7 +28,6 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-
 const GalleryContainer = () => {
   const { users: allUsers, isError, isLoading } = useUsers();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -59,10 +58,9 @@ const GalleryContainer = () => {
 
       const matchesSearch = search
         ? `${user.firstName} ${user.lastName}`
-          .toLowerCase()
-          .includes(search.toLowerCase())
-        : false;
-
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        : true;
 
       const userAge = calculateAge(user.dateOfBirth);
       const matchesAge =
@@ -74,14 +72,12 @@ const GalleryContainer = () => {
     setFilteredUsers(filtered);
   };
 
-
   return (
     <AppLayout>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(submitData)}>
           <Box sx={{ bgcolor: COLORS.gray.lightDarkGray, minHeight: "100vh" }}>
             <Container maxWidth="lg" disableGutters sx={{ py: 3 }}>
-
               <Box textAlign="center" mb={4}>
                 <Typography
                   variant="h5"
@@ -125,7 +121,7 @@ const GalleryContainer = () => {
                     <CustomMenu />
                   </Grid> */}
 
-                  <Grid item md={4} sm={12} xs={12} sx={{ ml: 'auto' }}>
+                  <Grid item md={4} sm={12} xs={12} sx={{ ml: "auto" }}>
                     <Stack
                       direction="row"
                       alignItems="center"

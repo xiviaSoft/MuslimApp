@@ -1,10 +1,10 @@
-
 import { COLORS } from "@muc/constants";
 import { auth } from "@muc/libs";
 import { Box, Stack, Typography } from "@mui/material";
 import SendingChat from "../SendingChat/SendingChat";
 // import { Delete } from "@mui/icons-material";
 import IncomingChat from "../IncomingChat/IncomingChat";
+// import { useEffect, useRef } from "react";
 // import { useDeleteMessage } from "@muc/hooks";
 
 interface ChatBoxProps {
@@ -13,17 +13,25 @@ interface ChatBoxProps {
   isLoading: boolean;
 }
 const ChatBox = ({ messages, isLoading }: ChatBoxProps) => {
-  // const { mutate: deleteMessage } = useDeleteMessage(threadId);
+  // 🔹 Auto-scroll to bottom
+  // const scrollRef = useRef<HTMLDivElement>(null);
+  // useEffect(() => {
+  //   scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages]);
 
-  if (isLoading) return <Typography
-    sx={{
-      height: '100vh',
-      width: "100%",
-      display: 'grid',
-      placeItems: 'center'
-    }}>
-    You have no messages
-  </Typography>;
+  if (isLoading)
+    return (
+      <Typography
+        sx={{
+          height: "100vh",
+          width: "100%",
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        You have no messages
+      </Typography>
+    );
 
   return (
     <Stack
@@ -68,7 +76,13 @@ const ChatBox = ({ messages, isLoading }: ChatBoxProps) => {
               }}
             >
               {isMe ? (
-                <Box sx={{ display: "flex", alignSelf: "end", alignItems: "center" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignSelf: "end",
+                    alignItems: "center",
+                  }}
+                >
                   <SendingChat sendedMsg={msg.text} />
                   {/* <IconButton
                     size="small"
@@ -92,8 +106,9 @@ const ChatBox = ({ messages, isLoading }: ChatBoxProps) => {
           );
         })
       )}
+      {/* <div ref={scrollRef} /> */}
     </Stack>
   );
 };
 
-export default ChatBox
+export default ChatBox;

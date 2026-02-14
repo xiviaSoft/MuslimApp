@@ -41,23 +41,15 @@ const MessageContainer = () => {
 
   const { total, chats: unreadChats = [] } = UseUnreadCount(myUid);
 
-  // 🔹 Check mutual block status
-  const { data: isBlocked, isLoading: isBlockedLoading } = useQuery({
-    queryKey: ["mutualBlockedStatus", myUid, otherUid],
+  // 🔹 Fetch current user data for blocked list
+  const { data: currentUserData } = useQuery({
+    queryKey: ["currentUser", myUid],
     queryFn: async () => {
-      if (!myUid || !otherUid) return false;
-      const [myDoc, otherDoc] = await Promise.all([
-        getDoc(doc(db, "users", myUid)),
-        getDoc(doc(db, "users", otherUid)),
-      ]);
-      if (!myDoc.exists() || !otherDoc.exists()) return false;
-
-      const myBlocked = myDoc.data().blocked || [];
-      const otherBlocked = otherDoc.data().blocked || [];
-
-      return myBlocked.includes(otherUid) || otherBlocked.includes(myUid);
+      if (!myUid) return null;
+      const docSnap = await getDoc(doc(db, "users", myUid));
+      return docSnap.exists() ? docSnap.data() : null;
     },
-    enabled: !!myUid && !!otherUid,
+    enabled: !!myUid,
   });
 
   // 🔹 Listen to all chat threads
@@ -65,7 +57,7 @@ const MessageContainer = () => {
     if (!myUid) return;
     const q = query(
       collection(db, "dms"),
-      where("participants", "array-contains", myUid)
+      where("participants", "array-contains", myUid),
     );
 
     const unsub = onSnapshot(q, async (snapshot) => {
@@ -86,7 +78,7 @@ const MessageContainer = () => {
             otherUid: other,
             otherUser: userProfile,
           };
-        })
+        }),
       );
       setChatUsers(chats);
     });
@@ -99,7 +91,7 @@ const MessageContainer = () => {
     if (!myUid || !otherUid) return;
     const q = query(
       collection(db, "dms", [myUid, otherUid].sort().join("_"), "messages"),
-      orderBy("sentAt", "asc")
+      orderBy("sentAt", "asc"),
     );
     const unsub = onSnapshot(q, (snapshot) => {
       setMessages(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
@@ -127,11 +119,25 @@ const MessageContainer = () => {
         lastReadAt: unreadChat?.lastReadAt,
       };
     });
-    merged.sort((a: any, b: any) => getTime(b.lastMessageAt) - getTime(a.lastMessageAt));
+    merged.sort(
+      (a: any, b: any) => getTime(b.lastMessageAt) - getTime(a.lastMessageAt),
+    );
     return merged;
   }, [chatUsers, unreadChats]);
 
-  const activeChat = enrichedChats?.find((chat: any) => chat.otherUid === otherUid);
+  const activeChat = enrichedChats?.find(
+    (chat: any) => chat.otherUid === otherUid,
+  );
+
+  // 🔹 Check mutual block status (for active chat)
+  const isBlocked = React.useMemo(() => {
+    if (!currentUserData || !activeChat?.otherUser) return false;
+    const myBlocked = currentUserData.blocked || [];
+    const otherBlocked = activeChat.otherUser.blocked || [];
+    return myBlocked.includes(otherUid) || otherBlocked.includes(myUid);
+  }, [currentUserData, activeChat, otherUid, myUid]);
+
+  const isBlockedLoading = !currentUserData && !!myUid;
 
   // 🔹 Mark thread as read
   React.useEffect(() => {
@@ -158,7 +164,6 @@ const MessageContainer = () => {
         position: "relative",
       }}
     >
-
       {(!isMobile || !otherUid) && (
         <Paper
           elevation={0}
@@ -170,13 +175,21 @@ const MessageContainer = () => {
           }}
         >
           <Box sx={{ px: 2, py: 1 }}>
-            <Typography sx={{ fontWeight: 700, fontSize: 16, color: COLORS.gray.darkGray }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                fontSize: 16,
+                color: COLORS.gray.darkGray,
+              }}
+            >
               Chats {total > 0 ? `(${total})` : ""}
             </Typography>
           </Box>
-          <Box sx={{ flex: 1, overflowY: "auto", p: 1 }}>
+          <Box sx={{ flex: 1 }}>
             {!enrichedChats || enrichedChats.length === 0 ? (
-              <Typography sx={{ textAlign: "center", color: COLORS.gray.darkGray, py: 5 }}>
+              <Typography
+                sx={{ textAlign: "center", color: COLORS.gray.darkGray, py: 5 }}
+              >
                 You have no chats yet
               </Typography>
             ) : (
@@ -190,6 +203,8 @@ const MessageContainer = () => {
                   threadId={chat.id}
                   unread={chat.unread ?? 0}
                   isActive={chat.otherUid === otherUid}
+                  myBlocked={currentUserData?.blocked || []}
+                  otherUserBlocked={chat.otherUser?.blocked || []}
                 />
               ))
             )}
@@ -218,24 +233,31 @@ const MessageContainer = () => {
                 right: 17,
                 zIndex: 10,
                 bgcolor: COLORS.gray.whiteGray,
-         
+
                 boxShadow: 1,
                 "&:hover": { bgcolor: "white" },
               }}
             >
-              <ArrowBackIcon sx={{       fontSize:'20px',}} />
+              <ArrowBackIcon sx={{ fontSize: "20px" }} />
             </IconButton>
           )}
 
           {/* Chat Header */}
           {otherUid && activeChat?.otherUser && (
             <>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{
-                 px: {md:5,xs:2}, py: 1 
-                 }}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                sx={{
+                  px: { md: 5, xs: 2 },
+                  py: 1,
+                }}
+              >
                 <ShowUserDetailPath
                   firstName={activeChat.otherUser.firstName ?? ""}
                   lastName={activeChat.otherUser.lastName ?? ""}
+                  uid={activeChat.otherUid}
                 />
               </Stack>
               <Divider sx={{ my: 1 }} />
@@ -257,7 +279,8 @@ const MessageContainer = () => {
               </Typography>
             ) : isBlocked ? (
               <Typography sx={{ textAlign: "center", color: "red", py: 2 }}>
-                You cannot send messages because one of you has blocked the other.
+                You cannot send messages because one of you has blocked the
+                other.
               </Typography>
             ) : (
               <SendingChatTextField meUid={myUid} otherUid={otherUid} />

@@ -24,7 +24,7 @@ import {
 const drawerWidth = 320;
 const navItems = [
   {
-    title: "HOME",
+    title: "Home",
     path: "/",
     icon: <HomeRounded sx={{ fontSize: "30px" }} />,
     requiresAuth: false,

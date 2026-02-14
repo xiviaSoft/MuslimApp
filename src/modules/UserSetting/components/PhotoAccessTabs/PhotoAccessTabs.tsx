@@ -27,12 +27,14 @@ const PhotoAccessTabs = () => {
         centered
         variant="scrollable"
         sx={{
+          "& .MuiTabs-indicator": {
+            display: "none",
+          },
           "& .MuiTab-root": {
             transition: "0.3s",
-          
           },
           "& .Mui-selected": {
-            bgcolor: COLORS.secondary.main,
+            bgcolor: COLORS.primary.main,
             color: COLORS.white.main,
           },
         }}

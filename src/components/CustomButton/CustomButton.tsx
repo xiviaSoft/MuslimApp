@@ -53,7 +53,9 @@ const CustomButton: React.FC<ButtonProps> = ({
             sm: width || "auto",
             xs: width || "100%",
           },
-          color: color || (variant === "contained" ? COLORS.white.main : COLORS.primary.main),
+          color:
+            color ||
+            (variant === "contained" ? COLORS.white.main : COLORS.primary.main),
           backgroundColor:
             variant === "contained"
               ? background || COLORS.primary.main
@@ -61,8 +63,9 @@ const CustomButton: React.FC<ButtonProps> = ({
           border:
             variant === "outlined"
               ? `1.5px solid ${COLORS.primary.main}`
-              : "none",
-          boxShadow: variant === "contained" ? "0 3px 6px rgba(0,0,0,0.15)" : "none",
+              : `1.5px solid ${background || COLORS.primary.main}`,
+          boxShadow:
+            variant === "contained" ? "0 3px 6px rgba(0,0,0,0.15)" : "none",
           "&:hover": {
             backgroundColor:
               variant === "contained"
@@ -84,7 +87,9 @@ const CustomButton: React.FC<ButtonProps> = ({
             size={22}
             sx={{
               color:
-                variant === "outlined" ? COLORS.primary.main : COLORS.white.main,
+                variant === "outlined"
+                  ? COLORS.primary.main
+                  : COLORS.white.main,
             }}
           />
         ) : (

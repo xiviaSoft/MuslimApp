@@ -5,9 +5,9 @@ import {
   TableContainer,
   TableRow,
   Paper,
-  Button,
   Box,
 } from "@mui/material";
+import { CustomButton } from "@muc/components";
 import { Flag, Report, Block } from "@mui/icons-material";
 import { COLORS } from "@muc/constants";
 import { useParams } from "react-router";
@@ -23,7 +23,6 @@ import {
 import { auth, db } from "@muc/libs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ReportDialog from "../ReportDialog/ReportDialog";
-
 
 const profileData = [
   { label: "My Sect", value: "Just Muslim" },
@@ -49,7 +48,6 @@ const UserProfileDetail = () => {
   const { id: otherUserId } = useParams();
   const currentUserId = auth.currentUser?.uid;
   const queryClient = useQueryClient();
-
 
   const [openReportDialog, setOpenReportDialog] = useState(false);
 
@@ -137,39 +135,42 @@ const UserProfileDetail = () => {
           }}
         >
           {/*  Report Button Opens Dialog */}
-          <Button
-            variant="text"
-            startIcon={<Report />}
-            sx={{ color: "gray" }}
+          <CustomButton
+            variant="outlined"
+            icon={<Report />}
+            color="gray"
+            title="Report"
             onClick={() => setOpenReportDialog(true)}
-          >
-            Report
-          </Button>
+            height="36px"
+          />
 
           {isLoading ? (
-            <Button variant="text" disabled>
-              Loading...
-            </Button>
+            <CustomButton
+              title="Loading..."
+              variant="outlined"
+              disabled
+              height="36px"
+            />
           ) : isBlocked ? (
-            <Button
-              variant="text"
+            <CustomButton
+              variant="outlined"
               onClick={() => unblockMutation.mutate()}
-              startIcon={<Block />}
-              sx={{ color: "red" }}
-              disabled={unblockMutation.isPending}
-            >
-              Unblock
-            </Button>
+              icon={<Block />}
+              color="red"
+              title="Unblock"
+              isLoading={unblockMutation.isPending}
+              height="36px"
+            />
           ) : (
-            <Button
-              variant="text"
+            <CustomButton
+              variant="outlined"
               onClick={() => blockMutation.mutate()}
-              startIcon={<Block />}
-              sx={{ color: "gray" }}
-              disabled={blockMutation.isPending}
-            >
-              Block
-            </Button>
+              icon={<Block />}
+              color="gray"
+              title="Block"
+              isLoading={blockMutation.isPending}
+              height="36px"
+            />
           )}
         </Box>
       </TableContainer>

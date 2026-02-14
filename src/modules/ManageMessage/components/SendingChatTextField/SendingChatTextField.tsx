@@ -1,17 +1,19 @@
 import { CustomTextField } from "@muc/components";
 import { Telegram } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import { useSendMessage } from "../../hooks/useSendMessage";
-
+import { CustomButton } from "@muc/components";
+import { useToast } from "@muc/context";
 
 interface SendingChatTextFieldProps {
   meUid: string;
   otherUid: string;
-}
-; // Maximum messages per user per thread
-
-const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) => {
+} // Maximum messages per user per thread
+const SendingChatTextField = ({
+  meUid,
+  otherUid,
+}: SendingChatTextFieldProps) => {
   const methods = useForm({
     defaultValues: {
       messaging: "",
@@ -19,6 +21,7 @@ const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) =>
   });
 
   const { mutateAsync: sendMessage, isPending } = useSendMessage();
+  const { showToast } = useToast();
 
   const submitHandle = async (data: any) => {
     if (!data.messaging.trim()) return;
@@ -30,11 +33,11 @@ const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) =>
         text: data.messaging.trim(),
       });
       methods.reset();
+      showToast("Message sent successfully", "success");
     } catch (err: any) {
       alert(err.message); // shows: "You can send only 5 messages in this chat."
     }
   };
-
 
   return (
     <FormProvider {...methods}>
@@ -57,21 +60,14 @@ const SendingChatTextField = ({ meUid, otherUid }: SendingChatTextFieldProps) =>
             placeholder="Type your message..."
             disabled={isPending}
           />
-          <Button
+          <CustomButton
             type="submit"
-            startIcon={<Telegram />}
-            disabled={isPending}
-            sx={{
-              minWidth: "13%",
-              paddingX: "10px",
-              height: "59px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {isPending ? "Sending..." : "Send"}
-          </Button>
+            icon={<Telegram />}
+            isLoading={isPending}
+            title={isPending ? "Sending..." : "Send"}
+            width="100px"
+            height="59px"
+          />
         </Box>
       </form>
     </FormProvider>
