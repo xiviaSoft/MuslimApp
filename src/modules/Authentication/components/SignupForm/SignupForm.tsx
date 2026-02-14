@@ -115,17 +115,13 @@ const SignupForm = () => {
           <SignUpPersonalInfo />
         </Box>
 
-        <Stack
-          direction="row"
-          justifyContent="center"
-          sx={{ mt: 4, flexShrink: 0 }}
-        >
+        <Stack direction="row" justifyContent="center" sx={{ mt: 4 }}>
           <CustomButton
             type="submit"
             variant="contained"
             title="Sign Up"
             isLoading={methods.formState.isSubmitting}
-            width="50%"
+            // width="50%"
             background={COLORS.primary.main}
           />
         </Stack>
