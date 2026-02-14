@@ -65,7 +65,9 @@ const AccountMenu = () => {
               cx="24"
               cy="24"
               r="20"
-              stroke={completion < 50 ? "red" : completion < 100 ? "orange" : "green"}
+              stroke={
+                completion < 50 ? "red" : completion < 100 ? "orange" : "green"
+              }
               strokeWidth="4"
               fill="none"
               strokeDasharray={circumference}
@@ -93,6 +95,7 @@ const AccountMenu = () => {
 
         <Typography
           sx={{
+            display: { xs: "none", sm: "block" },
             fontSize: "10px",
             color: COLORS.secondary.main,
             textTransform: "capitalize",

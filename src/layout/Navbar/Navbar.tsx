@@ -84,7 +84,7 @@ export default function Navbar(props: any) {
 
   const drawer = (
     <Box
-      bgcolor={"black"}
+      bgcolor={COLORS.white.main}
       padding={"30px"}
       justifyContent={"center"}
       height={"100%"}
@@ -100,7 +100,7 @@ export default function Navbar(props: any) {
               style={{
                 textDecoration: "none",
                 width: "100%",
-                color: "white",
+                color: COLORS.dark.main,
                 fontSize: "14px",
                 fontWeight: 600,
                 fontFamily: "Fira Sans",
@@ -146,7 +146,7 @@ export default function Navbar(props: any) {
                 component={"img"}
                 src="/assets/images/single-muslim-logo.png"
                 alt="Logo"
-                width={252}
+                width={{ xs: 153, sm: 252 }}
                 sx={{ height: "100%", width: "193px" }}
                 onClick={() => navigate(ROUTES.HOME)}
               />
@@ -209,12 +209,31 @@ export default function Navbar(props: any) {
 
                 <AccountMenu />
               </Box>
+
+              {/* <Box
+                sx={{
+                  display: { xs: "flex", sm: "none" },
+                  alignItems: "center",
+                  mr: 2,
+                }}
+              >
+                <AccountMenu />
+              </Box> */}
+            </Box>
+            <Box
+              sx={{
+                display: { xs: "flex", sm: "none" },
+                alignItems: "center",
+                mr: 1,
+              }}
+            >
+              <AccountMenu />
             </Box>
             <IconButton
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
+              sx={{ display: { sm: "none" } }}
             >
               <MenuIcon sx={{ color: COLORS.primary.main }} />
             </IconButton>
