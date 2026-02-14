@@ -43,7 +43,7 @@ const LoginWithEmail = () => {
         // minHeight: 404,
         borderRadius: 3,
         px: 2,
-        height: { sm: "404px", md: "404px", lg: "404px", xs: "100vh" },
+        height: { xs: "100%", sm: "80vh" },
       }}
     >
       {/* Title */}
