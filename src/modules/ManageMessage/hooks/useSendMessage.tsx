@@ -4,10 +4,10 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
-  collection,
-  query,
-  where,
-  getDocs,
+  // collection,
+  // query,
+  // where,
+  // getDocs,
 } from "firebase/firestore";
 import { db } from "@muc/libs";
 import { dmDoc, messagesCol, threadIdFor } from "@muc/utils";
@@ -22,12 +22,12 @@ const sendMessageFn = async ({ meUid, otherUid, text }: SendMessageArgs) => {
   const tid = threadIdFor(meUid, otherUid);
 
   // Count all messages sent by this user, including deleted
-  const messagesQuery = query(
-    collection(db, "dms", tid, "messages"),
-    where("senderId", "==", meUid),
-  );
-  const messagesSnapshot = await getDocs(messagesQuery);
-  const totalMessages = messagesSnapshot.docs.length;
+  // const messagesQuery = query(
+  //   collection(db, "dms", tid, "messages"),
+  //   where("senderId", "==", meUid),
+  // );
+  // const messagesSnapshot = await getDocs(messagesQuery);
+  // const totalMessages = messagesSnapshot.docs.length;
 
   // Ensure thread exists
   await setDoc(

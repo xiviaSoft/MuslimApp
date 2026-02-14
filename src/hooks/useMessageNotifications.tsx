@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@muc/libs";
 import { useToast } from "../context/ToastContext";
@@ -7,7 +7,7 @@ import { useToast } from "../context/ToastContext";
 export const useMessageNotifications = () => {
   const { showToast } = useToast();
   const location = useLocation();
-  const navigate = useNavigate();
+
   const myUid = auth.currentUser?.uid;
   const isFirstRun = useRef(true);
 
