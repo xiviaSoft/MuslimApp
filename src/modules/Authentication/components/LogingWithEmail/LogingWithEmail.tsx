@@ -40,8 +40,10 @@ const LoginWithEmail = () => {
         alignItems: "center",
         py: 4,
         boxShadow: "0 5px 8px rgba(0,0,0,0.2), 0 9px 26px rgba(0,0,0,0.19)",
-        minHeight: 604,
+        // minHeight: 404,
         borderRadius: 3,
+        px: 2,
+        height: { sm: "404px", md: "404px", lg: "404px", xs: "100vh" },
       }}
     >
       {/* Title */}
