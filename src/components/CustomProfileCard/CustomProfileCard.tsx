@@ -66,7 +66,7 @@ const UserProfileCard = ({
 
       >
         <Box component={'img'} src="assets/images/girl-img.jpg" alt={name} sx={{ height: '100%', objectFit: 'cover', width: '100%', }}
-          onClick={() => navigate(`${ROUTES.USER_INFO}/${id}`)}
+          onClick={() => navigate(`/${ROUTES.USER_INFO}/${id}`)}
 
         />
         <Box
