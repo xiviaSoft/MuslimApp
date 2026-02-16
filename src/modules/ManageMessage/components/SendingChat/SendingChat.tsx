@@ -22,7 +22,9 @@ const SendingChat = ({ sendedMsg }: SendeingChatProps) => {
               margin: "10px",
               // maxWidth: "60%",
               ml: "auto",
-              width: '80%'
+              width: '80%',
+              textWrap:'wrap',
+              wordBreak: "break-word",
             }}  >
             <Typography
             >{sendedMsg}
