@@ -87,10 +87,7 @@ const UserProfileCard = ({
             <CheckCircleIcon fontSize="small" sx={{ color: "#3EA6FF" }} />
           </Box>
 
-          {/* <Box display="flex" alignItems="center" gap={0.5} mt={0.5}>
-            <LocationOnIcon fontSize="small" />
-            <Typography fontSize={13}>{location}</Typography>
-          </Box> */}
+      
 
           <Box
             display="flex"
